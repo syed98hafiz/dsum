@@ -1,6 +1,6 @@
-# Discharge Summary Builder (`dsum`)
+# Discharge Summary (`dsum`)
 
-Offline-first Clinical Workspace Dashboard, structured Discharge Summary Builder, Google-verified Doctor-to-Doctor Patient Handover, and Multi-Algorithm A4 Print / PDF Progressive Web App.
+Offline-first Clinical Workspace Dashboard, structured Discharge Summary editor, Google-verified Doctor-to-Doctor Patient Handover, and Multi-Algorithm A4 Print / PDF Progressive Web App.
 
 - **Live Web App:** [https://dsum.shop/](https://dsum.shop/) (mirror: [https://syed98hafiz.github.io/dsum/](https://syed98hafiz.github.io/dsum/))
 - **Privacy Policy:** [https://dsum.shop/privacy.html](https://dsum.shop/privacy.html)
@@ -41,28 +41,30 @@ Offline-first Clinical Workspace Dashboard, structured Discharge Summary Builder
 
 | Path | Purpose |
 | :--- | :--- |
-| [index.html](./index.html) | App shell, topbar & menu dropdown, Dashboard, Clinical Form, A4 Summary view, Modals |
-| [app.js](./app.js) | Application state, IndexedDB store, Supabase sync & sharing, A4 pagination & fitting algorithms |
-| [styles.css](./styles.css) | Responsive UI styles (Desktop, Android, iOS Safari), themes, Custom Color Maker, and `@media print` A4 rules |
-| [sw.js](./sw.js) | Network-first PWA Service Worker (`ds-v2-cache-v16`) |
-| [manifest.json](./manifest.json) | PWA Web App Manifest (`icon-192.png`, `icon-512.png`) |
-| [supabase-config.js](./supabase-config.js) | Supabase project URL and publishable anon key configuration |
-| [supabase-schema.sql](./supabase-schema.sql) | Supabase tables (`discharge_summaries`, `user_settings`, `user_directory`, `patient_shares`), RLS, and RPCs |
-| [supabase/](./supabase/) | Supabase CLI config and SQL migrations |
-| [templates/](./templates/) | Built-in template library page & presets |
+| [index.html](./index.html) | App entry shell, SEO metadata/JSON-LD, topbar & menu dropdown, Dashboard, Form, A4 Summary view, Modals |
+| [css/styles.css](./css/styles.css) | Responsive UI styles (Desktop, Android, iOS Safari), themes, Custom Color Maker, and `@media print` A4 rules |
+| [js/app.js](./js/app.js) | Application state, IndexedDB store, Supabase sync & sharing, A4 pagination & fitting algorithms |
+| [js/supabase-config.js](./js/supabase-config.js) | Supabase project URL and publishable anon key configuration |
+| [js/supabase.min.js](./js/supabase.min.js) | Supabase JavaScript client bundle |
+| [js/html2pdf.bundle.min.js](./js/html2pdf.bundle.min.js) | Client-side A4 HTML-to-PDF renderer |
+| [assets/](./assets/) | PWA app icons (`icon-192.png`, `icon-512.png`) and default institutional header emblem (`omandurar_footer.jpg`) |
+| [templates/](./templates/) | Built-in template library page & default protocol JSON (`default-template.json`) |
+| [supabase/](./supabase/) | Full Supabase SQL schema (`supabase/supabase-schema.sql`), CLI `config.toml`, and migrations |
+| [scripts/](./scripts/) | Standalone utility script (`export_pdf.py`) and legacy redirect stub (`discharge-summary-builder.html`) |
+| [sw.js](./sw.js) | Network-first PWA Service Worker (`ds-v2-cache-v17`) |
+| [manifest.json](./manifest.json) | PWA Web App Manifest |
+| [robots.txt](./robots.txt), [sitemap.xml](./sitemap.xml), [llms.txt](./llms.txt) | Search engine & AI crawler indexing metadata |
 | [privacy.html](./privacy.html) | Standalone Privacy Policy page (linked in menu & Google OAuth Branding) |
 | [terms.html](./terms.html) | Standalone Terms of Service page (linked in menu & Google OAuth Branding) |
 | [LICENSE](./LICENSE) | MIT License |
 | [CNAME](./CNAME) | Custom domain binding (`dsum.shop`) for GitHub Pages |
-| [discharge-summary-builder.html](./discharge-summary-builder.html) | Legacy standalone single-file version |
-| [export_pdf.py](./export_pdf.py) | Helper PDF export script |
 
 ---
 
 ## Supabase & Google Cloud OAuth Setup
 
 ### Supabase Setup
-1. Open **SQL Editor → New query** in your Supabase project (`voczhrkycygwquxqswxx`), paste [`supabase-schema.sql`](./supabase-schema.sql), and click **Run** (or apply migrations inside [`supabase/migrations/`](./supabase/migrations/)).
+1. Open **SQL Editor → New query** in your Supabase project (`voczhrkycygwquxqswxx`), paste [`supabase/supabase-schema.sql`](./supabase/supabase-schema.sql), and click **Run** (or apply migrations inside [`supabase/migrations/`](./supabase/migrations/)).
 2. In **Authentication → Providers**, enable **Google** and disable **Email** sign-in.
 3. In **Authentication → URL Configuration**:
    - **Site URL:** `https://dsum.shop/`

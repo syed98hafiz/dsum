@@ -1,15 +1,15 @@
-const CACHE = "ds-v2-cache-v16";
+const CACHE = "ds-v2-cache-v17";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=16",
-  "./app.js?v=16",
-  "./supabase.min.js?v=16",
-  "./supabase-config.js?v=16",
-  "./html2pdf.bundle.min.js",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./omandurar_footer.jpg",
+  "./css/styles.css?v=17",
+  "./js/app.js?v=17",
+  "./js/supabase.min.js?v=17",
+  "./js/supabase-config.js?v=17",
+  "./js/html2pdf.bundle.min.js",
+  "./assets/icon-192.png",
+  "./assets/icon-512.png",
+  "./assets/omandurar_footer.jpg",
   "./manifest.json"
 ];
 

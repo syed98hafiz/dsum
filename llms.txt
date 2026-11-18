@@ -1,0 +1,15 @@
+# Discharge Summary (dsum.shop)
+
+> Offline-first clinical workspace Progressive Web App (PWA) for drafting, formatting, printing, and sharing A4 medical discharge summaries across desktop, Android, and Safari.
+
+## Overview
+- **Primary URL:** https://dsum.shop/
+- **Privacy Policy:** https://dsum.shop/privacy.html
+- **Terms of Service:** https://dsum.shop/terms.html
+- **Repository:** https://github.com/syed98hafiz/dsum (MIT License)
+
+## Core Capabilities
+- **Local-First & Cloud Sync:** Works offline via IndexedDB (`ds-builder-v2`) and Service Worker (`sw.js`), with optional Google Sign-In via Supabase Auth to synchronize patient drafts, defaults, saved templates, themes, and contacts across devices.
+- **Google-Verified Patient Handover:** Doctors can share patient summaries directly to verified colleagues' Google emails inside the web app and pin Frequently Shared Contacts on the dashboard.
+- **4-Algorithm A4 Pagination & PDF Engine:** Includes Default Auto-Density, Binary Search Auto-Scale, Flex Spacing Redistribution, and Knuth-Plass Balanced Breaks (`Re-fit A4`), plus bi-directional inline editing directly on the A4 preview page and 1:1 A4 PDF export.
+- **Custom Theme Maker & Templates:** Built-in Custom Color Maker (solid and gradient stops with Hex/Hue/Shade sliders) and portable JSON/cloud disease protocol templates.

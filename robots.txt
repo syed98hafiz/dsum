@@ -1,0 +1,11 @@
+# Discharge Summary (https://dsum.shop/)
+# Offline-first Clinical Workspace & A4 Medical Discharge Summary PWA
+# Documentation: https://dsum.shop/README.md | Overview for bots: https://dsum.shop/llms.txt
+
+User-agent: *
+Allow: /
+
+Disallow: /scripts/
+Disallow: /supabase/
+
+Sitemap: https://dsum.shop/sitemap.xml

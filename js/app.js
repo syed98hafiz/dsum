@@ -663,7 +663,7 @@
       const kind = val("summaryType").toUpperCase();
       const logoHTML = logoData
         ? `<img class="logo-box" src="${logoData}" alt="logo">`
-        : `<img class="logo-box" src="omandurar_footer.jpg" alt="logo">`;
+        : `<img class="logo-box" src="assets/omandurar_footer.jpg" alt="logo">`;
       let h = "";
       h += `<div class="doc-head">
     ${logoHTML}

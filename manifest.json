@@ -1,9 +1,9 @@
 {
-  "name": "DS Builder v2 — Dashboard & Cloud Sync",
-  "short_name": "DS Builder v2",
+  "name": "Discharge Summary",
+  "short_name": "Discharge Summary",
   "id": "./index.html",
   "lang": "en-IN",
-  "description": "Experimental v2 mirror of Discharge Summary Builder with Patient Dashboard & Supabase Cloud Sync.",
+  "description": "Offline-first Clinical Discharge Summary & Patient Handover PWA with Google-verified doctor sharing, multi-algorithm A4 auto-fit, and cloud sync.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -13,10 +13,10 @@
   "categories": ["medical", "productivity"],
   "prefer_related_applications": false,
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
 
