@@ -14,10 +14,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
   <link rel="icon" href="icon-192.png">
   <title>DS Builder v2 — Dashboard &amp; Discharge Summary</title>
-  <link rel="stylesheet" href="styles.css?v=13">
+  <link rel="stylesheet" href="styles.css?v=16">
   <script src="html2pdf.bundle.min.js"></script>
-  <script src="supabase.min.js?v=13"></script>
-  <script src="supabase-config.js?v=13"></script>
+  <script src="supabase.min.js?v=16"></script>
+  <script src="supabase-config.js?v=16"></script>
 </head>
 
 <body>
@@ -45,19 +45,13 @@
           <button class="menu-btn" id="menuBtn" onclick="toggleMenu()" title="More options">⋮</button>
           <div class="menu-dropdown" id="menuDropdown">
 
-            <div class="menu-label">Cloud &amp; Dashboard</div>
-            <div class="menu-tile-grid cols-4">
-              <button type="button" class="menu-tile" onclick="showTab('dashboard');closeMenu()" title="Patient Dashboard">
-                <span class="tile-icon">🏠</span><span class="tile-label">Home</span>
-              </button>
+            <div class="menu-label">Cloud &amp; Sync</div>
+            <div class="menu-tile-grid cols-2">
               <button type="button" class="menu-tile" onclick="saveCurrentRecordNow(true);closeMenu()" title="Save current patient draft">
                 <span class="tile-icon">💾</span><span class="tile-label">Save</span>
               </button>
               <button type="button" class="menu-tile" onclick="syncNow(true);closeMenu()" title="Sync with Supabase">
                 <span class="tile-icon">☁</span><span class="tile-label">Sync</span>
-              </button>
-              <button type="button" class="menu-tile" onclick="openAuthOrAccount();closeMenu()" title="Account / Sign in">
-                <span class="tile-icon">👤</span><span class="tile-label">Account</span>
               </button>
             </div>
 
@@ -82,25 +76,13 @@
               </button>
             </div>
 
-            <div class="menu-label">Patient Draft &amp; Output</div>
-            <div class="menu-tile-grid cols-3">
+            <div class="menu-label">Patient Draft</div>
+            <div class="menu-tile-grid cols-2">
               <button type="button" class="menu-tile" onclick="importDraft();closeMenu()" title="Import patient draft (.json)">
                 <span class="tile-icon">📂</span><span class="tile-label">Import Draft</span>
               </button>
               <button type="button" class="menu-tile" onclick="exportDraft();closeMenu()" title="Export patient draft (.json)">
                 <span class="tile-icon">📤</span><span class="tile-label">Export Draft</span>
-              </button>
-              <button type="button" class="menu-tile" onclick="copyText();closeMenu()" title="Copy summary text">
-                <span class="tile-icon">📋</span><span class="tile-label">Copy Text</span>
-              </button>
-              <button type="button" class="menu-tile" onclick="checkAndPrint();closeMenu()" title="Print / Save PDF">
-                <span class="tile-icon">🖨️</span><span class="tile-label">Print / PDF</span>
-              </button>
-              <button type="button" class="menu-tile" onclick="shareDoc();closeMenu()" title="Share PDF via WhatsApp, Email, etc.">
-                <span class="tile-icon">📲</span><span class="tile-label">Share PDF</span>
-              </button>
-              <button type="button" class="menu-tile" onclick="newSummary();closeMenu()" title="New patient">
-                <span class="tile-icon">🆕</span><span class="tile-label">New Patient</span>
               </button>
             </div>
 
@@ -109,11 +91,7 @@
             <div class="theme-panel" onclick="event.stopPropagation()">
               <div class="theme-mode-row">
                 <span>🎨 Theme</span>
-                <div class="theme-pickers-group">
-                  <input id="themeColor" type="color" value="#14425f" title="Primary color" aria-label="Choose primary theme color" oninput="onThemeColorPickerChange()">
-                  <input id="themeColor2" type="color" value="#0284c7" title="Gradient second color" aria-label="Choose gradient second color" oninput="onThemeColor2PickerChange()">
-                  <button type="button" id="gradToggleBtn" class="grad-toggle-pill" onclick="toggleGradientTheme()">🌈 Gradient</button>
-                </div>
+                <button type="button" id="gradToggleBtn" class="grad-toggle-pill" onclick="toggleGradientTheme()">🌈 Gradient</button>
               </div>
               <div class="theme-swatches" aria-label="Theme presets">
                 <button type="button" class="theme-swatch" title="Classic Navy (Solid)" style="background:#14425f" onclick="selectThemePreset('solid','#14425f','#0284c7')"></button>
@@ -123,6 +101,33 @@
                 <button type="button" class="theme-swatch" title="Sunset Rose (Gradient)" style="background:linear-gradient(135deg,#881337,#e11d48)" onclick="selectThemePreset('gradient','#881337','#e11d48')"></button>
                 <button type="button" class="theme-swatch" title="Midnight Plum (Gradient)" style="background:linear-gradient(135deg,#1e1b4b,#be185d)" onclick="selectThemePreset('gradient','#1e1b4b','#be185d')"></button>
                 <button type="button" class="theme-swatch" title="Slate Steel (Gradient)" style="background:linear-gradient(135deg,#1e293b,#475569)" onclick="selectThemePreset('gradient','#1e293b','#475569')"></button>
+              </div>
+              <div class="custom-color-maker">
+                <div class="custom-maker-head">
+                  <span>Custom Color Maker</span>
+                  <div class="custom-stop-switch" role="group" aria-label="Active custom color stop">
+                    <button type="button" id="stopBtn1" class="custom-stop-btn active" onclick="setCustomStopTarget(1)">1st</button>
+                    <button type="button" id="stopBtn2" class="custom-stop-btn" onclick="setCustomStopTarget(2)">2nd</button>
+                  </div>
+                </div>
+                <div class="custom-color-row">
+                  <div class="custom-color-well">
+                    <input id="themeColor" type="color" value="#14425f" title="Primary color" aria-label="Choose primary theme color" oninput="onThemeColorPickerChange()">
+                    <input id="themeHex1" type="text" class="theme-hex-input" maxlength="7" value="#14425f" aria-label="Primary hex color" oninput="onThemeHexInput(1, this.value)">
+                  </div>
+                  <div class="custom-color-well">
+                    <input id="themeColor2" type="color" value="#0284c7" title="Gradient second color" aria-label="Choose gradient second color" oninput="onThemeColor2PickerChange()">
+                    <input id="themeHex2" type="text" class="theme-hex-input" maxlength="7" value="#0284c7" aria-label="Gradient second hex color" oninput="onThemeHexInput(2, this.value)">
+                  </div>
+                </div>
+                <div class="custom-slider-row">
+                  <label for="themeHueSlider">Hue</label>
+                  <input id="themeHueSlider" type="range" class="theme-hue-slider" min="0" max="360" value="203" aria-label="Custom theme hue" oninput="onThemeSliderChange()">
+                </div>
+                <div class="custom-slider-row">
+                  <label for="themeLightSlider">Shade</label>
+                  <input id="themeLightSlider" type="range" class="theme-light-slider" min="15" max="65" value="23" aria-label="Custom theme shade" oninput="onThemeSliderChange()">
+                </div>
               </div>
             </div>
 
@@ -205,7 +210,7 @@
           <button type="button" class="pill active" data-filter="all" onclick="setDashFilter('all')">All</button>
           <button type="button" class="pill" data-filter="incomplete" onclick="setDashFilter('incomplete')">Incomplete</button>
           <button type="button" class="pill" data-filter="completed" onclick="setDashFilter('completed')">Completed</button>
-          <button type="button" class="pill" data-filter="shared" onclick="setDashFilter('shared')">📨 Shared with me</button>
+          <button type="button" class="pill" data-filter="shared" onclick="setDashFilter('shared')">Shared</button>
         </div>
         <div class="dash-right-controls">
           <select id="dashSort" aria-label="Sort patient summaries" onchange="setDashSort(this.value)">
@@ -219,7 +224,6 @@
             <button type="button" id="viewBtnCards" class="active" onclick="setDashViewMode('cards')" title="Card view">▦ Cards</button>
             <button type="button" id="viewBtnTable" onclick="setDashViewMode('table')" title="Table view">☰ Table</button>
           </div>
-          <button type="button" class="btn dash-new-btn" onclick="newSummary()">+ New Patient</button>
         </div>
       </div>
     </section>
@@ -232,22 +236,9 @@
   <!-- ================= FORM ================= -->
   <div class="wrap" id="formTab" style="display:none">
 
-    <!-- Active Patient Context & Save Bar -->
-    <div class="active-patient-bar no-print" id="activePatientBar">
-      <div class="apb-left">
-        <button type="button" class="btn sm out" onclick="showTab('dashboard')">← Dashboard</button>
-        <div class="apb-info">
-          <div class="apb-title" id="activePatientTitle">New Patient Draft</div>
-          <div class="apb-meta" id="activePatientMeta">Auto-save ready</div>
-        </div>
-      </div>
-      <div class="apb-right">
-        <button type="button" class="status-toggle-btn incomplete" id="activeStatusBtn" onclick="toggleActiveStatus()" title="Click to toggle Incomplete / Completed">
-          <span id="activeStatusText">Incomplete</span>
-        </button>
-        <button type="button" class="btn sm out" onclick="openSharePatientModal(currentRecordId)" title="Share patient details to another Google-signed-in doctor">📤 Share Patient</button>
-        <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
-      </div>
+    <!-- Active Patient Save Bar -->
+    <div class="active-patient-bar form-save-bar no-print" id="activePatientBar">
+      <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
     </div>
 
     <details class="card" data-clear="setup">
@@ -257,7 +248,6 @@
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn" onclick="saveDefaults()">Save as my defaults</button>
           <button type="button" class="btn out" onclick="openTemplatesModal()">🗂 Manage Templates (<span id="savedTplCountBadge">0</span>)</button>
-          <button type="button" class="btn out" onclick="newSummary()">New patient (keep defaults)</button>
         </div>
 
         <div class="tpl-save-bar">
@@ -678,23 +668,8 @@ Take diet as advised.</textarea>
   <!-- ================= SUMMARY ================= -->
   <div class="wrap" id="summaryTab">
     <div class="active-patient-bar summary-bar no-print" id="summaryActiveBar">
-      <div class="apb-left">
-        <button type="button" class="btn sm out" onclick="showTab('dashboard')">← Dashboard</button>
-        <button type="button" class="btn sm out" onclick="showTab('form')">✎ Edit Form</button>
-        <span class="apb-summary-name" id="summaryPatientTitle">Patient Summary</span>
-      </div>
-      <div class="apb-right">
-        <div class="summary-add-sec-wrap" id="summaryAddSecWrap">
-          <button type="button" class="btn sm out" id="summaryAddSecBtn" onclick="toggleAddSectionMenu(event)">+ Add Section</button>
-          <div class="summary-add-sec-menu" id="summaryAddSecMenu" role="menu"></div>
-        </div>
-        <button type="button" class="btn sm out" onclick="refitSummaryPages()" title="Re-fit edited content across A4 pages">⟳ Re-fit A4</button>
-        <button type="button" class="status-toggle-btn incomplete" id="summaryStatusBtn" onclick="toggleActiveStatus()">
-          <span id="summaryStatusText">Incomplete</span>
-        </button>
-        <button type="button" class="btn sm out" onclick="openSharePatientModal(currentRecordId)" title="Share patient details to another Google-signed-in doctor">📤 Share Patient</button>
-        <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
-      </div>
+      <button type="button" class="btn sm out" id="refitA4Btn" onclick="refitSummaryPages()" title="Cycle A4 fitting algorithm">⟳ Re-fit A4</button>
+      <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
     </div>
     <div class="pagebanner no-print" id="pageBanner" style="display:none"></div>
     <div class="paper" id="paper"></div>
@@ -750,7 +725,7 @@ Take diet as advised.</textarea>
     </div>
   </div>
 
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=16"></script>
 </body>
 
 </html>

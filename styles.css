@@ -1442,6 +1442,54 @@
       gap: 10px
     }
 
+    /* ---------- Algorithmic A4 Auto-Fit Variables ---------- */
+    .paper.algo-custom .sec {
+      margin-top: var(--fit-sec-margin, 10px);
+    }
+
+    .paper.algo-custom .sec h3 {
+      font-size: calc(13.5px * var(--fit-font-scale, 1));
+      margin-bottom: var(--fit-h3-margin, 4px);
+    }
+
+    .paper.algo-custom .content,
+    .paper.algo-custom li,
+    .paper.algo-custom .prev-table,
+    .paper.algo-custom .adv-item {
+      font-size: calc(13.5px * var(--fit-font-scale, 1));
+      line-height: var(--fit-line-height, 1.42);
+    }
+
+    .paper.algo-custom .prev-table th,
+    .paper.algo-custom .prev-table td {
+      padding: var(--fit-cell-pad, 3px 5px);
+    }
+
+    .paper.algo-custom .pt-grid {
+      margin: calc(10px * var(--fit-font-scale, 1)) 0 calc(6px * var(--fit-font-scale, 1));
+      font-size: calc(13.5px * var(--fit-font-scale, 1));
+      gap: calc(4px * var(--fit-font-scale, 1)) 14px;
+    }
+
+    .paper.algo-custom .doc-head {
+      margin-bottom: calc(8px * var(--fit-font-scale, 1));
+      padding-bottom: calc(8px * var(--fit-font-scale, 1));
+    }
+
+    .paper.algo-custom .doc-head .college {
+      font-size: calc(18px * var(--fit-font-scale, 1));
+    }
+
+    .paper.algo-custom .doc-head .addr,
+    .paper.algo-custom .doc-head .dept {
+      font-size: calc(13px * var(--fit-font-scale, 1));
+    }
+
+    .paper.algo-custom .sign-row {
+      margin-top: var(--fit-sign-margin, 32px);
+      font-size: calc(13.5px * var(--fit-font-scale, 1));
+    }
+
     /* ---------- Menu dropdown ---------- */
     .menu-wrap {
       position: relative
@@ -2509,6 +2557,13 @@ input[type=search] {
   flex-wrap: wrap;
 }
 
+.active-patient-bar.form-save-bar,
+.active-patient-bar.summary-bar {
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+}
+
 .active-patient-bar.summary-bar {
   max-width: min(210mm, 100%);
   width: 100%;
@@ -2892,6 +2947,154 @@ input[type=search] {
 
 .theme-swatch.active {
   box-shadow: 0 0 0 2px var(--primary);
+}
+
+/* Custom Color Maker */
+.custom-color-maker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 2px;
+  padding: 9px 10px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.custom-maker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.custom-stop-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+#menuDropdown .custom-stop-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+  padding: 2px 8px !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  color: var(--ink) !important;
+  font-size: 10.5px !important;
+  font-weight: 700 !important;
+  cursor: pointer;
+}
+
+#menuDropdown .custom-stop-btn.active {
+  background: var(--primary-bg, var(--primary)) !important;
+  border-color: var(--primary) !important;
+  color: #fff !important;
+}
+
+.custom-color-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.custom-color-well {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px 6px 3px 3px;
+}
+
+.custom-color-well input[type="color"] {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+
+#menuDropdown .theme-hex-input {
+  width: 100%;
+  min-width: 0;
+  border: 0 !important;
+  background: transparent !important;
+  padding: 2px 0 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px !important;
+  font-weight: 600;
+  color: var(--ink);
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.custom-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-slider-row label {
+  flex: 0 0 38px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0;
+}
+
+.theme-hue-slider,
+.theme-light-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1 1 auto;
+  height: 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(15, 23, 42, 0.14);
+  outline: none;
+  cursor: pointer;
+}
+
+.theme-hue-slider {
+  background: linear-gradient(to right, #ff0000 0%, #ffff00 17%, #00ff00 33%, #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%);
+}
+
+.theme-light-slider {
+  background: linear-gradient(to right, hsl(203, 78%, 15%), hsl(203, 78%, 40%), hsl(203, 78%, 65%));
+}
+
+.theme-hue-slider::-webkit-slider-thumb,
+.theme-light-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.theme-hue-slider::-moz-range-thumb,
+.theme-light-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 /* Saved Templates Manager UI */
@@ -3923,6 +4126,16 @@ select:focus {
   margin-bottom: 10px;
 }
 
+.contacts-header.compact {
+  margin-bottom: 0;
+}
+
+.btn.out.active-local-btn {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
 .contacts-header h3 {
   margin: 0;
   font-size: 14.5px;
@@ -4169,13 +4382,55 @@ select:focus {
   gap: 6px;
 }
 
+@media (max-width: 768px) {
+  .dash-wrap button,
+  .modal-card button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .dash-search-box input,
+  .contacts-add-bar input,
+  .share-email-row input,
+  .dash-right-controls select {
+    font-size: 16px;
+  }
+
+  .dash-filter-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .dash-filter-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dash-filter-pills .pill {
+    white-space: nowrap;
+    flex: 1 0 auto;
+    text-align: center;
+  }
+}
+
 @media (max-width: 620px) {
+  .dash-wrap {
+    padding: 10px max(8px, env(safe-area-inset-right, 8px)) calc(24px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 8px));
+  }
+
   .dash-contacts-card {
-    padding: 12px;
+    padding: 10px 12px;
   }
 
   .contacts-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dash-hero-actions button,
+  .contacts-header button,
+  .contact-actions .btn.sm,
+  .pc-actions .btn.sm {
+    min-height: 36px;
   }
 
   .share-email-row {

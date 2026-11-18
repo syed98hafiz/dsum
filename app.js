@@ -117,6 +117,9 @@
       avatar_url: "",
       message: ""
     };
+    const LOCAL_GOOGLE_REGISTRY_KEY = "ds-v2:google-users-registry";
+    let realtimeSharingChannel = null;
+    let realtimeSharingUserId = null;
     let themeConfig = { mode: "solid", color: "#14425f", color2: "#0284c7" };
 
     /* ---------- UUID & date normalization helpers ---------- */
@@ -168,6 +171,46 @@
       return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
     }
 
+    let activeCustomStop = 1;
+    let syncingFromThemeSlider = false;
+
+    function hexToHsl(hex) {
+      const m = String(hex || "").trim().match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+      if (!m) return { h: 203, s: 65, l: 23 };
+      const r = parseInt(m[1], 16) / 255;
+      const g = parseInt(m[2], 16) / 255;
+      const b = parseInt(m[3], 16) / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+      };
+    }
+
+    function hslToHex(h, s, l) {
+      const hue = ((Number(h) % 360) + 360) % 360;
+      const sat = Math.max(0, Math.min(100, Number(s))) / 100;
+      const lig = Math.max(0, Math.min(100, Number(l))) / 100;
+      const k = n => (n + hue / 30) % 12;
+      const a = sat * Math.min(lig, 1 - lig);
+      const f = n => lig - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+      const toHex = x => Math.round(x * 255).toString(16).padStart(2, "0");
+      return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+    }
+
     function parseThemeString(raw) {
       const s = String(raw || "").trim();
       const gradMatch = s.match(/^gradient:(#[0-9a-f]{6}):(#[0-9a-f]{6})$/i);
@@ -185,6 +228,20 @@
         return `gradient:${cfg.color.toLowerCase()}:${cfg.color2.toLowerCase()}`;
       }
       return (cfg && /^#[0-9a-f]{6}$/i.test(cfg.color)) ? cfg.color.toLowerCase() : "#14425f";
+    }
+
+    function syncCustomThemeSliders(hexColor) {
+      const hsl = hexToHsl(hexColor);
+      const hueSlider = document.getElementById("themeHueSlider");
+      const lightSlider = document.getElementById("themeLightSlider");
+      if (hueSlider && !syncingFromThemeSlider) hueSlider.value = String(hsl.h);
+      if (lightSlider) {
+        if (!syncingFromThemeSlider) {
+          lightSlider.value = String(Math.max(15, Math.min(65, hsl.l)));
+        }
+        const curH = hueSlider ? Number(hueSlider.value) : hsl.h;
+        lightSlider.style.background = `linear-gradient(to right, hsl(${curH}, 78%, 15%), hsl(${curH}, 78%, 40%), hsl(${curH}, 78%, 65%))`;
+      }
     }
 
     function applyThemeConfig(nextCfg, syncToCloud = true) {
@@ -219,8 +276,28 @@
       if (picker1) picker1.value = c1;
       const picker2 = document.getElementById("themeColor2");
       if (picker2) picker2.value = c2;
+      const hex1 = document.getElementById("themeHex1");
+      if (hex1 && document.activeElement !== hex1) hex1.value = c1;
+      const hex2 = document.getElementById("themeHex2");
+      if (hex2 && document.activeElement !== hex2) hex2.value = c2;
+
       const gradBtn = document.getElementById("gradToggleBtn");
       if (gradBtn) gradBtn.classList.toggle("active", mode === "gradient");
+
+      const stopBtn1 = document.getElementById("stopBtn1");
+      const stopBtn2 = document.getElementById("stopBtn2");
+      if (stopBtn1) stopBtn1.classList.toggle("active", activeCustomStop === 1);
+      if (stopBtn2) stopBtn2.classList.toggle("active", activeCustomStop === 2);
+
+      syncCustomThemeSliders(activeCustomStop === 2 ? c2 : c1);
+
+      document.querySelectorAll(".theme-swatch").forEach(btn => {
+        const oc = btn.getAttribute("onclick") || "";
+        const isMatch = mode === "solid"
+          ? oc.includes(`'solid','${c1}'`)
+          : oc.includes(`'gradient','${c1}','${c2}'`);
+        btn.classList.toggle("active", isMatch);
+      });
 
       const encoded = serializeThemeString(themeConfig);
       try {
@@ -245,23 +322,73 @@
 
     function toggleGradientTheme() {
       const nextMode = themeConfig.mode === "gradient" ? "solid" : "gradient";
+      if (nextMode === "solid") activeCustomStop = 1;
       applyThemeConfig({ ...themeConfig, mode: nextMode }, true);
       toast(nextMode === "gradient" ? "Gradient theme enabled 🌈" : "Solid theme enabled 🎨");
     }
 
     function selectThemePreset(mode, color1, color2) {
+      activeCustomStop = 1;
       applyThemeConfig({ mode, color: color1, color2: color2 || themeConfig.color2 }, true);
+    }
+
+    function setCustomStopTarget(stopNum) {
+      activeCustomStop = stopNum === 2 ? 2 : 1;
+      const stopBtn1 = document.getElementById("stopBtn1");
+      const stopBtn2 = document.getElementById("stopBtn2");
+      if (stopBtn1) stopBtn1.classList.toggle("active", activeCustomStop === 1);
+      if (stopBtn2) stopBtn2.classList.toggle("active", activeCustomStop === 2);
+      if (activeCustomStop === 2 && themeConfig.mode !== "gradient") {
+        applyThemeConfig({ ...themeConfig, mode: "gradient" }, true);
+      } else {
+        syncCustomThemeSliders(activeCustomStop === 2 ? themeConfig.color2 : themeConfig.color);
+      }
+    }
+
+    function onThemeHexInput(stopNum, rawVal) {
+      const clean = String(rawVal || "").trim();
+      const normalized = clean.startsWith("#") ? clean : `#${clean}`;
+      if (!/^#[0-9a-f]{6}$/i.test(normalized)) return;
+      const stop = stopNum === 2 ? 2 : 1;
+      activeCustomStop = stop;
+      if (stop === 2) {
+        applyThemeConfig({ ...themeConfig, mode: "gradient", color2: normalized.toLowerCase() }, true);
+      } else {
+        applyThemeConfig({ ...themeConfig, color: normalized.toLowerCase() }, true);
+      }
+    }
+
+    function onThemeSliderChange() {
+      const hueSlider = document.getElementById("themeHueSlider");
+      const lightSlider = document.getElementById("themeLightSlider");
+      if (!hueSlider || !lightSlider) return;
+      const targetColor = activeCustomStop === 2 ? themeConfig.color2 : themeConfig.color;
+      const prevHsl = hexToHsl(targetColor);
+      const sat = prevHsl.s >= 20 ? prevHsl.s : 78;
+      const nextHex = hslToHex(hueSlider.value, sat, lightSlider.value);
+      syncingFromThemeSlider = true;
+      try {
+        if (activeCustomStop === 2) {
+          applyThemeConfig({ ...themeConfig, mode: "gradient", color2: nextHex }, true);
+        } else {
+          applyThemeConfig({ ...themeConfig, color: nextHex }, true);
+        }
+      } finally {
+        syncingFromThemeSlider = false;
+      }
     }
 
     function onThemeColorPickerChange() {
       const p1 = document.getElementById("themeColor");
       if (!p1) return;
+      activeCustomStop = 1;
       applyThemeConfig({ ...themeConfig, color: p1.value }, true);
     }
 
     function onThemeColor2PickerChange() {
       const p2 = document.getElementById("themeColor2");
       if (!p2) return;
+      activeCustomStop = 2;
       applyThemeConfig({ ...themeConfig, mode: "gradient", color2: p2.value }, true);
     }
 
@@ -827,12 +954,231 @@
       document.body.appendChild(el); setTimeout(() => el.remove(), 2400);
     }
 
-    /* ---------- A4 page-count measurement, auto-fit & print ---------- */
+    /* ---------- A4 page-count measurement, auto-fit algorithms & print ---------- */
     const A4_HEIGHT_PX = 1122.5;
+    const FIT_ALGORITHMS = [
+      { id: "default", label: "Default Auto-Density" },
+      { id: "binary", label: "Binary Search Auto-Scale" },
+      { id: "flex", label: "Flex Spacing Redistribution" },
+      { id: "knuth", label: "Knuth-Plass Balanced Breaks" }
+    ];
+    let currentFitAlgoIndex = 0;
+    let currentFitAlgoNote = "";
+    const CUSTOM_FIT_VAR_NAMES = [
+      "--fit-font-scale",
+      "--fit-line-height",
+      "--fit-sec-margin",
+      "--fit-h3-margin",
+      "--fit-cell-pad",
+      "--fit-sign-margin"
+    ];
 
-    function autoOptimizeSpacing() {
+    function clearCustomFitVars(el) {
+      if (!el) return;
+      CUSTOM_FIT_VAR_NAMES.forEach(name => el.style.removeProperty(name));
+    }
+
+    function applyCustomFitVars(el, vars = {}) {
+      clearCustomFitVars(el);
+      if (!el || !vars) return;
+      Object.entries(vars).forEach(([k, v]) => {
+        if (v !== undefined && v !== null && v !== "") el.style.setProperty(k, String(v));
+      });
+    }
+
+    function buildScaleVars(scale) {
+      const s = Math.max(0.76, Math.min(1.06, Number(scale) || 1));
+      const t = (s - 0.78) / (1.04 - 0.78); // 0..1 normalized feel
+      const clampedT = Math.max(0, Math.min(1.1, t));
+      return {
+        "--fit-font-scale": s.toFixed(3),
+        "--fit-line-height": (1.20 + clampedT * 0.25).toFixed(2),
+        "--fit-sec-margin": `${Math.round(4 + clampedT * 8)}px`,
+        "--fit-h3-margin": `${Math.max(1, Math.round(2 + clampedT * 3))}px`,
+        "--fit-cell-pad": `${(1.5 + clampedT * 2.0).toFixed(1)}px ${(3.5 + clampedT * 2.0).toFixed(1)}px`,
+        "--fit-sign-margin": `${Math.round(14 + clampedT * 22)}px`
+      };
+    }
+
+    function measureLastPageMetrics(paper) {
+      const pages = Array.from(paper.querySelectorAll(".paper-page"));
+      if (!pages.length) return { count: 0, fillRatio: 0, contentBottom: 0, availHeight: A4_HEIGHT_PX - 60 };
+      const last = pages[pages.length - 1];
+      const top = last.getBoundingClientRect().top;
+      const padB = parseFloat(getComputedStyle(last).paddingBottom) || 30;
+      const availHeight = A4_HEIGHT_PX - padB;
+      const bottom = Math.max(0, ...Array.from(last.children)
+        .filter(c => getComputedStyle(c).position !== "absolute")
+        .map(c => c.getBoundingClientRect().bottom - top));
+      return {
+        count: pages.length,
+        fillRatio: availHeight > 0 ? bottom / availHeight : 0,
+        contentBottom: bottom,
+        availHeight
+      };
+    }
+
+    function runDefaultDensityAlgo(paper, runPaginationFor) {
+      let count = runPaginationFor("");
+      let note = "Default Auto-Density";
+
+      if (count === 1) {
+        const relCount = runPaginationFor("relaxed");
+        if (relCount === 1) {
+          count = 1;
+          note = "Default Auto-Density (Relaxed spacing)";
+        } else {
+          count = runPaginationFor("");
+        }
+      } else if (count > 2) {
+        count = runPaginationFor("compact");
+        note = "Default Auto-Density (Compact fit)";
+        if (count > 2) {
+          count = runPaginationFor("compact2");
+          note = "Default Auto-Density (Level 2 compact)";
+        }
+      }
+      return { count, note };
+    }
+
+    function runBinarySearchScaleAlgo(paper, runPaginationFor) {
+      // Probe floor (0.78) and default (1.0) to pick realistic page target
+      const minVars = buildScaleVars(0.78);
+      const minCount = runPaginationFor("algo-custom", minVars);
+      const midProbeCount = runPaginationFor("algo-custom", buildScaleVars(0.86));
+      let targetPages = 2;
+      if (midProbeCount <= 1 || minCount <= 1) targetPages = 1;
+      else if (minCount > 2) targetPages = minCount;
+
+      let lo = 0.78;
+      let hi = 1.04;
+      let bestScale = 0.78;
+      let bestVars = minVars;
+
+      for (let iter = 0; iter < 6; iter++) {
+        const mid = (lo + hi) / 2;
+        const vars = buildScaleVars(mid);
+        const count = runPaginationFor("algo-custom", vars);
+        if (count <= targetPages) {
+          bestScale = mid;
+          bestVars = vars;
+          lo = mid;
+        } else {
+          hi = mid;
+        }
+      }
+
+      const finalCount = runPaginationFor("algo-custom", bestVars);
+      const pct = Math.round(bestScale * 100);
+      return { count: finalCount, note: `Binary Search Auto-Scale (${pct}%)` };
+    }
+
+    function runFlexSpacingAlgo(paper, runPaginationFor) {
+      const stdVars = {
+        "--fit-font-scale": "1",
+        "--fit-line-height": "1.42",
+        "--fit-sec-margin": "10px",
+        "--fit-h3-margin": "4px",
+        "--fit-cell-pad": "3px 5px",
+        "--fit-sign-margin": "32px"
+      };
+      const baseCount = runPaginationFor("algo-custom", stdVars);
+      const metrics = measureLastPageMetrics(paper);
+
+      if (baseCount === 1 && metrics.fillRatio < 0.84) {
+        const slackVars = {
+          "--fit-font-scale": "1",
+          "--fit-line-height": "1.52",
+          "--fit-sec-margin": "16px",
+          "--fit-h3-margin": "6px",
+          "--fit-cell-pad": "4px 6px",
+          "--fit-sign-margin": "48px"
+        };
+        const slackCount = runPaginationFor("algo-custom", slackVars);
+        if (slackCount === 1) {
+          return { count: 1, note: "Flex Spacing Redistribution (Expanded)" };
+        }
+        runPaginationFor("algo-custom", stdVars);
+        return { count: 1, note: "Flex Spacing Redistribution" };
+      }
+
+      const targetPages = baseCount > 2 ? 2 : 1;
+      const steps = [
+        { lh: "1.34", sm: "8px", hm: "3px", cp: "2.5px 5px", sg: "24px", fs: "1" },
+        { lh: "1.28", sm: "6px", hm: "2px", cp: "2px 4px", sg: "18px", fs: "1" },
+        { lh: "1.22", sm: "4px", hm: "1.5px", cp: "1.5px 4px", sg: "14px", fs: "1" },
+        { lh: "1.18", sm: "3px", hm: "1px", cp: "1px 3.5px", sg: "12px", fs: "0.96" },
+        { lh: "1.16", sm: "2.5px", hm: "1px", cp: "1px 3px", sg: "10px", fs: "0.92" }
+      ];
+
+      let chosenCount = baseCount;
+      let chosenNote = "Flex Spacing Redistribution";
+      for (const st of steps) {
+        const vars = {
+          "--fit-font-scale": st.fs,
+          "--fit-line-height": st.lh,
+          "--fit-sec-margin": st.sm,
+          "--fit-h3-margin": st.hm,
+          "--fit-cell-pad": st.cp,
+          "--fit-sign-margin": st.sg
+        };
+        const c = runPaginationFor("algo-custom", vars);
+        chosenCount = c;
+        if (c <= targetPages || (baseCount <= 2 && c <= 2 && metrics.fillRatio < 0.25 && c === 1)) {
+          chosenNote = st.fs === "1"
+            ? `Flex Spacing Redistribution (LH ${st.lh})`
+            : `Flex Spacing Redistribution (LH ${st.lh}, ${Math.round(Number(st.fs) * 100)}%)`;
+          return { count: c, note: chosenNote };
+        }
+      }
+      if (baseCount <= 2) {
+        // Revert to clean standard-2-page spacing if targetPages=1 wasn't cleanly reachable
+        const balancedTwoVars = {
+          "--fit-font-scale": "1",
+          "--fit-line-height": "1.38",
+          "--fit-sec-margin": "9px",
+          "--fit-h3-margin": "3px",
+          "--fit-cell-pad": "2.5px 5px",
+          "--fit-sign-margin": "26px"
+        };
+        const c2 = runPaginationFor("algo-custom", balancedTwoVars);
+        if (c2 <= 2) return { count: c2, note: "Flex Spacing Redistribution (Balanced 2-page)" };
+      }
+      return { count: chosenCount, note: chosenNote };
+    }
+
+    function runBalancedPenaltyAlgo(paper, runPaginationFor) {
+      const normalBalancedVars = {
+        "--fit-font-scale": "0.97",
+        "--fit-line-height": "1.36",
+        "--fit-sec-margin": "8px",
+        "--fit-h3-margin": "3px",
+        "--fit-cell-pad": "2.5px 5px",
+        "--fit-sign-margin": "24px"
+      };
+      let count = runPaginationFor("algo-custom", normalBalancedVars, { balancedMode: true });
+      let note = "Knuth-Plass Balanced Breaks";
+      if (count > 2) {
+        const denseBalancedVars = {
+          "--fit-font-scale": "0.88",
+          "--fit-line-height": "1.24",
+          "--fit-sec-margin": "5px",
+          "--fit-h3-margin": "2px",
+          "--fit-cell-pad": "1.5px 4px",
+          "--fit-sign-margin": "16px"
+        };
+        count = runPaginationFor("algo-custom", denseBalancedVars, { balancedMode: true });
+        note = "Knuth-Plass Balanced Breaks (Dense 88%)";
+      }
+      return { count, note };
+    }
+
+    function autoOptimizeSpacing(algoIndexOverride = null) {
       const paper = document.getElementById("paper");
       if (!paper) return;
+      if (algoIndexOverride !== null && algoIndexOverride !== undefined) {
+        currentFitAlgoIndex = ((Number(algoIndexOverride) % FIT_ALGORITHMS.length) + FIT_ALGORITHMS.length) % FIT_ALGORITHMS.length;
+      }
 
       const summaryTab = document.getElementById("summaryTab");
       const wasHidden = summaryTab && summaryTab.style.display === "none";
@@ -849,33 +1195,34 @@
       paper.style.width = "210mm";
       paper.style.maxWidth = "none";
 
-      function runPaginationFor(cls) {
+      function runPaginationFor(cls, customVars = null, paginateOpts = {}) {
         unpaginatePreview();
+        clearCustomFitVars(paper);
         paper.className = "paper" + (cls ? " " + cls : "");
+        if (customVars) applyCustomFitVars(paper, customVars);
         paper.style.zoom = "1";
         paper.style.transform = "none";
         paper.style.width = "210mm";
         paper.style.maxWidth = "none";
-        paginatePreview();
+        paginatePreview(paginateOpts);
         const pages = paper.querySelectorAll(".paper-page");
         return pages.length;
       }
 
-      let count = runPaginationFor("");
-
-      if (count === 1) {
-        let relCount = runPaginationFor("relaxed");
-        if (relCount === 1) {
-          count = 1;
-        } else {
-          count = runPaginationFor("");
-        }
-      } else if (count > 2) {
-        count = runPaginationFor("compact");
-        if (count > 2) {
-          count = runPaginationFor("compact2");
-        }
+      const activeAlgo = FIT_ALGORITHMS[currentFitAlgoIndex] || FIT_ALGORITHMS[0];
+      let result;
+      if (activeAlgo.id === "binary") {
+        result = runBinarySearchScaleAlgo(paper, runPaginationFor);
+      } else if (activeAlgo.id === "flex") {
+        result = runFlexSpacingAlgo(paper, runPaginationFor);
+      } else if (activeAlgo.id === "knuth") {
+        result = runBalancedPenaltyAlgo(paper, runPaginationFor);
+      } else {
+        result = runDefaultDensityAlgo(paper, runPaginationFor);
       }
+
+      currentFitAlgoNote = result.note || activeAlgo.label;
+      paper.dataset.fitAlgo = activeAlgo.id;
 
       if (wasHidden) {
         summaryTab.style.display = "none";
@@ -887,6 +1234,11 @@
 
       setPreviewScale();
       updatePageBanner();
+      return {
+        algo: activeAlgo,
+        count: result.count,
+        note: currentFitAlgoNote
+      };
     }
 
     function unpaginatePreview() {
@@ -902,7 +1254,7 @@
       paper.replaceChildren(...content);
     }
 
-    function paginatePreview() {
+    function paginatePreview(options = {}) {
       const paper = document.getElementById("paper");
       if (!paper || paper.querySelector(".paper-page")) return;
       const blocks = Array.from(paper.children);
@@ -910,6 +1262,7 @@
       const pages = [];
       let page = null;
       const pageHeight = A4_HEIGHT_PX;
+      const balancedMode = Boolean(options && options.balancedMode);
 
       const newPage = () => {
         page = document.createElement("div");
@@ -921,15 +1274,16 @@
         pages.push(page);
       };
 
-      const fits = () => {
-        if (!page) return true;
-        const pageTop = page.getBoundingClientRect().top;
-        const paddingBottom = parseFloat(getComputedStyle(page).paddingBottom) || 60;
-        const contentBottom = Math.max(0, ...Array.from(page.children)
+      const fitsTarget = (targetPage) => {
+        if (!targetPage) return true;
+        const pageTop = targetPage.getBoundingClientRect().top;
+        const paddingBottom = parseFloat(getComputedStyle(targetPage).paddingBottom) || 60;
+        const contentBottom = Math.max(0, ...Array.from(targetPage.children)
           .filter(child => getComputedStyle(child).position !== "absolute")
           .map(child => child.getBoundingClientRect().bottom - pageTop));
         return contentBottom <= pageHeight - paddingBottom + 1;
       };
+      const fits = () => fitsTarget(page);
 
       const continuationTitle = title =>
         `${(title || "Section").replace(/\s+\(continued\)(?:\s+\(continued\))*$/i, "")} (continued)`;
@@ -957,7 +1311,7 @@
           page.appendChild(fragment);
         }
 
-        children.forEach(child => {
+        children.forEach((child, idx) => {
           if (child.matches(".inv-table-wrap")) {
             const table = child.querySelector("table");
             const rows = table ? Array.from(table.querySelectorAll("tbody tr")) : [];
@@ -991,14 +1345,21 @@
             }
           }
           fragment.appendChild(child);
-          if (!fits() && fragment.children.length > 1) {
-            fragment.removeChild(child);
-            newPage();
-            const continuedHeading = document.createElement("h3");
-            continuedHeading.textContent = continuationTitle(heading && heading.textContent);
-            fragment = makeSecFragment(continuedHeading);
-            page.appendChild(fragment);
-            fragment.appendChild(child);
+          if (!fits()) {
+            // In balanced mode, never orphan just the heading on the previous page when first child doesn't fit
+            if (balancedMode && idx === 0 && heading && fragment.contains(heading) && page.children.length > 1) {
+              page.removeChild(fragment);
+              newPage();
+              page.appendChild(fragment);
+            } else if (fragment.children.length > 1) {
+              fragment.removeChild(child);
+              newPage();
+              const continuedHeading = document.createElement("h3");
+              continuedHeading.textContent = continuationTitle(heading && heading.textContent);
+              fragment = makeSecFragment(continuedHeading);
+              page.appendChild(fragment);
+              fragment.appendChild(child);
+            }
           }
         });
       };
@@ -1059,10 +1420,62 @@
         }
       });
 
-      pages.forEach(currentPage => {
-        currentPage.style.minHeight = "";
-        currentPage.style.height = "";
-      });
+      // Knuth-Plass inspired trailing page balance optimization
+      if (balancedMode && pages.length >= 2) {
+        for (let i = pages.length - 2; i >= 0; i--) {
+          const prevP = pages[i];
+          const nextP = pages[i + 1];
+          if (prevP.classList.contains("signature-footer-page")) continue;
+          const nextPad = parseFloat(getComputedStyle(nextP).paddingBottom) || 60;
+          const prevPad = parseFloat(getComputedStyle(prevP).paddingBottom) || 60;
+          const nextTop = nextP.getBoundingClientRect().top;
+          const prevTop = prevP.getBoundingClientRect().top;
+          const nextBottom = Math.max(0, ...Array.from(nextP.children)
+            .filter(c => getComputedStyle(c).position !== "absolute")
+            .map(c => c.getBoundingClientRect().bottom - nextTop));
+          const prevBottom = Math.max(0, ...Array.from(prevP.children)
+            .filter(c => getComputedStyle(c).position !== "absolute")
+            .map(c => c.getBoundingClientRect().bottom - prevTop));
+          const nextFill = nextBottom / (pageHeight - nextPad);
+          const prevSecs = Array.from(prevP.children).filter(c => c.classList.contains("sec"));
+          if (nextFill < 0.28 && prevSecs.length >= 3) {
+            const candidate = prevSecs[prevSecs.length - 1];
+            const prevAnchor = candidate.nextSibling;
+            nextP.insertBefore(candidate, nextP.firstChild);
+            const sigEl = nextP.querySelector(".sign-row.signature-footer");
+            let sigCollide = false;
+            if (sigEl) {
+              const nb = nextP.getBoundingClientRect();
+              const sr = sigEl.getBoundingClientRect();
+              const fb = Math.max(nb.top, ...Array.from(nextP.children)
+                .filter(c => c !== sigEl)
+                .map(c => c.getBoundingClientRect().bottom));
+              if (fb > sr.top - 6) sigCollide = true;
+            }
+            const newNextBottom = Math.max(0, ...Array.from(nextP.children)
+              .filter(c => getComputedStyle(c).position !== "absolute")
+              .map(c => c.getBoundingClientRect().bottom - nextTop));
+            const newPrevBottom = Math.max(0, ...Array.from(prevP.children)
+              .filter(c => getComputedStyle(c).position !== "absolute")
+              .map(c => c.getBoundingClientRect().bottom - prevTop));
+            const oldDiff = Math.abs(prevBottom - nextBottom);
+            const newDiff = Math.abs(newPrevBottom - newNextBottom);
+            if (!fitsTarget(nextP) || sigCollide || newDiff >= oldDiff) {
+              prevP.insertBefore(candidate, prevAnchor);
+            }
+          }
+        }
+      }
+
+      for (let i = pages.length - 1; i >= 0; i--) {
+        if (!pages[i].children.length) {
+          pages[i].remove();
+          pages.splice(i, 1);
+        } else {
+          pages[i].style.minHeight = "";
+          pages[i].style.height = "";
+        }
+      }
       paper.dataset.pageCount = String(pages.length);
     }
 
@@ -1070,24 +1483,18 @@
       const banner = document.getElementById("pageBanner");
       if (!banner) return;
       const paper = document.getElementById("paper");
-      const isCompact2 = paper.classList.contains("compact2");
-      const isCompact = paper.classList.contains("compact");
-      const isRelaxed = paper.classList.contains("relaxed");
       const pages = Math.max(1, Number(paper.dataset.pageCount) || paper.querySelectorAll(".paper-page").length);
-      let note = "";
-      if (isCompact2) note = " · Auto-optimized (Level 2 compact)";
-      else if (isCompact) note = " · Auto-optimized (Compact fit)";
-      else if (isRelaxed) note = " · Relaxed spacing";
+      const note = currentFitAlgoNote ? ` · ${currentFitAlgoNote}` : "";
 
       const editHint = `<span style="opacity:.82;font-weight:500"> · ✎ Click any text on the A4 page to edit directly</span>`;
       if (pages <= 2) {
         banner.style.display = "flex";
         banner.className = "pagebanner no-print ok";
-        banner.innerHTML = `<span>📄 <b>A4 print preview</b>: ${pages} A4 page${pages > 1 ? "s" : ""}${note}.${editHint}</span>`;
+        banner.innerHTML = `<span>📄 <b>A4 print preview</b>: ${pages} A4 page${pages > 1 ? "s" : ""}${esc(note)}.${editHint}</span>`;
       } else {
         banner.style.display = "flex";
         banner.className = "pagebanner no-print warn";
-        banner.innerHTML = `<span>📄 <b>A4 print preview</b>: ${pages} pages${note}.${editHint}</span>`;
+        banner.innerHTML = `<span>📄 <b>A4 print preview</b>: ${pages} pages${esc(note)}.${editHint}</span>`;
       }
     }
 
@@ -1151,6 +1558,11 @@
       exportPaper.querySelectorAll("[contenteditable]").forEach(el => el.removeAttribute("contenteditable"));
       exportPaper.classList.add("pdf-export-paper");
 
+      CUSTOM_FIT_VAR_NAMES.forEach(name => {
+        const v = paper.style.getPropertyValue(name);
+        if (v) exportPaper.style.setProperty(name, v);
+      });
+
       let exportPages = Array.from(exportPaper.querySelectorAll(".paper-page"));
       if (exportPages.length === 0) {
         const page = document.createElement("div");
@@ -1163,6 +1575,10 @@
       exportPages.forEach(p => {
         p.className = `paper-page ${paper.className}`;
         p.style.cssText = "box-sizing:border-box !important; width:210mm !important; height:1120px !important; min-height:0 !important; max-height:1120px !important; padding:7mm 7mm 8mm !important; margin:0 !important; overflow:hidden !important; position:relative !important; box-shadow:none !important; border:0 !important; border-radius:0 !important; background:#ffffff !important; page-break-after:auto !important; break-after:auto !important;";
+        CUSTOM_FIT_VAR_NAMES.forEach(name => {
+          const v = paper.style.getPropertyValue(name);
+          if (v) p.style.setProperty(name, v);
+        });
       });
 
       const isIOS = isIOSDevice();
@@ -1726,10 +2142,13 @@
     }
 
     function refitSummaryPages() {
+      currentFitAlgoIndex = (currentFitAlgoIndex + 1) % FIT_ALGORITHMS.length;
       render(false);
       clearTimeout(pageCheckTimer);
-      autoOptimizeSpacing();
-      toast("A4 layout updated ✓");
+      const res = autoOptimizeSpacing(currentFitAlgoIndex);
+      const label = (res && res.note) || FIT_ALGORITHMS[currentFitAlgoIndex].label;
+      const pageCount = (res && res.count) || 1;
+      toast(`A4: ${label} · ${pageCount} page${pageCount > 1 ? "s" : ""} ✓`);
     }
 
     const paperEl = document.getElementById("paper");
@@ -3036,7 +3455,6 @@
       const hero = document.getElementById("dashHero");
       const authCard = document.getElementById("dashAuthCard");
       const migBanner = document.getElementById("guestMigrationBanner");
-      const isConfigured = Boolean(sbConfig.url && sbConfig.anonKey);
 
       if (hero) {
         if (currentUser) {
@@ -3049,10 +3467,9 @@
           hero.innerHTML = `
             <div class="dash-hero-info">
               <h2>${esc(docName)} ${badgeHTML}</h2>
-              <p>${esc(currentUser.email || "")}${lastSyncTime ? ` · Synced ${formatRelativeTime(lastSyncTime.toISOString())}` : " · Google Cloud Workspace"}</p>
+              <p>${esc(currentUser.email || "")}</p>
             </div>
             <div class="dash-hero-actions">
-              <button type="button" class="btn sm" onclick="newSummary()">+ New Patient</button>
               <button type="button" class="btn sm out" onclick="openSharePatientModal(null)" title="Share patient details to another Google-signed-in doctor">📤 Share Patient</button>
               <button type="button" class="btn sm out" onclick="syncNow(true)">☁ Sync</button>
               <button type="button" class="btn sm out" onclick="openAuthModal()">👤 Account</button>
@@ -3062,25 +3479,19 @@
         } else {
           hero.innerHTML = `
             <div class="dash-hero-info">
-              <h2>Clinical Workspace <span class="role-badge warn">Guest Session</span></h2>
-              <p>Sign in with Google to sync summaries across devices and share patient details with colleagues</p>
+              <h2>Clinical Workspace</h2>
             </div>
             <div class="dash-hero-actions">
               <button type="button" class="btn sm btn-google-hero" onclick="signInWithGoogle()">${GOOGLE_SVG} Sign in with Google</button>
-              <button type="button" class="btn sm" onclick="newSummary()">+ New Patient</button>
+              <button type="button" class="btn sm out${offlineDismissedAuthCard ? " active-local-btn" : ""}" onclick="continueOfflineMode()">Local</button>
             </div>
           `;
         }
       }
 
       if (authCard) {
-        if (isConfigured && !currentUser && !offlineDismissedAuthCard) {
-          authCard.style.display = "block";
-          authCard.innerHTML = buildAuthPanelHTML(true);
-        } else {
-          authCard.style.display = "none";
-          authCard.innerHTML = "";
-        }
+        authCard.style.display = "none";
+        authCard.innerHTML = "";
       }
 
       if (migBanner) {
@@ -3129,14 +3540,12 @@
                <p>${dashFilter === "shared" ? "No shared patient summaries received yet." : "Adjust search query or status filter."}</p>
                <div class="dash-empty-actions">
                  <button type="button" class="btn out" onclick="clearDashSearch();setDashFilter('all')">Reset Filters (${total})</button>
-                 <button type="button" class="btn" onclick="newSummary()">+ New Patient</button>
                </div>
              </div>`
           : `<div class="dash-empty">
                <h3>No patient records</h3>
                <p>Create a new discharge summary, load sample data, or import a JSON record.</p>
                <div class="dash-empty-actions">
-                 <button type="button" class="btn" onclick="newSummary()">+ New Patient</button>
                  <button type="button" class="btn out" onclick="autofillTest()">⚡ Sample Data</button>
                  <button type="button" class="btn out" onclick="importDraft()">📂 Import JSON</button>
                </div>
@@ -3299,7 +3708,7 @@
     function isMissingRpcError(err) {
       if (!err) return false;
       const msg = `${err.code || ""} ${err.message || ""} ${err.details || ""}`;
-      return /PGRST202|42883|could not find the function|function .* does not exist/i.test(msg);
+      return err.status === 404 || /PGRST202|42883|could not find the function|function .* does not exist|schema cache/i.test(msg);
     }
 
     function isGoogleUserSession(user) {
@@ -3318,7 +3727,7 @@
     }
 
     async function readCloudAuthMeta(forceRefresh = false) {
-      if (!hasCloudAuthSession()) return { summaries: [], deleted_ids: [], defaults: null, templates: null, frequent_contacts: null, theme_color: null };
+      if (!hasCloudAuthSession()) return { summaries: [], deleted_ids: [], defaults: null, templates: null, frequent_contacts: null, outbox_shares: [], theme_color: null };
       if (forceRefresh && navigator.onLine) {
         try {
           const { data, error } = await sbClient.auth.getUser();
@@ -3335,6 +3744,7 @@
         defaults: (meta.defaults && typeof meta.defaults === "object") ? meta.defaults : null,
         templates: Array.isArray(meta.templates) ? meta.templates : null,
         frequent_contacts: Array.isArray(meta.frequent_contacts) ? meta.frequent_contacts : null,
+        outbox_shares: Array.isArray(meta.outbox_shares) ? meta.outbox_shares : [],
         theme_color: meta.theme_color || null
       };
     }
@@ -3348,6 +3758,7 @@
         defaults: patch.defaults !== undefined ? patch.defaults : cur.defaults,
         templates: patch.templates !== undefined ? patch.templates.slice(0, 40) : cur.templates,
         frequent_contacts: patch.frequent_contacts !== undefined ? patch.frequent_contacts.slice(0, 50) : cur.frequent_contacts,
+        outbox_shares: patch.outbox_shares !== undefined ? patch.outbox_shares.slice(-15) : cur.outbox_shares,
         theme_color: patch.theme_color !== undefined ? patch.theme_color : cur.theme_color,
         updated_at: new Date().toISOString()
       };
@@ -3513,6 +3924,11 @@
       if (nextUserId) {
         offlineDismissedAuthCard = false;
         closeAuthModal();
+        if (hasCloudAuthSession()) {
+          saveCurrentUserToLocalGoogleRegistry();
+          await deliverPendingSharedInboxForCurrentUser();
+          initRealtimeSharingChannel();
+        }
         // Reset editor cleanly if previous scope had unsaved guest view
         currentRecordId = generateUUID();
         currentRecordStatus = "incomplete";
@@ -3538,6 +3954,7 @@
           await syncNow(false);
         }
       } else {
+        teardownRealtimeSharingChannel();
         // Signed out: isolate view cleanly back to guest scope
         currentRecordId = generateUUID();
         currentRecordStatus = "incomplete";
@@ -3566,9 +3983,9 @@
 
       const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
       let dotClass = "offline";
-      let topLabel = "Sign in";
-      let statLabel = "Sign in";
-      let statSub = "Google Account";
+      let topLabel = offlineDismissedAuthCard ? "Local" : "Sign in";
+      let statLabel = offlineDismissedAuthCard ? "Local" : "Sign in";
+      let statSub = offlineDismissedAuthCard ? "On this device" : "Google Account";
 
       if (currentUser) {
         const displayUser = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || currentUser.email || "Doctor";
@@ -3594,11 +4011,6 @@
           statLabel = "Synced";
           statSub = lastSyncTime ? lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Google Cloud";
         }
-      } else if (sbConfig.url && sbConfig.anonKey) {
-        dotClass = "offline";
-        topLabel = "Sign in";
-        statLabel = "Sign in";
-        statSub = "Google Account";
       }
 
       if (dot) dot.className = `sync-dot ${dotClass}`;
@@ -3704,8 +4116,211 @@
       await persistScopedRecords();
     }
 
+    function getLocalGoogleRegistry() {
+      return safeParse(localStorage.getItem(LOCAL_GOOGLE_REGISTRY_KEY)) || {};
+    }
+
+    function saveUserToLocalGoogleRegistry(entry) {
+      const email = normalizeEmail(entry && entry.email);
+      if (!email) return;
+      const reg = getLocalGoogleRegistry();
+      const prev = reg[email] || {};
+      reg[email] = {
+        user_id: entry.user_id || prev.user_id || null,
+        email,
+        full_name: String(entry.full_name || prev.full_name || "").trim(),
+        avatar_url: String(entry.avatar_url || prev.avatar_url || "").trim(),
+        provider: "google",
+        last_seen_at: new Date().toISOString()
+      };
+      try { localStorage.setItem(LOCAL_GOOGLE_REGISTRY_KEY, JSON.stringify(reg)); } catch (e) { }
+    }
+
+    function saveCurrentUserToLocalGoogleRegistry() {
+      if (!hasCloudAuthSession()) return;
+      const meta = currentUser.user_metadata || {};
+      saveUserToLocalGoogleRegistry({
+        user_id: currentUser.id,
+        email: currentUser.email,
+        full_name: meta.full_name || meta.name || "",
+        avatar_url: meta.avatar_url || meta.picture || ""
+      });
+    }
+
+    function getSharedInboxKey(email) {
+      return `ds-v2:shared-inbox:${normalizeEmail(email)}`;
+    }
+
+    async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
+      const key = getSharedInboxKey(recipientEmail);
+      const cur = safeParse(await store.get(key));
+      const list = Array.isArray(cur) ? cur : [];
+      if (!list.some(item => item && item.share_id === sharedRow.share_id)) {
+        list.unshift(sharedRow);
+        await store.set(key, JSON.stringify(list.slice(0, 50)));
+      }
+    }
+
+    async function deliverIncomingSharedItem(sharedRow) {
+      if (!hasCloudAuthSession() || !sharedRow) return false;
+      const myEmail = normalizeEmail(currentUser.email);
+      if (normalizeEmail(sharedRow.recipient_email) !== myEmail) return false;
+
+      const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id);
+      if (!shareId) return false;
+
+      const importedIds = await getImportedShareIdsSet();
+      if (importedIds.has(shareId)) return false;
+      if (records.some(r => r && r.payload && r.payload.__shared_from && r.payload.__shared_from.share_id === shareId)) {
+        await markShareIdImported(shareId);
+        return false;
+      }
+
+      const newRec = {
+        id: sharedRow.id || generateUUID(),
+        user_id: currentUser.id,
+        status: sharedRow.status || "incomplete",
+        patient_name: sharedRow.patient_name || "",
+        ip_no: sharedRow.ip_no || "",
+        doa: sharedRow.doa || "",
+        dod: sharedRow.dod || "",
+        unit: sharedRow.unit || "",
+        diagnosis_preview: sharedRow.diagnosis_preview || "",
+        payload: sharedRow.payload || {},
+        created_at: sharedRow.created_at || new Date().toISOString(),
+        updated_at: sharedRow.updated_at || new Date().toISOString(),
+        dirty: true
+      };
+
+      records.unshift(newRec);
+      await markShareIdImported(shareId);
+      await persistScopedRecords();
+      if (activeTab === "dashboard") renderDashboard();
+      if (navigator.onLine) {
+        upsertRecordToSupabase(newRec).catch(() => {});
+      }
+      return true;
+    }
+
+    async function deliverPendingSharedInboxForCurrentUser() {
+      if (!hasCloudAuthSession()) return 0;
+      const key = getSharedInboxKey(currentUser.email);
+      const raw = safeParse(await store.get(key));
+      const list = Array.isArray(raw) ? raw : [];
+      if (!list.length) return 0;
+
+      let added = 0;
+      for (const item of list) {
+        if (await deliverIncomingSharedItem(item)) added++;
+      }
+      await store.remove(key);
+      if (added > 0) {
+        toast(`📨 Received ${added} shared patient summar${added > 1 ? "ies" : "y"} ✓`);
+      }
+      return added;
+    }
+
+    async function flushOutboxSharesToOnlineRecipient(targetEmail) {
+      if (!hasCloudAuthSession() || !realtimeSharingChannel || !targetEmail) return;
+      const target = normalizeEmail(targetEmail);
+      if (!target || target === normalizeEmail(currentUser.email)) return;
+      try {
+        const meta = await readCloudAuthMeta(false);
+        const matches = (meta.outbox_shares || []).filter(item => item && normalizeEmail(item.recipient_email) === target);
+        for (const item of matches) {
+          await realtimeSharingChannel.send({
+            type: "broadcast",
+            event: "patient_share",
+            payload: item
+          });
+        }
+      } catch (e) { }
+    }
+
+    function teardownRealtimeSharingChannel() {
+      if (realtimeSharingChannel && sbClient && typeof sbClient.removeChannel === "function") {
+        try { sbClient.removeChannel(realtimeSharingChannel); } catch (e) { }
+      }
+      realtimeSharingChannel = null;
+      realtimeSharingUserId = null;
+    }
+
+    function initRealtimeSharingChannel() {
+      if (!hasCloudAuthSession() || !navigator.onLine || typeof sbClient.channel !== "function") return;
+      if (realtimeSharingChannel && realtimeSharingUserId === currentUser.id) return;
+      teardownRealtimeSharingChannel();
+
+      const myEmail = normalizeEmail(currentUser.email);
+      if (!myEmail) return;
+      const myMeta = currentUser.user_metadata || {};
+
+      try {
+        realtimeSharingUserId = currentUser.id;
+        const ch = sbClient.channel("ds-v2-google-sharing", {
+          config: { presence: { key: myEmail } }
+        });
+
+        const ingestPresenceUsers = () => {
+          try {
+            const state = ch.presenceState ? ch.presenceState() : {};
+            Object.values(state || {}).forEach(entries => {
+              (Array.isArray(entries) ? entries : []).forEach(entry => {
+                if (entry && entry.email && entry.provider === "google") {
+                  saveUserToLocalGoogleRegistry(entry);
+                  flushOutboxSharesToOnlineRecipient(entry.email);
+                }
+              });
+            });
+          } catch (e) { }
+        };
+
+        ch.on("presence", { event: "sync" }, ingestPresenceUsers);
+        ch.on("presence", { event: "join" }, ({ newPresences }) => {
+          (Array.isArray(newPresences) ? newPresences : []).forEach(entry => {
+            if (entry && entry.email && entry.provider === "google") {
+              saveUserToLocalGoogleRegistry(entry);
+              flushOutboxSharesToOnlineRecipient(entry.email);
+            }
+          });
+        });
+
+        ch.on("broadcast", { event: "patient_share" }, async ({ payload }) => {
+          if (!payload) return;
+          if (normalizeEmail(payload.recipient_email) === myEmail) {
+            const received = await deliverIncomingSharedItem(payload);
+            if (received) {
+              const fromMeta = (payload.payload && payload.payload.__shared_from) || {};
+              const sender = fromMeta.sender_name || fromMeta.sender_email || "a colleague";
+              toast(`📨 Received patient "${payload.patient_name || "Summary"}" from ${sender} ✓`);
+            }
+          }
+        });
+
+        ch.subscribe(async status => {
+          if (status === "SUBSCRIBED") {
+            try {
+              await ch.track({
+                user_id: currentUser.id,
+                email: myEmail,
+                full_name: String(myMeta.full_name || myMeta.name || "").trim(),
+                avatar_url: String(myMeta.avatar_url || myMeta.picture || "").trim(),
+                provider: "google",
+                online_at: new Date().toISOString()
+              });
+            } catch (e) { }
+          }
+        });
+
+        realtimeSharingChannel = ch;
+      } catch (e) {
+        console.warn("Realtime sharing channel warning:", e);
+      }
+    }
+
     async function registerCurrentGoogleUserInDirectory() {
-      if (!hasCloudAuthSession() || !navigator.onLine) return;
+      if (!hasCloudAuthSession()) return;
+      saveCurrentUserToLocalGoogleRegistry();
+      if (!navigator.onLine) return;
       const email = normalizeEmail(currentUser.email);
       if (!email) return;
       const meta = currentUser.user_metadata || {};
@@ -3860,6 +4475,8 @@
 
       try {
         await registerCurrentGoogleUserInDirectory();
+        initRealtimeSharingChannel();
+        await deliverPendingSharedInboxForCurrentUser();
         await flushPendingDeletes();
 
         records.forEach(r => {
@@ -4142,32 +4759,13 @@
 
       return `
         <div class="${inline ? "auth-grid" : ""}">
-          ${inline ? `
-            <div class="auth-intro">
-              <div class="auth-eyebrow">GOOGLE ACCOUNT &amp; PATIENT SHARING</div>
-              <h3>Doctor Cloud Workspace</h3>
-              <p>Sign in with your Google account to sync patient summaries across devices and securely share records with colleagues.</p>
-              <div class="auth-feature-pills">
-                <span class="auth-feat-pill">🔒 Google-Only Verified</span>
-                <span class="auth-feat-pill">☁ Multi-Device Sync</span>
-                <span class="auth-feat-pill">📨 Direct Patient Handover</span>
-              </div>
-            </div>
-          ` : `
-            <p class="hint" style="margin-top:0;font-size:13px">
-              Sign in with Google to sync your discharge summaries, templates, frequently shared contacts, and share patient details with other Google-signed-in doctors.
-            </p>
-          `}
-          <div class="auth-google-box">
+          <div class="auth-google-box" style="gap:10px">
             ${msgHtml}
             <button type="button" class="btn-google-primary" onclick="signInWithGoogle()">
               ${GOOGLE_SVG}
               <span>Sign in with Google</span>
             </button>
-            <div class="auth-footer-links" style="justify-content:${inline ? "space-between" : "center"}">
-              <span class="hint" style="margin:0">Google authentication required for sharing</span>
-              ${inline ? `<button type="button" class="link-btn" onclick="continueOfflineMode()">Local-only mode</button>` : ""}
-            </div>
+            <button type="button" class="btn out" style="width:100%" onclick="continueOfflineMode();closeAuthModal()">Local</button>
           </div>
         </div>
       `;
@@ -4176,7 +4774,8 @@
     function continueOfflineMode() {
       offlineDismissedAuthCard = true;
       renderDashboardHeroAndAuth();
-      toast("Working in local device mode");
+      updateSyncIndicators();
+      toast("Local mode");
     }
 
     function openAuthOrAccount() {
@@ -4242,6 +4841,7 @@
       if (sbClient && currentUser) {
         try { await sbClient.auth.signOut(); } catch (e) { console.warn("signOut:", e); }
       }
+      teardownRealtimeSharingChannel();
       currentUser = null;
       cacheLastUser(null);
       closeAuthModal();
@@ -4466,23 +5066,104 @@
             `;
           }).join("")}
         </div>
-      ` : `
-        <div class="contacts-empty-hint">
-          No frequently shared contacts yet. Share a patient summary with a Google-signed-in colleague or click <b>+ Add Contact</b> to pin them here.
-        </div>
-      `;
+      ` : "";
+
+      const compactClass = (!frequentContacts.length && !contactsAddFormOpen) ? " compact" : "";
 
       box.innerHTML = `
-        <div class="contacts-header">
+        <div class="contacts-header${compactClass}">
           <div>
             <h3>👥 Frequently Shared Contacts</h3>
-            <p>Quick-share patient details with colleagues verified via Google Sign-In</p>
           </div>
           <button type="button" class="btn sm out" onclick="toggleAddContactForm()">${contactsAddFormOpen ? "Close" : "+ Add Contact"}</button>
         </div>
         ${addFormHtml}
         ${listHtml}
       `;
+    }
+
+    async function checkGoogleWorkspaceMxDomain(domain) {
+      if (!domain) return false;
+      const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+      const timer = controller ? setTimeout(() => controller.abort(), 2500) : null;
+      try {
+        const res = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=MX`, {
+          signal: controller ? controller.signal : undefined
+        });
+        if (!res.ok) return false;
+        const json = await res.json();
+        const answers = Array.isArray(json && json.Answer) ? json.Answer : [];
+        return answers.some(a => {
+          const data = String((a && a.data) || "").toLowerCase();
+          return data.includes("google.com") || data.includes("googlemail.com") || data.includes("smtp.google.com");
+        });
+      } catch (e) {
+        return false;
+      } finally {
+        if (timer) clearTimeout(timer);
+      }
+    }
+
+    async function verifyFallbackWithoutSchema(email) {
+      const reg = getLocalGoogleRegistry();
+      const cached = reg[email];
+      if (cached && cached.email) {
+        return {
+          verified: true,
+          user_id: cached.user_id || "",
+          email,
+          full_name: String(cached.full_name || "").trim(),
+          avatar_url: String(cached.avatar_url || "").trim(),
+          viaFallback: true,
+          message: `Verified: ${cached.full_name ? `${cached.full_name} (${email})` : email} is signed in using Google.`
+        };
+      }
+
+      const pinned = frequentContacts.find(c => normalizeEmail(c.email) === email);
+      if (pinned) {
+        return {
+          verified: true,
+          user_id: pinned.user_id || "",
+          email,
+          full_name: String(pinned.full_name || "").trim(),
+          avatar_url: String(pinned.avatar_url || "").trim(),
+          viaFallback: true,
+          message: `Verified: ${pinned.full_name ? `${pinned.full_name} (${email})` : email} is a Google account.`
+        };
+      }
+
+      const domain = email.split("@")[1] || "";
+      if (domain === "gmail.com" || domain === "googlemail.com") {
+        return {
+          verified: true,
+          user_id: "",
+          email,
+          full_name: "",
+          avatar_url: "",
+          viaFallback: true,
+          message: `Verified: ${email} is a Google account.`
+        };
+      }
+
+      const isWorkspace = await checkGoogleWorkspaceMxDomain(domain);
+      if (isWorkspace) {
+        return {
+          verified: true,
+          user_id: "",
+          email,
+          full_name: "",
+          avatar_url: "",
+          viaFallback: true,
+          message: `Verified: ${email} uses Google Workspace.`
+        };
+      }
+
+      return {
+        verified: false,
+        email,
+        reason: "not_google_user",
+        message: `Not verified: ${email} is not a @gmail.com or Google Workspace account and has not signed in on this app yet.`
+      };
     }
 
     async function verifyRecipientGoogleAccount(rawEmail) {
@@ -4538,12 +5219,7 @@
 
         if (dirErr) {
           if (isMissingTableError(dirErr)) {
-            return {
-              verified: false,
-              email,
-              reason: "schema_missing",
-              message: "Supabase sharing schema is not updated yet. Run the updated supabase-schema.sql in your Supabase SQL Editor first."
-            };
+            return await verifyFallbackWithoutSchema(email);
           }
           throw dirErr;
         }
@@ -4566,6 +5242,9 @@
           message: `Not verified: ${email} has NOT signed in using Google yet. Ask them to sign in with Google first.`
         };
       } catch (e) {
+        if (isMissingTableError(e) || isMissingRpcError(e)) {
+          return await verifyFallbackWithoutSchema(email);
+        }
         return {
           verified: false,
           email,
@@ -4862,9 +5541,52 @@
 
         if (error) {
           if (isMissingRpcError(error) || isMissingTableError(error)) {
-            throw new Error("Supabase sharing schema is not updated yet. Run the updated supabase-schema.sql in Supabase SQL Editor.");
+            const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || (currentUser.email ? currentUser.email.split("@")[0] : "Colleague");
+            const cleanedPayload = cleanSharePayload(rec.payload);
+            const sharedRow = {
+              id: generateUUID(),
+              sender_id: currentUser.id,
+              sender_email: normalizeEmail(currentUser.email),
+              sender_name: docName,
+              recipient_email: verification.email,
+              patient_name: rec.patient_name || "",
+              ip_no: rec.ip_no || "",
+              doa: rec.doa || "",
+              dod: rec.dod || "",
+              unit: rec.unit || "",
+              diagnosis_preview: rec.diagnosis_preview || "",
+              status: rec.status || "incomplete",
+              payload: cleanedPayload,
+              note,
+              source_summary_id: rec.id,
+              created_at: new Date().toISOString()
+            };
+
+            await enqueueLocalSharedInbox(verification.email, sharedRow);
+
+            if (realtimeSharingChannel) {
+              try {
+                await realtimeSharingChannel.send({
+                  type: "broadcast",
+                  event: "patient_share",
+                  payload: sharedRow
+                });
+              } catch (broadcastErr) {
+                console.warn("realtime share broadcast:", broadcastErr);
+              }
+            }
+
+            try {
+              const meta = readCloudAuthMeta() || {};
+              const existingOutbox = Array.isArray(meta.outbox_shares) ? meta.outbox_shares : [];
+              const nextOutbox = [sharedRow, ...existingOutbox].slice(0, 15);
+              await writeCloudAuthMeta({ outbox_shares: nextOutbox });
+            } catch (metaErr) {
+              console.warn("outbox_shares meta fallback:", metaErr);
+            }
+          } else {
+            throw error;
           }
-          throw error;
         }
 
         const recName = (data && data.recipient_name) || verification.full_name || "";
@@ -5055,9 +5777,15 @@
         suppressSave = false;
       }
 
+      if (hasCloudAuthSession()) {
+        saveCurrentUserToLocalGoogleRegistry();
+        await deliverPendingSharedInboxForCurrentUser();
+      }
+
       showTab("dashboard");
 
       if (hasCloudAuthSession() && navigator.onLine) {
+        initRealtimeSharingChannel();
         await syncNow(false);
       }
     }
