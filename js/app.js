@@ -4296,6 +4296,31 @@
           }
         });
 
+        ch.on("broadcast", { event: "whois_google_user" }, async ({ payload }) => {
+          if (!payload || !hasCloudAuthSession()) return;
+          if (normalizeEmail(payload.email) === myEmail) {
+            try {
+              await ch.send({
+                type: "broadcast",
+                event: "whois_google_user_ack",
+                payload: {
+                  user_id: currentUser.id,
+                  email: myEmail,
+                  full_name: String(myMeta.full_name || myMeta.name || "").trim(),
+                  avatar_url: String(myMeta.avatar_url || myMeta.picture || "").trim(),
+                  provider: "google"
+                }
+              });
+            } catch (e) { }
+          }
+        });
+
+        ch.on("broadcast", { event: "whois_google_user_ack" }, ({ payload }) => {
+          if (payload && payload.user_id && payload.email && payload.provider === "google") {
+            saveUserToLocalGoogleRegistry(payload);
+          }
+        });
+
         ch.subscribe(async status => {
           if (status === "SUBSCRIBED") {
             try {
@@ -4866,7 +4891,7 @@
       const scope = getOwnerScope();
       let list = safeParse(await store.get(getContactsKey(scope)));
       if (!Array.isArray(list)) list = [];
-      frequentContacts = sortFrequentContacts(list);
+      frequentContacts = sortFrequentContacts(list).filter(c => Boolean(c && c.user_id));
       renderFrequentContactsSection();
     }
 
@@ -4925,7 +4950,7 @@
         }
       });
       if (changed) {
-        frequentContacts = sortFrequentContacts(Array.from(map.values())).slice(0, 40);
+        frequentContacts = sortFrequentContacts(Array.from(map.values())).filter(c => Boolean(c && c.user_id)).slice(0, 40);
         await store.set(getContactsKey(), JSON.stringify(frequentContacts));
       }
     }
@@ -5004,8 +5029,8 @@
       renderFrequentContactsSection();
 
       const check = await verifyRecipientGoogleAccount(email);
-      if (!check.verified) {
-        contactsAddFeedback = { type: "err", text: check.message || `${email} has not signed in using Google yet.` };
+      if (!check.verified || !check.user_id) {
+        contactsAddFeedback = { type: "err", text: check.message || `User not signed in with the service (${email}).` };
         renderFrequentContactsSection();
         return;
       }
@@ -5082,87 +5107,56 @@
       `;
     }
 
-    async function checkGoogleWorkspaceMxDomain(domain) {
-      if (!domain) return false;
-      const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-      const timer = controller ? setTimeout(() => controller.abort(), 2500) : null;
+    function syncPresenceToLocalGoogleRegistry() {
+      if (!realtimeSharingChannel || typeof realtimeSharingChannel.presenceState !== "function") return;
       try {
-        const res = await fetch(`https://dns.google/resolve?name=${encodeURIComponent(domain)}&type=MX`, {
-          signal: controller ? controller.signal : undefined
+        const state = realtimeSharingChannel.presenceState();
+        Object.values(state || {}).forEach(entries => {
+          (Array.isArray(entries) ? entries : []).forEach(entry => {
+            if (entry && entry.user_id && entry.email && entry.provider === "google") {
+              saveUserToLocalGoogleRegistry(entry);
+            }
+          });
         });
-        if (!res.ok) return false;
-        const json = await res.json();
-        const answers = Array.isArray(json && json.Answer) ? json.Answer : [];
-        return answers.some(a => {
-          const data = String((a && a.data) || "").toLowerCase();
-          return data.includes("google.com") || data.includes("googlemail.com") || data.includes("smtp.google.com");
-        });
-      } catch (e) {
-        return false;
-      } finally {
-        if (timer) clearTimeout(timer);
-      }
+      } catch (e) { }
     }
 
     async function verifyFallbackWithoutSchema(email) {
-      const reg = getLocalGoogleRegistry();
-      const cached = reg[email];
-      if (cached && cached.email) {
+      syncPresenceToLocalGoogleRegistry();
+
+      let reg = getLocalGoogleRegistry();
+      let cached = reg[email];
+      if (!(cached && cached.email && cached.user_id) && realtimeSharingChannel && typeof realtimeSharingChannel.send === "function") {
+        try {
+          await realtimeSharingChannel.send({
+            type: "broadcast",
+            event: "whois_google_user",
+            payload: { email }
+          });
+          await new Promise(resolve => setTimeout(resolve, 500));
+          syncPresenceToLocalGoogleRegistry();
+          reg = getLocalGoogleRegistry();
+          cached = reg[email];
+        } catch (e) { }
+      }
+
+      if (cached && cached.email && cached.user_id) {
         return {
           verified: true,
-          user_id: cached.user_id || "",
+          user_id: cached.user_id,
           email,
           full_name: String(cached.full_name || "").trim(),
           avatar_url: String(cached.avatar_url || "").trim(),
           viaFallback: true,
-          message: `Verified: ${cached.full_name ? `${cached.full_name} (${email})` : email} is signed in using Google.`
-        };
-      }
-
-      const pinned = frequentContacts.find(c => normalizeEmail(c.email) === email);
-      if (pinned) {
-        return {
-          verified: true,
-          user_id: pinned.user_id || "",
-          email,
-          full_name: String(pinned.full_name || "").trim(),
-          avatar_url: String(pinned.avatar_url || "").trim(),
-          viaFallback: true,
-          message: `Verified: ${pinned.full_name ? `${pinned.full_name} (${email})` : email} is a Google account.`
-        };
-      }
-
-      const domain = email.split("@")[1] || "";
-      if (domain === "gmail.com" || domain === "googlemail.com") {
-        return {
-          verified: true,
-          user_id: "",
-          email,
-          full_name: "",
-          avatar_url: "",
-          viaFallback: true,
-          message: `Verified: ${email} is a Google account.`
-        };
-      }
-
-      const isWorkspace = await checkGoogleWorkspaceMxDomain(domain);
-      if (isWorkspace) {
-        return {
-          verified: true,
-          user_id: "",
-          email,
-          full_name: "",
-          avatar_url: "",
-          viaFallback: true,
-          message: `Verified: ${email} uses Google Workspace.`
+          message: `Verified: ${cached.full_name ? `${cached.full_name} (${email})` : email} is signed in with Google.`
         };
       }
 
       return {
         verified: false,
         email,
-        reason: "not_google_user",
-        message: `Not verified: ${email} is not a @gmail.com or Google Workspace account and has not signed in on this app yet.`
+        reason: "not_signed_in",
+        message: `User not signed in with the service (${email}).`
       };
     }
 
@@ -5178,7 +5172,7 @@
         return { verified: false, email, reason: "sender_unauthenticated", message: "Please sign in with Google first before sharing patient details." };
       }
       if (!navigator.onLine) {
-        return { verified: false, email, reason: "offline", message: "You are offline. Connect to the internet to verify the recipient's Google sign-in." };
+        return { verified: false, email, reason: "offline", message: "You are offline. Connect to the internet to verify whether this user has signed in with the service." };
       }
       if (email === normalizeEmail(currentUser.email)) {
         return { verified: false, email, reason: "self", message: "You cannot share a summary to your own signed-in email. Enter a colleague's Google email." };
@@ -5187,8 +5181,8 @@
       try {
         const { data, error } = await sbClient.rpc("verify_google_recipient", { target_email: email });
         if (!error && data) {
-          if (data.verified) {
-            return {
+          if (data.verified && data.user_id) {
+            const verifiedUser = {
               verified: true,
               user_id: data.user_id,
               email: normalizeEmail(data.email || email),
@@ -5196,12 +5190,14 @@
               avatar_url: String(data.avatar_url || "").trim(),
               message: `Verified: ${data.full_name ? `${data.full_name} (${email})` : email} is signed in using Google.`
             };
+            saveUserToLocalGoogleRegistry(verifiedUser);
+            return verifiedUser;
           }
           return {
             verified: false,
             email,
-            reason: data.reason || "not_google_user",
-            message: `Not verified: ${email} has NOT signed in using Google on this app yet. Ask them to sign in with Google first before sharing.`
+            reason: data.reason || "not_signed_in",
+            message: `User not signed in with the service (${email}).`
           };
         }
 
@@ -5225,7 +5221,7 @@
         }
 
         if (dirRow && dirRow.user_id) {
-          return {
+          const verifiedUser = {
             verified: true,
             user_id: dirRow.user_id,
             email: normalizeEmail(dirRow.email),
@@ -5233,13 +5229,15 @@
             avatar_url: String(dirRow.avatar_url || "").trim(),
             message: `Verified: ${dirRow.full_name ? `${dirRow.full_name} (${email})` : email} is signed in using Google.`
           };
+          saveUserToLocalGoogleRegistry(verifiedUser);
+          return verifiedUser;
         }
 
         return {
           verified: false,
           email,
-          reason: "not_google_user",
-          message: `Not verified: ${email} has NOT signed in using Google yet. Ask them to sign in with Google first.`
+          reason: "not_signed_in",
+          message: `User not signed in with the service (${email}).`
         };
       } catch (e) {
         if (isMissingTableError(e) || isMissingRpcError(e)) {
