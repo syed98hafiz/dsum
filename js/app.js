@@ -4147,18 +4147,40 @@
       });
     }
 
+    const GLOBAL_SHARED_OUTBOX_KEY = "ds-v2:global-shared-outbox";
+
     function getSharedInboxKey(email) {
       return `ds-v2:shared-inbox:${normalizeEmail(email)}`;
     }
 
+    function readGlobalSharedOutbox() {
+      const list = safeParse(localStorage.getItem(GLOBAL_SHARED_OUTBOX_KEY));
+      return Array.isArray(list) ? list : [];
+    }
+
+    function enqueueGlobalSharedOutbox(sharedRow) {
+      if (!sharedRow) return;
+      const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id;
+      if (!shareId) return;
+      const cur = readGlobalSharedOutbox();
+      if (!cur.some(item => item && (item.share_id || item.id) === shareId)) {
+        cur.unshift({ ...sharedRow, share_id: shareId });
+        try { localStorage.setItem(GLOBAL_SHARED_OUTBOX_KEY, JSON.stringify(cur.slice(0, 50))); } catch (e) { }
+      }
+    }
+
     async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
+      if (!sharedRow) return;
+      const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id || generateUUID();
+      const row = { ...sharedRow, share_id: shareId };
       const key = getSharedInboxKey(recipientEmail);
       const cur = safeParse(await store.get(key));
       const list = Array.isArray(cur) ? cur : [];
-      if (!list.some(item => item && item.share_id === sharedRow.share_id)) {
-        list.unshift(sharedRow);
+      if (!list.some(item => item && (item.share_id || item.id) === shareId)) {
+        list.unshift(row);
         await store.set(key, JSON.stringify(list.slice(0, 50)));
       }
+      enqueueGlobalSharedOutbox(row);
     }
 
     async function deliverIncomingSharedItem(sharedRow) {
@@ -4166,7 +4188,7 @@
       const myEmail = normalizeEmail(currentUser.email);
       if (normalizeEmail(sharedRow.recipient_email) !== myEmail) return false;
 
-      const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id);
+      const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id || generateUUID();
       if (!shareId) return false;
 
       const importedIds = await getImportedShareIdsSet();
@@ -4174,6 +4196,21 @@
       if (records.some(r => r && r.payload && r.payload.__shared_from && r.payload.__shared_from.share_id === shareId)) {
         await markShareIdImported(shareId);
         return false;
+      }
+
+      const payloadCopy = JSON.parse(JSON.stringify(sharedRow.payload || {}));
+      if (!payloadCopy.__shared_from) {
+        payloadCopy.__shared_from = {
+          share_id: shareId,
+          sender_id: sharedRow.sender_id || "",
+          sender_email: sharedRow.sender_email || "",
+          sender_name: sharedRow.sender_name || "",
+          note: sharedRow.note || "",
+          shared_at: sharedRow.created_at || new Date().toISOString(),
+          source_summary_id: sharedRow.source_summary_id || null
+        };
+      } else if (!payloadCopy.__shared_from.share_id) {
+        payloadCopy.__shared_from.share_id = shareId;
       }
 
       const newRec = {
@@ -4186,7 +4223,7 @@
         dod: sharedRow.dod || "",
         unit: sharedRow.unit || "",
         diagnosis_preview: sharedRow.diagnosis_preview || "",
-        payload: sharedRow.payload || {},
+        payload: payloadCopy,
         created_at: sharedRow.created_at || new Date().toISOString(),
         updated_at: sharedRow.updated_at || new Date().toISOString(),
         dirty: true
@@ -4204,16 +4241,26 @@
 
     async function deliverPendingSharedInboxForCurrentUser() {
       if (!hasCloudAuthSession()) return 0;
-      const key = getSharedInboxKey(currentUser.email);
+      const myEmail = normalizeEmail(currentUser.email);
+      const key = getSharedInboxKey(myEmail);
       const raw = safeParse(await store.get(key));
-      const list = Array.isArray(raw) ? raw : [];
+      const inboxList = Array.isArray(raw) ? raw : [];
+      const globalList = readGlobalSharedOutbox().filter(item => item && normalizeEmail(item.recipient_email) === myEmail);
+
+      const combinedMap = new Map();
+      [...inboxList, ...globalList].forEach(item => {
+        if (!item) return;
+        const sid = item.share_id || (item.payload && item.payload.__shared_from && item.payload.__shared_from.share_id) || item.id;
+        if (sid && !combinedMap.has(sid)) combinedMap.set(sid, item);
+      });
+      const list = Array.from(combinedMap.values());
       if (!list.length) return 0;
 
       let added = 0;
       for (const item of list) {
         if (await deliverIncomingSharedItem(item)) added++;
       }
-      await store.remove(key);
+      if (inboxList.length) await store.remove(key);
       if (added > 0) {
         toast(`📨 Received ${added} shared patient summar${added > 1 ? "ies" : "y"} ✓`);
       }
@@ -4226,7 +4273,20 @@
       if (!target || target === normalizeEmail(currentUser.email)) return;
       try {
         const meta = await readCloudAuthMeta(false);
-        const matches = (meta.outbox_shares || []).filter(item => item && normalizeEmail(item.recipient_email) === target);
+        const metaMatches = (meta.outbox_shares || []).filter(item => item && normalizeEmail(item.recipient_email) === target);
+        const localInbox = safeParse(await store.get(getSharedInboxKey(target)));
+        const localMatches = Array.isArray(localInbox) ? localInbox : [];
+        const globalMatches = readGlobalSharedOutbox().filter(item => item && normalizeEmail(item.recipient_email) === target);
+
+        const seen = new Set();
+        const matches = [...metaMatches, ...localMatches, ...globalMatches].filter(item => {
+          if (!item) return false;
+          const sid = item.share_id || (item.payload && item.payload.__shared_from && item.payload.__shared_from.share_id) || item.id;
+          if (!sid || seen.has(sid)) return false;
+          seen.add(sid);
+          return true;
+        });
+
         for (const item of matches) {
           await realtimeSharingChannel.send({
             type: "broadcast",
@@ -4321,6 +4381,12 @@
           }
         });
 
+        ch.on("broadcast", { event: "request_pending_shares" }, ({ payload }) => {
+          if (payload && payload.recipient_email && hasCloudAuthSession()) {
+            flushOutboxSharesToOnlineRecipient(payload.recipient_email);
+          }
+        });
+
         ch.subscribe(async status => {
           if (status === "SUBSCRIBED") {
             try {
@@ -4331,6 +4397,11 @@
                 avatar_url: String(myMeta.avatar_url || myMeta.picture || "").trim(),
                 provider: "google",
                 online_at: new Date().toISOString()
+              });
+              await ch.send({
+                type: "broadcast",
+                event: "request_pending_shares",
+                payload: { recipient_email: myEmail }
               });
             } catch (e) { }
           }
@@ -5540,8 +5611,20 @@
         if (error) {
           if (isMissingRpcError(error) || isMissingTableError(error)) {
             const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || (currentUser.email ? currentUser.email.split("@")[0] : "Colleague");
+            const shareId = generateUUID();
+            const nowIso = new Date().toISOString();
             const cleanedPayload = cleanSharePayload(rec.payload);
+            cleanedPayload.__shared_from = {
+              share_id: shareId,
+              sender_id: currentUser.id,
+              sender_email: normalizeEmail(currentUser.email),
+              sender_name: docName,
+              note,
+              shared_at: nowIso,
+              source_summary_id: rec.id
+            };
             const sharedRow = {
+              share_id: shareId,
               id: generateUUID(),
               sender_id: currentUser.id,
               sender_email: normalizeEmail(currentUser.email),
@@ -5557,7 +5640,8 @@
               payload: cleanedPayload,
               note,
               source_summary_id: rec.id,
-              created_at: new Date().toISOString()
+              created_at: nowIso,
+              updated_at: nowIso
             };
 
             await enqueueLocalSharedInbox(verification.email, sharedRow);
@@ -5575,7 +5659,7 @@
             }
 
             try {
-              const meta = readCloudAuthMeta() || {};
+              const meta = (await readCloudAuthMeta(false)) || {};
               const existingOutbox = Array.isArray(meta.outbox_shares) ? meta.outbox_shares : [];
               const nextOutbox = [sharedRow, ...existingOutbox].slice(0, 15);
               await writeCloudAuthMeta({ outbox_shares: nextOutbox });
