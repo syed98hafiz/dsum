@@ -89,7 +89,6 @@
     let dashSearch = "";
     let dashSort = "updated_desc";
     let dashViewMode = "cards";
-    let authMode = "signin";
     let authFeedback = null;
     let offlineDismissedAuthCard = false;
 
@@ -105,6 +104,19 @@
     let guestDraftsPromptVisible = false;
     let guestDraftsCount = 0;
     let savedTemplates = [];
+    let frequentContacts = [];
+    let contactsAddFormOpen = false;
+    let contactsAddFeedback = null;
+    let shareModalRecordId = null;
+    let shareRecipientVerifyState = {
+      email: "",
+      status: "idle", // "idle" | "checking" | "verified" | "unverified" | "error"
+      verified: false,
+      user_id: null,
+      full_name: "",
+      avatar_url: "",
+      message: ""
+    };
     let themeConfig = { mode: "solid", color: "#14425f", color2: "#0284c7" };
 
     /* ---------- UUID & date normalization helpers ---------- */
@@ -2063,6 +2075,8 @@
     function getDeletesKey(scope = getOwnerScope()) { return `ds-v2:deletes:${scope}`; }
     function getActiveIdKey(scope = getOwnerScope()) { return `ds-v2:active:${scope}`; }
     function getDefaultsKey(scope = getOwnerScope()) { return `ds-v2:defaults:${scope}`; }
+    function getContactsKey(scope = getOwnerScope()) { return `ds-v2:contacts:${scope}`; }
+    function getImportedSharesKey(scope = getOwnerScope()) { return `ds-v2:imported-shares:${scope}`; }
 
     function hasPatientContent(payload) {
       if (!payload || !payload.f) return false;
@@ -2533,6 +2547,9 @@
     /* ---------- Multi-Patient Record Persistence & Cloud Save ---------- */
     function buildRecordFromEditor(existing = null) {
       const payload = collectDraft();
+      if (existing && existing.payload && existing.payload.__shared_from) {
+        payload.__shared_from = existing.payload.__shared_from;
+      }
       const f = payload.f || {};
       const nowIso = new Date().toISOString();
       const diagPreview = (f.diagnosis || "")
@@ -2621,7 +2638,7 @@
         }
       } else {
         updateSaveStatusBadge("local");
-        if (explicit) toast(currentUser ? "Saved to your email account ✓" : "Patient draft saved on device ✓");
+        if (explicit) toast("Patient draft saved on device ✓");
       }
 
       return updated;
@@ -2803,6 +2820,7 @@
       if (!src) return;
       const nowIso = new Date().toISOString();
       const copyPayload = JSON.parse(JSON.stringify(src.payload || {}));
+      delete copyPayload.__shared_from;
       if (!copyPayload.f) copyPayload.f = {};
       const origName = (copyPayload.f.name || src.patient_name || "Patient").trim();
       copyPayload.f.name = `${origName} (Copy)`;
@@ -2832,6 +2850,11 @@
       if (!rec) return;
       const label = rec.patient_name || rec.ip_no || "this patient draft";
       if (!confirm(`Delete discharge summary for "${label}"?\n\nThis cannot be undone.`)) return;
+
+      const sharedId = rec.payload && rec.payload.__shared_from && rec.payload.__shared_from.share_id;
+      if (sharedId) {
+        await markShareIdImported(sharedId);
+      }
 
       records = records.filter(r => r.id !== id);
       if (currentUser && !pendingDeletes.includes(id)) {
@@ -2985,12 +3008,16 @@
     function getFilteredSortedRecords() {
       const q = dashSearch.toLowerCase();
       let list = records.filter(r => {
+        const sharedMeta = (r.payload && r.payload.__shared_from) || null;
         if (dashFilter === "incomplete" && r.status === "completed") return false;
         if (dashFilter === "completed" && r.status !== "completed") return false;
+        if (dashFilter === "shared" && !sharedMeta) return false;
         if (!q) return true;
         const hay = [
           r.patient_name, r.ip_no, r.unit, r.diagnosis_preview,
-          r.doa ? fmtDate(r.doa) : "", r.dod ? fmtDate(r.dod) : ""
+          r.doa ? fmtDate(r.doa) : "", r.dod ? fmtDate(r.dod) : "",
+          sharedMeta ? sharedMeta.sender_name : "",
+          sharedMeta ? sharedMeta.sender_email : ""
         ].join(" ").toLowerCase();
         return hay.includes(q);
       });
@@ -3013,48 +3040,33 @@
 
       if (hero) {
         if (currentUser) {
-          const docName = (currentUser.user_metadata && currentUser.user_metadata.full_name) || currentUser.email || "Doctor";
+          const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || currentUser.email || "Doctor";
           const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
-          if (currentUser.local_email_session) {
-            hero.innerHTML = `
-              <div class="dash-hero-info">
-                <h2>${esc(docName)} <span class="role-badge warn">📱 Local Email</span></h2>
-                <p>${esc(currentUser.email || "")} · Sign in with Google to enable cloud sync</p>
-              </div>
-              <div class="dash-hero-actions">
-                <button type="button" class="btn sm btn-google-hero" onclick="signInWithGoogle()">${GOOGLE_SVG} Sign in with Google</button>
-                <button type="button" class="btn sm" onclick="newSummary()">+ New Patient</button>
-                <button type="button" class="btn sm out" onclick="openAuthModal()">👤 Account</button>
-                <button type="button" class="btn sm out" onclick="signOutUser()">Sign Out</button>
-              </div>
-            `;
-          } else {
-            let badgeHTML = `<span class="role-badge ok">☁ Synced</span>`;
-            if (!navigator.onLine) badgeHTML = `<span class="role-badge warn">📡 Offline</span>`;
-            else if (dirtyCount > 0) badgeHTML = `<span class="role-badge warn">⏳ ${dirtyCount} Pending</span>`;
+          let badgeHTML = `<span class="role-badge ok">☁ Synced</span>`;
+          if (!navigator.onLine) badgeHTML = `<span class="role-badge warn">📡 Offline</span>`;
+          else if (dirtyCount > 0) badgeHTML = `<span class="role-badge warn">⏳ ${dirtyCount} Pending</span>`;
 
-            hero.innerHTML = `
-              <div class="dash-hero-info">
-                <h2>${esc(docName)} ${badgeHTML}</h2>
-                <p>${esc(currentUser.email || "")}${lastSyncTime ? ` · Synced ${formatRelativeTime(lastSyncTime.toISOString())}` : " · Cloud Workspace"}</p>
-              </div>
-              <div class="dash-hero-actions">
-                <button type="button" class="btn sm" onclick="newSummary()">+ New Patient</button>
-                <button type="button" class="btn sm out" onclick="syncNow(true)">☁ Sync</button>
-                <button type="button" class="btn sm out" onclick="openAuthModal()">👤 Account</button>
-                <button type="button" class="btn sm out" onclick="signOutUser()">Sign Out</button>
-              </div>
-            `;
-          }
+          hero.innerHTML = `
+            <div class="dash-hero-info">
+              <h2>${esc(docName)} ${badgeHTML}</h2>
+              <p>${esc(currentUser.email || "")}${lastSyncTime ? ` · Synced ${formatRelativeTime(lastSyncTime.toISOString())}` : " · Google Cloud Workspace"}</p>
+            </div>
+            <div class="dash-hero-actions">
+              <button type="button" class="btn sm" onclick="newSummary()">+ New Patient</button>
+              <button type="button" class="btn sm out" onclick="openSharePatientModal(null)" title="Share patient details to another Google-signed-in doctor">📤 Share Patient</button>
+              <button type="button" class="btn sm out" onclick="syncNow(true)">☁ Sync</button>
+              <button type="button" class="btn sm out" onclick="openAuthModal()">👤 Account</button>
+              <button type="button" class="btn sm out" onclick="signOutUser()">Sign Out</button>
+            </div>
+          `;
         } else {
           hero.innerHTML = `
             <div class="dash-hero-info">
               <h2>Clinical Workspace <span class="role-badge warn">Guest Session</span></h2>
-              <p>Sign in with Google or Email to sync summaries across devices</p>
+              <p>Sign in with Google to sync summaries across devices and share patient details with colleagues</p>
             </div>
             <div class="dash-hero-actions">
               <button type="button" class="btn sm btn-google-hero" onclick="signInWithGoogle()">${GOOGLE_SVG} Sign in with Google</button>
-              <button type="button" class="btn sm out" onclick="openAuthModal('signin')">✉ Email Sign In</button>
               <button type="button" class="btn sm" onclick="newSummary()">+ New Patient</button>
             </div>
           `;
@@ -3076,7 +3088,7 @@
           migBanner.style.display = "flex";
           migBanner.innerHTML = `
             <div>
-              <b>${guestDraftsCount} local draft${guestDraftsCount > 1 ? "s" : ""} detected</b> · Merge into cloud account?
+              <b>${guestDraftsCount} local draft${guestDraftsCount > 1 ? "s" : ""} detected</b> · Merge into Google account?
             </div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button type="button" class="btn sm" onclick="migrateGuestDraftsToAccount()">☁ Import to Account</button>
@@ -3091,6 +3103,7 @@
 
     function renderDashboard() {
       renderDashboardHeroAndAuth();
+      renderFrequentContactsSection();
       updateSyncIndicators();
 
       const total = records.length;
@@ -3113,7 +3126,7 @@
         container.innerHTML = isFiltered
           ? `<div class="dash-empty">
                <h3>No matching records</h3>
-               <p>Adjust search query or status filter.</p>
+               <p>${dashFilter === "shared" ? "No shared patient summaries received yet." : "Adjust search query or status filter."}</p>
                <div class="dash-empty-actions">
                  <button type="button" class="btn out" onclick="clearDashSearch();setDashFilter('all')">Reset Filters (${total})</button>
                  <button type="button" class="btn" onclick="newSummary()">+ New Patient</button>
@@ -3141,6 +3154,7 @@
 
     function renderPatientCardHTML(r) {
       const f = (r.payload && r.payload.f) || {};
+      const sharedMeta = (r.payload && r.payload.__shared_from) || null;
       const name = r.patient_name || "Unnamed Patient";
       const ageSex = [f.age, f.sex].filter(Boolean).join(" / ");
       const isCompleted = r.status === "completed";
@@ -3152,6 +3166,8 @@
             ? `<span class="sync-badge pending">⏳ Pending</span>`
             : `<span class="sync-badge synced">☁ Synced</span>`)
         : `<span class="sync-badge local">📱 Local</span>`;
+
+      const sharedSender = sharedMeta ? (sharedMeta.sender_name || sharedMeta.sender_email || "Doctor") : "";
 
       return `
         <article class="patient-card${isActive ? " is-active-editing" : ""}">
@@ -3166,11 +3182,14 @@
           </div>
 
           <div class="pc-meta">
+            ${sharedMeta ? `<span class="meta-chip shared-chip" title="Shared by ${esc(sharedMeta.sender_email || "")}">📨 From ${esc(sharedSender)}</span>` : ""}
             ${r.ip_no ? `<span class="meta-chip">IP: ${esc(r.ip_no)}</span>` : ""}
             ${r.unit ? `<span class="meta-chip">${esc(r.unit)}</span>` : ""}
             ${r.doa ? `<span class="meta-chip">DOA: ${esc(fmtDate(r.doa))}</span>` : ""}
             ${r.dod ? `<span class="meta-chip">DOD: ${esc(fmtDate(r.dod))}</span>` : ""}
           </div>
+
+          ${sharedMeta && sharedMeta.note ? `<div class="pc-shared-note">💬 ${esc(sharedMeta.note)}</div>` : ""}
 
           <div class="pc-diag${r.diagnosis_preview ? "" : " empty-diag"}">
             <span class="pc-diag-text">${r.diagnosis_preview ? esc(r.diagnosis_preview) : "No diagnosis recorded"}</span>
@@ -3194,6 +3213,7 @@
           <div class="pc-actions">
             <button type="button" class="btn sm btn-resume" onclick="openRecord('${esc(r.id)}','form')">${isCompleted ? "✎ Edit" : "▶ Resume"}</button>
             <button type="button" class="btn sm out" onclick="openRecord('${esc(r.id)}','summary')">📄 Preview</button>
+            <button type="button" class="btn sm out" onclick="openSharePatientModal('${esc(r.id)}')" title="Share patient details to a Google-verified doctor">📤 Share</button>
             <button type="button" class="btn sm out" onclick="duplicateRecord('${esc(r.id)}')" title="Duplicate summary">⧉</button>
             <button type="button" class="btn sm danger" onclick="deleteRecord('${esc(r.id)}')" title="Delete summary">🗑</button>
           </div>
@@ -3204,14 +3224,16 @@
     function renderDashboardTableHTML(list) {
       const rows = list.map(r => {
         const f = (r.payload && r.payload.f) || {};
+        const sharedMeta = (r.payload && r.payload.__shared_from) || null;
         const name = r.patient_name || "Unnamed Patient";
         const ageSex = [f.age, f.sex].filter(Boolean).join("/");
         const isCompleted = r.status === "completed";
         const dates = [r.doa ? `DOA ${fmtDate(r.doa)}` : "", r.dod ? `DOD ${fmtDate(r.dod)}` : ""].filter(Boolean).join(" · ") || "—";
         const syncIcon = hasCloudAuthSession() ? (r.dirty ? "⏳" : "☁") : "📱";
+        const sharedBadge = sharedMeta ? `<br><span class="meta-chip shared-chip" style="margin-top:3px">📨 From ${esc(sharedMeta.sender_name || sharedMeta.sender_email || "Doctor")}</span>` : "";
         return `
           <tr>
-            <td><b>${esc(name)}</b>${ageSex ? `<br><small style="color:var(--muted)">${esc(ageSex)}</small>` : ""}</td>
+            <td><b>${esc(name)}</b>${ageSex ? `<br><small style="color:var(--muted)">${esc(ageSex)}</small>` : ""}${sharedBadge}</td>
             <td>${esc(r.ip_no || "—")}</td>
             <td>${esc(r.unit || "—")}</td>
             <td><small>${esc(dates)}</small></td>
@@ -3226,6 +3248,7 @@
               <div class="td-actions">
                 <button type="button" class="btn sm" onclick="openRecord('${esc(r.id)}','form')">Resume</button>
                 <button type="button" class="btn sm out" onclick="openRecord('${esc(r.id)}','summary')">Preview</button>
+                <button type="button" class="btn sm out" onclick="openSharePatientModal('${esc(r.id)}')" title="Share patient details">📤</button>
                 <button type="button" class="btn sm out" onclick="duplicateRecord('${esc(r.id)}')" title="Duplicate">⧉</button>
                 <button type="button" class="btn sm danger" onclick="deleteRecord('${esc(r.id)}')" title="Delete">🗑</button>
               </div>
@@ -3273,12 +3296,29 @@
       return /PGRST205|42P01|could not find the table|relation .* does not exist|schema cache/i.test(msg);
     }
 
+    function isMissingRpcError(err) {
+      if (!err) return false;
+      const msg = `${err.code || ""} ${err.message || ""} ${err.details || ""}`;
+      return /PGRST202|42883|could not find the function|function .* does not exist/i.test(msg);
+    }
+
+    function isGoogleUserSession(user) {
+      if (!user || !user.id) return false;
+      if (user.is_google === true) return true;
+      const appMeta = user.app_metadata || {};
+      const providers = Array.isArray(appMeta.providers) ? appMeta.providers : [];
+      const identities = Array.isArray(user.identities) ? user.identities : [];
+      return appMeta.provider === "google" ||
+        providers.includes("google") ||
+        identities.some(i => i && i.provider === "google");
+    }
+
     function hasCloudAuthSession() {
-      return Boolean(currentUser && !currentUser.local_email_session && sbClient);
+      return Boolean(currentUser && isGoogleUserSession(currentUser) && sbClient);
     }
 
     async function readCloudAuthMeta(forceRefresh = false) {
-      if (!hasCloudAuthSession()) return { summaries: [], deleted_ids: [], defaults: null, templates: null, theme_color: null };
+      if (!hasCloudAuthSession()) return { summaries: [], deleted_ids: [], defaults: null, templates: null, frequent_contacts: null, theme_color: null };
       if (forceRefresh && navigator.onLine) {
         try {
           const { data, error } = await sbClient.auth.getUser();
@@ -3294,6 +3334,7 @@
         deleted_ids: Array.isArray(meta.deleted_ids) ? meta.deleted_ids : [],
         defaults: (meta.defaults && typeof meta.defaults === "object") ? meta.defaults : null,
         templates: Array.isArray(meta.templates) ? meta.templates : null,
+        frequent_contacts: Array.isArray(meta.frequent_contacts) ? meta.frequent_contacts : null,
         theme_color: meta.theme_color || null
       };
     }
@@ -3306,6 +3347,7 @@
         deleted_ids: patch.deleted_ids !== undefined ? patch.deleted_ids.slice(-100) : cur.deleted_ids,
         defaults: patch.defaults !== undefined ? patch.defaults : cur.defaults,
         templates: patch.templates !== undefined ? patch.templates.slice(0, 40) : cur.templates,
+        frequent_contacts: patch.frequent_contacts !== undefined ? patch.frequent_contacts.slice(0, 50) : cur.frequent_contacts,
         theme_color: patch.theme_color !== undefined ? patch.theme_color : cur.theme_color,
         updated_at: new Date().toISOString()
       };
@@ -3339,17 +3381,10 @@
           if (window.history && window.history.replaceState) {
             window.history.replaceState(null, "", window.location.pathname);
           }
-          if (/otp_expired/i.test(errCode) || /expired|invalid/i.test(errDesc)) {
-            authFeedback = {
-              type: "info",
-              text: "That link expired. Sign in with Google above or enter your email & password directly below."
-            };
-          } else {
-            authFeedback = {
-              type: "err",
-              text: (errDesc || err || "Authentication error").replace(/\+/g, " ")
-            };
-          }
+          authFeedback = {
+            type: "err",
+            text: (errDesc || err || "Google authentication error").replace(/\+/g, " ")
+          };
         }
       } catch (e) { }
     }
@@ -3361,10 +3396,6 @@
       currentUser = null;
 
       if (!sbConfig.url || !sbConfig.anonKey) {
-        try {
-          const cachedUser = safeParse(localStorage.getItem("ds-v2:last-user"));
-          if (cachedUser && cachedUser.id && cachedUser.local_email_session) currentUser = cachedUser;
-        } catch (e) { }
         syncState = "local";
         updateSyncIndicators();
         return;
@@ -3375,7 +3406,7 @@
         lastSyncError = "Supabase SDK unavailable offline";
         try {
           const cachedUser = safeParse(localStorage.getItem("ds-v2:last-user"));
-          if (cachedUser && cachedUser.id) currentUser = cachedUser;
+          if (cachedUser && cachedUser.id && isGoogleUserSession(cachedUser)) currentUser = cachedUser;
         } catch (e) { }
         updateSyncIndicators();
         return;
@@ -3391,19 +3422,12 @@
           }
         });
 
-        // Automatically complete standard OAuth / email callbacks (?code=... or ?token_hash=...)
+        // Complete Google OAuth PKCE callback (?code=...)
         try {
           const sParams = new URLSearchParams(window.location.search);
           const code = sParams.get("code");
-          const tokenHash = sParams.get("token_hash");
-          const otpType = sParams.get("type") || "signup";
           if (code && typeof sbClient.auth.exchangeCodeForSession === "function") {
             await sbClient.auth.exchangeCodeForSession(code);
-            if (window.history && window.history.replaceState) {
-              window.history.replaceState(null, "", window.location.pathname);
-            }
-          } else if (tokenHash) {
-            await sbClient.auth.verifyOtp({ token_hash: tokenHash, type: otpType });
             if (window.history && window.history.replaceState) {
               window.history.replaceState(null, "", window.location.pathname);
             }
@@ -3412,22 +3436,20 @@
 
         sbClient.auth.onAuthStateChange(async (event, session) => {
           if (suppressAuthReload && event === "USER_UPDATED") return;
-          if (event === "PASSWORD_RECOVERY") {
-            openRecoveryModal();
-          }
-          const nextUser = session && session.user ? session.user : null;
-          // Preserve active local-email session across initial GoTrue check when no OAuth/cloud session exists
-          if (!nextUser && event === "INITIAL_SESSION" && currentUser && currentUser.local_email_session) {
+          const rawUser = session && session.user ? session.user : null;
+          if (rawUser && !isGoogleUserSession(rawUser)) {
+            try { await sbClient.auth.signOut(); } catch (e) { }
+            currentUser = null;
+            cacheLastUser(null);
+            authFeedback = { type: "info", text: "Only Google Sign-In is supported. Please sign in with your Google account." };
+            await handleUserScopeChange(null);
             return;
           }
+          const nextUser = rawUser;
           const prevUserId = currentUser ? currentUser.id : null;
           const nextUserId = nextUser ? nextUser.id : null;
           currentUser = nextUser;
           cacheLastUser(nextUser);
-
-          if (nextUser && event !== "USER_UPDATED") {
-            await syncPendingEmailPasswordLink(nextUser);
-          }
 
           if (prevUserId !== nextUserId) {
             await handleUserScopeChange(nextUserId);
@@ -3439,12 +3461,18 @@
 
         const { data, error } = await sbClient.auth.getSession();
         if (!error && data && data.session && data.session.user) {
-          currentUser = data.session.user;
-          cacheLastUser(currentUser);
-          await syncPendingEmailPasswordLink(currentUser);
+          if (isGoogleUserSession(data.session.user)) {
+            currentUser = data.session.user;
+            cacheLastUser(currentUser);
+          } else {
+            try { await sbClient.auth.signOut(); } catch (e) { }
+            currentUser = null;
+            cacheLastUser(null);
+            authFeedback = { type: "info", text: "Only Google Sign-In is supported. Please sign in with your Google account." };
+          }
         } else {
           const cachedUser = safeParse(localStorage.getItem("ds-v2:last-user"));
-          if (cachedUser && cachedUser.id && (!navigator.onLine || cachedUser.local_email_session)) {
+          if (cachedUser && cachedUser.id && !navigator.onLine && isGoogleUserSession(cachedUser)) {
             currentUser = cachedUser;
           }
         }
@@ -3459,12 +3487,14 @@
 
     function cacheLastUser(user) {
       try {
-        if (user && user.id) {
+        if (user && user.id && isGoogleUserSession(user)) {
           localStorage.setItem("ds-v2:last-user", JSON.stringify({
             id: user.id,
             email: normalizeEmail(user.email),
             user_metadata: user.user_metadata || {},
-            local_email_session: Boolean(user.local_email_session)
+            app_metadata: user.app_metadata || {},
+            identities: Array.isArray(user.identities) ? user.identities.map(i => ({ provider: i.provider })) : [],
+            is_google: true
           }));
         } else {
           localStorage.removeItem("ds-v2:last-user");
@@ -3473,8 +3503,11 @@
     }
 
     async function handleUserScopeChange(nextUserId) {
+      contactsAddFormOpen = false;
+      contactsAddFeedback = null;
       await loadScopedRecords();
       await loadSavedTemplates();
+      await loadFrequentContacts();
       await checkGuestDraftsForMigration();
 
       if (nextUserId) {
@@ -3490,8 +3523,9 @@
           resetEditorFieldsOnly();
           const def = await getActiveDefaults();
           if (def) applyDefaults(def);
-          if (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name && !val("preparedBy")) {
-            setVal_("preparedBy", currentUser.user_metadata.full_name);
+          const docMetaName = currentUser && currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name);
+          if (docMetaName && !val("preparedBy")) {
+            setVal_("preparedBy", docMetaName);
           }
           setVal_("dod", todayISO());
           renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
@@ -3534,16 +3568,12 @@
       let dotClass = "offline";
       let topLabel = "Sign in";
       let statLabel = "Sign in";
-      let statSub = "Google / Email";
+      let statSub = "Google Account";
 
       if (currentUser) {
-        const displayUser = (currentUser.user_metadata && currentUser.user_metadata.full_name) || currentUser.email || "Doctor";
+        const displayUser = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || currentUser.email || "Doctor";
         topLabel = displayUser.split("@")[0];
-        if (currentUser.local_email_session) {
-          dotClass = "offline";
-          statLabel = "Local Email";
-          statSub = "Link Google to sync";
-        } else if (syncState === "syncing") {
+        if (syncState === "syncing") {
           dotClass = "syncing";
           statLabel = "Syncing";
           statSub = "In progress";
@@ -3562,13 +3592,13 @@
         } else {
           dotClass = "online";
           statLabel = "Synced";
-          statSub = lastSyncTime ? lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Active";
+          statSub = lastSyncTime ? lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Google Cloud";
         }
       } else if (sbConfig.url && sbConfig.anonKey) {
         dotClass = "offline";
         topLabel = "Sign in";
         statLabel = "Sign in";
-        statSub = "Google / Email";
+        statSub = "Google Account";
       }
 
       if (dot) dot.className = `sync-dot ${dotClass}`;
@@ -3580,8 +3610,8 @@
     }
 
     function handleSyncCardClick() {
-      if (!currentUser || currentUser.local_email_session) {
-        openAuthModal("signin");
+      if (!currentUser) {
+        openAuthModal();
       } else {
         syncNow(true);
       }
@@ -3674,6 +3704,46 @@
       await persistScopedRecords();
     }
 
+    async function registerCurrentGoogleUserInDirectory() {
+      if (!hasCloudAuthSession() || !navigator.onLine) return;
+      const email = normalizeEmail(currentUser.email);
+      if (!email) return;
+      const meta = currentUser.user_metadata || {};
+      const fullName = String(meta.full_name || meta.name || "").trim();
+      const avatarUrl = String(meta.avatar_url || meta.picture || "").trim();
+      try {
+        const { error } = await sbClient
+          .from("user_directory")
+          .upsert({
+            user_id: currentUser.id,
+            email,
+            full_name: fullName,
+            avatar_url: avatarUrl,
+            provider: "google",
+            last_seen_at: new Date().toISOString()
+          }, { onConflict: "user_id" });
+        if (error && !isMissingTableError(error)) {
+          console.warn("Directory upsert warning:", error);
+        }
+      } catch (e) {
+        console.warn("Directory sync warning:", e);
+      }
+    }
+
+    async function getImportedShareIdsSet() {
+      const raw = safeParse(await store.get(getImportedSharesKey()));
+      return new Set(Array.isArray(raw) ? raw : []);
+    }
+
+    async function markShareIdImported(shareId) {
+      if (!shareId) return;
+      const set = await getImportedShareIdsSet();
+      if (!set.has(shareId)) {
+        set.add(shareId);
+        await store.set(getImportedSharesKey(), JSON.stringify(Array.from(set).slice(-300)));
+      }
+    }
+
     async function pushUserSettingsToCloud(explicitDefaults = null) {
       if (!hasCloudAuthSession() || !navigator.onLine) return;
       try {
@@ -3681,7 +3751,8 @@
         const defaultsPayload = {
           ...rawDef,
           __templates: savedTemplates,
-          __theme_config: themeConfig
+          __theme_config: themeConfig,
+          __frequent_contacts: frequentContacts
         };
         const themeColor = serializeThemeString(themeConfig);
         const { error } = await sbClient.from("user_settings").upsert({
@@ -3695,6 +3766,7 @@
           await writeCloudAuthMeta({
             defaults: rawDef,
             templates: savedTemplates,
+            frequent_contacts: frequentContacts,
             theme_color: themeColor
           });
         }
@@ -3726,6 +3798,9 @@
               savedTemplates = meta.templates;
               await persistSavedTemplates(false);
             }
+            if (Array.isArray(meta.frequent_contacts) && meta.frequent_contacts.length) {
+              await mergeRemoteFrequentContacts(meta.frequent_contacts);
+            }
             if (meta.theme_color) {
               setThemeColor(meta.theme_color, false);
             }
@@ -3736,8 +3811,10 @@
         if (data) {
           const remoteDef = { ...(data.defaults || {}) };
           const remoteTemplates = Array.isArray(remoteDef.__templates) ? remoteDef.__templates : null;
+          const remoteContacts = Array.isArray(remoteDef.__frequent_contacts) ? remoteDef.__frequent_contacts : null;
           delete remoteDef.__templates;
           delete remoteDef.__theme_config;
+          delete remoteDef.__frequent_contacts;
 
           const localDef = safeParse(await store.get(getDefaultsKey()));
           if (!localDef && Object.keys(remoteDef).length) {
@@ -3748,12 +3825,15 @@
             savedTemplates = remoteTemplates;
             await persistSavedTemplates(false);
           }
+          if (remoteContacts && remoteContacts.length) {
+            await mergeRemoteFrequentContacts(remoteContacts);
+          }
           if (data.theme_color) {
             setThemeColor(data.theme_color, false);
           }
         } else {
           const localDef = safeParse(await store.get(getDefaultsKey()));
-          if ((localDef && Object.keys(localDef).length) || savedTemplates.length) {
+          if ((localDef && Object.keys(localDef).length) || savedTemplates.length || frequentContacts.length) {
             await pushUserSettingsToCloud(localDef || {});
           }
         }
@@ -3763,14 +3843,8 @@
     }
 
     async function syncNow(interactive = false) {
-      if (!currentUser || !sbClient) {
-        if (interactive) openAuthModal("signin");
-        return;
-      }
-      if (currentUser.local_email_session) {
-        syncState = "local";
-        updateSyncIndicators();
-        if (interactive) toast("Signed in locally — click Sign in with Google to enable cloud sync");
+      if (!currentUser || !sbClient || !isGoogleUserSession(currentUser)) {
+        if (interactive) openAuthModal();
         return;
       }
       if (!navigator.onLine) {
@@ -3785,9 +3859,9 @@
       updateSyncIndicators();
 
       try {
+        await registerCurrentGoogleUserInDirectory();
         await flushPendingDeletes();
 
-        // Ensure records created under the same email before linking Google sync under current user_id
         records.forEach(r => {
           if (r && (!r.user_id || r.user_id !== currentUser.id)) {
             r.user_id = currentUser.id;
@@ -3859,6 +3933,63 @@
           }
         });
 
+        // Fallback safety: check patient_shares for any unmaterialized shares sent to this doctor
+        if (!usingMetaFallback) {
+          try {
+            const { data: shareRows, error: shareErr } = await sbClient
+              .from("patient_shares")
+              .select("id, sender_id, sender_email, sender_name, recipient_summary_id, source_summary_id, status, patient_name, ip_no, doa, dod, unit, diagnosis_preview, payload, note, created_at")
+              .eq("recipient_id", currentUser.id)
+              .order("created_at", { ascending: false })
+              .limit(50);
+
+            if (!shareErr && Array.isArray(shareRows) && shareRows.length) {
+              const importedIds = await getImportedShareIdsSet();
+              const existingShareIds = new Set(importedIds);
+              merged.forEach(r => {
+                const sid = r && r.payload && r.payload.__shared_from && r.payload.__shared_from.share_id;
+                if (sid) existingShareIds.add(sid);
+              });
+
+              for (const sh of shareRows) {
+                if (!sh || existingShareIds.has(sh.id) || sh.recipient_summary_id) continue;
+                const payload = {
+                  ...(sh.payload || {}),
+                  __shared_from: {
+                    share_id: sh.id,
+                    sender_id: sh.sender_id,
+                    sender_email: sh.sender_email,
+                    sender_name: sh.sender_name,
+                    note: sh.note || "",
+                    shared_at: sh.created_at,
+                    source_summary_id: sh.source_summary_id || null
+                  }
+                };
+                const materialized = {
+                  id: generateUUID(),
+                  user_id: currentUser.id,
+                  status: sh.status || "incomplete",
+                  patient_name: sh.patient_name || "",
+                  ip_no: sh.ip_no || "",
+                  doa: sh.doa || "",
+                  dod: sh.dod || "",
+                  unit: sh.unit || "",
+                  diagnosis_preview: sh.diagnosis_preview || "",
+                  payload,
+                  created_at: sh.created_at,
+                  updated_at: sh.created_at,
+                  dirty: true
+                };
+                merged.unshift(materialized);
+                await markShareIdImported(sh.id);
+                await upsertRecordToSupabase(materialized);
+              }
+            }
+          } catch (e) {
+            console.warn("Incoming shares check warning:", e);
+          }
+        }
+
         merged.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
         records = merged;
         await persistScopedRecords();
@@ -3882,6 +4013,7 @@
             })),
             defaults: localDef,
             templates: savedTemplates,
+            frequent_contacts: frequentContacts,
             theme_color: serializeThemeString(themeConfig)
           });
         }
@@ -3917,151 +4049,15 @@
       if (activeTab === "dashboard") renderDashboardHeroAndAuth();
     });
 
-    /* ---------- Auth UI & Actions (Google-First + Unified Email Login) ---------- */
-    let pendingVerifyEmail = "";
-    const LOCAL_EMAIL_ACCOUNTS_KEY = "ds-v2:email-accounts";
-    const PENDING_PW_LINKS_KEY = "ds-v2:pending-pw-links";
-
+    /* ---------- Auth UI & Actions (Google-Only Sign-In) ---------- */
     const GOOGLE_SVG = `<svg class="google-g-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>`;
 
     function getCanonicalAuthRedirectUrl() {
       const host = window.location.hostname || "";
       if (!host || host === "localhost" || host === "127.0.0.1" || window.location.protocol === "file:") {
-        return "https://syed98hafiz.github.io/dsum/";
+        return "https://dsum.shop/";
       }
       return window.location.origin + window.location.pathname;
-    }
-
-    function hashCredential(salt, secret) {
-      const input = `${salt}:${secret}`;
-      let h1 = 0x811c9dc5;
-      let h2 = 0x9e3779b9;
-      for (let round = 0; round < 64; round++) {
-        for (let i = 0; i < input.length; i++) {
-          const c = input.charCodeAt(i);
-          h1 ^= c ^ round;
-          h1 = Math.imul(h1, 0x01000193);
-          h2 ^= (c + round * 31) ^ (h1 >>> 16);
-          h2 = Math.imul(h2, 0x85ebca6b);
-        }
-      }
-      return `v1:${(h1 >>> 0).toString(16).padStart(8, "0")}${(h2 >>> 0).toString(16).padStart(8, "0")}`;
-    }
-
-    function deterministicEmailUuid(email) {
-      const e = normalizeEmail(email);
-      const parts = [];
-      for (let k = 0; k < 4; k++) {
-        let h = 0x811c9dc5 ^ (k * 0x9e3779b9);
-        for (let i = 0; i < e.length; i++) {
-          h ^= e.charCodeAt(i) + k * 17;
-          h = Math.imul(h, 0x01000193);
-        }
-        parts.push((h >>> 0).toString(16).padStart(8, "0"));
-      }
-      const hex = parts.join("");
-      return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-8${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
-    }
-
-    function getLocalEmailAccounts() {
-      return safeParse(localStorage.getItem(LOCAL_EMAIL_ACCOUNTS_KEY)) || {};
-    }
-
-    function saveLocalEmailAccount(email, password, fullName = "", userId = null, hasCloudPassword = false) {
-      const key = normalizeEmail(email);
-      if (!key) return null;
-      const map = getLocalEmailAccounts();
-      const prev = map[key] || {};
-      const salt = prev.salt || generateUUID();
-      const next = {
-        id: userId || prev.id || deterministicEmailUuid(key),
-        email: key,
-        fullName: fullName || prev.fullName || "",
-        salt,
-        hash: password ? hashCredential(salt, password) : prev.hash || "",
-        hasCloudPassword: Boolean(hasCloudPassword || prev.hasCloudPassword),
-        updatedAt: new Date().toISOString()
-      };
-      map[key] = next;
-      try { localStorage.setItem(LOCAL_EMAIL_ACCOUNTS_KEY, JSON.stringify(map)); } catch (e) { }
-      return next;
-    }
-
-    function verifyLocalEmailAccount(email, password) {
-      const key = normalizeEmail(email);
-      if (!key || !password) return null;
-      const map = getLocalEmailAccounts();
-      const acct = map[key];
-      if (!acct || !acct.hash || !acct.salt) return null;
-      return acct.hash === hashCredential(acct.salt, password) ? acct : null;
-    }
-
-    function savePendingPasswordLink(email, password, fullName = "") {
-      const key = normalizeEmail(email);
-      if (!key || !password) return;
-      const map = safeParse(localStorage.getItem(PENDING_PW_LINKS_KEY)) || {};
-      map[key] = { password, fullName: fullName || "", ts: Date.now() };
-      try { localStorage.setItem(PENDING_PW_LINKS_KEY, JSON.stringify(map)); } catch (e) { }
-    }
-
-    function clearPendingPasswordLink(email) {
-      const key = normalizeEmail(email);
-      if (!key) return;
-      const map = safeParse(localStorage.getItem(PENDING_PW_LINKS_KEY)) || {};
-      if (key in map) {
-        delete map[key];
-        try { localStorage.setItem(PENDING_PW_LINKS_KEY, JSON.stringify(map)); } catch (e) { }
-      }
-    }
-
-    async function syncPendingEmailPasswordLink(user) {
-      const key = normalizeEmail(user && user.email);
-      if (!key || !sbClient || !navigator.onLine) return;
-      const map = safeParse(localStorage.getItem(PENDING_PW_LINKS_KEY)) || {};
-      const pending = map[key];
-      if (!pending || !pending.password) return;
-
-      saveLocalEmailAccount(
-        key,
-        pending.password,
-        pending.fullName || (user.user_metadata && user.user_metadata.full_name) || "",
-        user.id,
-        false
-      );
-
-      suppressAuthReload = true;
-      try {
-        const updatePayload = { password: pending.password };
-        if (pending.fullName) updatePayload.data = { full_name: pending.fullName };
-        const { error } = await sbClient.auth.updateUser(updatePayload);
-        if (!error) {
-          saveLocalEmailAccount(key, pending.password, pending.fullName || "", user.id, true);
-          clearPendingPasswordLink(key);
-          toast(`Google & Email sign-in linked for ${key} ✓`);
-        }
-      } catch (e) {
-      } finally {
-        suppressAuthReload = false;
-      }
-    }
-
-    async function activateLocalEmailSession(email, fullName = "", userId = null) {
-      const key = normalizeEmail(email);
-      const acctMap = getLocalEmailAccounts();
-      const existing = acctMap[key] || {};
-      const resolvedName = fullName || existing.fullName || "";
-      const resolvedId = userId || existing.id || deterministicEmailUuid(key);
-
-      currentUser = {
-        id: resolvedId,
-        email: key,
-        user_metadata: { full_name: resolvedName },
-        local_email_session: true
-      };
-      cacheLastUser(currentUser);
-      authFeedback = null;
-      await handleUserScopeChange(currentUser.id);
-      closeAuthModal();
     }
 
     async function signInWithGoogle() {
@@ -4073,18 +4069,18 @@
           type: "err",
           text: navigator.onLine
             ? "Authentication service is still loading. Please reload and try again."
-            : "You are offline. Connect to the internet to sign in with Google, or use Email & Password below."
+            : "You are offline. Connect to the internet to sign in with Google."
         };
-        if (document.getElementById("authModal").style.display === "none") openAuthModal("signin");
+        if (document.getElementById("authModal").style.display === "none") openAuthModal();
         else renderAuthFeedback();
         return;
       }
       if (!navigator.onLine) {
         authFeedback = {
           type: "err",
-          text: "You are offline. Connect to the internet to sign in with Google, or use Email & Password below."
+          text: "You are offline. Connect to the internet to sign in with Google."
         };
-        if (document.getElementById("authModal").style.display === "none") openAuthModal("signin");
+        if (document.getElementById("authModal").style.display === "none") openAuthModal();
         else renderAuthFeedback();
         return;
       }
@@ -4093,7 +4089,6 @@
       renderAuthFeedback();
 
       try {
-        // Pre-check Supabase Auth settings so a disabled Google provider fails cleanly
         try {
           const ctl = new AbortController();
           const timer = setTimeout(() => ctl.abort(), 3000);
@@ -4106,13 +4101,13 @@
             const settings = await res.json();
             if (settings && settings.external && settings.external.google === false) {
               authFeedback = {
-                type: "info",
-                text: "Google Sign-In is temporarily unavailable. Please use Email & Password below."
+                type: "err",
+                text: "Google Sign-In is currently disabled on the authentication server. Please enable Google provider in Supabase."
               };
               const modalEl = document.getElementById("authModal");
               if (modalEl && modalEl.style.display === "none") {
                 modalEl.style.display = "flex";
-                document.getElementById("authModalTitle").textContent = "Sign In or Create Account";
+                document.getElementById("authModalTitle").textContent = "Sign In with Google";
               }
               renderAuthFeedback();
               return;
@@ -4132,7 +4127,7 @@
       } catch (e) {
         authFeedback = {
           type: "err",
-          text: (e && e.message) ? `${e.message}. You can sign in directly with Email & Password below.` : "Could not start Google Sign-In."
+          text: (e && e.message) ? e.message : "Could not start Google Sign-In."
         };
         const modalEl = document.getElementById("authModal");
         if (modalEl && modalEl.style.display === "none") modalEl.style.display = "flex";
@@ -4141,83 +4136,41 @@
     }
 
     function buildAuthPanelHTML(inline = false) {
-      const isSignUp = authMode === "signup";
       const msgHtml = authFeedback
         ? `<div class="auth-msg ${esc(authFeedback.type)}">${esc(authFeedback.text)}</div>`
         : "";
-      const prefix = inline ? "inline" : "modal";
 
       return `
         <div class="${inline ? "auth-grid" : ""}">
           ${inline ? `
             <div class="auth-intro">
-              <div class="auth-eyebrow">GOOGLE &amp; CLOUD SYNC</div>
-              <h3>Doctor Workspace</h3>
-              <p>Sign in with Google or create an email password account—both share the same email workspace.</p>
+              <div class="auth-eyebrow">GOOGLE ACCOUNT &amp; PATIENT SHARING</div>
+              <h3>Doctor Cloud Workspace</h3>
+              <p>Sign in with your Google account to sync patient summaries across devices and securely share records with colleagues.</p>
               <div class="auth-feature-pills">
-                <span class="auth-feat-pill">🔑 Google + Email Linked</span>
+                <span class="auth-feat-pill">🔒 Google-Only Verified</span>
                 <span class="auth-feat-pill">☁ Multi-Device Sync</span>
+                <span class="auth-feat-pill">📨 Direct Patient Handover</span>
               </div>
             </div>
-          ` : ""}
-          <div>
+          ` : `
+            <p class="hint" style="margin-top:0;font-size:13px">
+              Sign in with Google to sync your discharge summaries, templates, frequently shared contacts, and share patient details with other Google-signed-in doctors.
+            </p>
+          `}
+          <div class="auth-google-box">
+            ${msgHtml}
             <button type="button" class="btn-google-primary" onclick="signInWithGoogle()">
               ${GOOGLE_SVG}
               <span>Sign in with Google</span>
             </button>
-            <div class="auth-divider"><span>or use email &amp; password</span></div>
-            <div class="auth-tabs" role="tablist">
-              <button type="button" class="${authMode === "signin" ? "active" : ""}" onclick="setAuthMode('signin')">Sign In</button>
-              <button type="button" class="${isSignUp ? "active" : ""}" onclick="setAuthMode('signup')">Create Account</button>
-            </div>
-            ${msgHtml}
-            <form onsubmit="submitAuthForm(event, '${prefix}')">
-              ${isSignUp ? `
-                <div class="field">
-                  <label for="${prefix}AuthName">Doctor Name &amp; Role (optional)</label>
-                  <input type="text" id="${prefix}AuthName" placeholder="e.g. Kavitha S. (JR)" autocomplete="name">
-                </div>
-              ` : ""}
-              <div class="field">
-                <label for="${prefix}AuthEmail">Email</label>
-                <input type="email" id="${prefix}AuthEmail" value="${esc(pendingVerifyEmail)}" placeholder="doctor@gmail.com" autocomplete="email" required>
-              </div>
-              <div class="field">
-                <label for="${prefix}AuthPassword">Password</label>
-                <div class="password-wrap">
-                  <input type="password" id="${prefix}AuthPassword" placeholder="${isSignUp ? "Min 6 characters" : "Enter password"}" autocomplete="${isSignUp ? "new-password" : "current-password"}" minlength="6" required>
-                  <button type="button" class="password-toggle" onclick="togglePasswordVisibility('${prefix}AuthPassword', this)">Show</button>
-                </div>
-              </div>
-              <button type="submit" class="btn" style="width:100%">${isSignUp ? "Create Account &amp; Sign In" : "Sign In with Email"}</button>
-            </form>
-            <div class="auth-footer-links">
-              <button type="button" class="link-btn" onclick="requestPasswordReset('${prefix}AuthEmail')">Forgot password?</button>
+            <div class="auth-footer-links" style="justify-content:${inline ? "space-between" : "center"}">
+              <span class="hint" style="margin:0">Google authentication required for sharing</span>
               ${inline ? `<button type="button" class="link-btn" onclick="continueOfflineMode()">Local-only mode</button>` : ""}
             </div>
           </div>
         </div>
       `;
-    }
-
-    function setAuthMode(mode) {
-      authMode = mode === "signup" ? "signup" : "signin";
-      authFeedback = null;
-      const modalEl = document.getElementById("authModal");
-      if (modalEl && modalEl.style.display !== "none" && !currentUser) {
-        const titleEl = document.getElementById("authModalTitle");
-        if (titleEl) titleEl.textContent = authMode === "signup" ? "Create Doctor Account" : "Sign In to DS Builder v2";
-        document.getElementById("authModalBody").innerHTML = buildAuthPanelHTML(false);
-      }
-      renderDashboardHeroAndAuth();
-    }
-
-    function togglePasswordVisibility(inputId, btn) {
-      const inp = document.getElementById(inputId);
-      if (!inp) return;
-      const show = inp.type === "password";
-      inp.type = show ? "text" : "password";
-      if (btn) btn.textContent = show ? "Hide" : "Show";
     }
 
     function continueOfflineMode() {
@@ -4230,298 +4183,41 @@
       openAuthModal();
     }
 
-    function openAuthModal(preferredMode = null) {
-      if (preferredMode) authMode = preferredMode === "signup" ? "signup" : "signin";
+    function openAuthModal() {
       authFeedback = null;
       const modal = document.getElementById("authModal");
       const title = document.getElementById("authModalTitle");
       const body = document.getElementById("authModalBody");
 
-      if (currentUser) {
-        const docName = (currentUser.user_metadata && currentUser.user_metadata.full_name) || "Doctor Account";
-        const isLocalSession = Boolean(currentUser.local_email_session);
-        title.textContent = "Signed-in Doctor Account";
+      if (currentUser && isGoogleUserSession(currentUser)) {
+        const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || "Doctor Account";
+        title.textContent = "Google Doctor Account";
         body.innerHTML = `
-          <div class="auth-msg ${isLocalSession ? "info" : "ok"}">
-            Signed in as <b>${esc(currentUser.email || docName)}</b>
-            ${isLocalSession ? "<br><small>Local email workspace active. Connect Google below to sync across devices.</small>" : ""}
+          <div class="auth-msg ok">
+            ✓ Signed in with Google as <b>${esc(currentUser.email || docName)}</b>
           </div>
           <p class="hint" style="font-size:13px">
             <b>Name:</b> ${esc(docName)}<br>
-            <b>Workspace Email:</b> ${esc(currentUser.email || "—")}<br>
-            <b>Saved summaries:</b> ${records.length}
+            <b>Google Email:</b> ${esc(currentUser.email || "—")}<br>
+            <b>Saved summaries:</b> ${records.length}<br>
+            <b>Frequently shared contacts:</b> ${frequentContacts.length}
           </p>
-          ${isLocalSession ? `
-            <div style="margin-bottom:12px">
-              <button type="button" class="btn-google-primary" onclick="signInWithGoogle()">
-                ${GOOGLE_SVG}
-                <span>Sign in with Google to Sync Cloud</span>
-              </button>
-            </div>
-          ` : ""}
-          <form class="account-pw-box" onsubmit="saveAccountEmailPassword(event)">
-            <div style="font-size:12.5px;font-weight:700;color:var(--primary);margin-bottom:4px">
-              🔑 Email Password Login (${esc(currentUser.email || "")})
-            </div>
-            <p class="hint" style="margin:0 0 8px;font-size:12px">
-              Set or update a password for this email so you can sign in via Google OR Email + Password.
-            </p>
-            <div class="inline-btn-field">
-              <input type="password" id="accountLinkPassword" minlength="6" placeholder="New password (min 6 chars)" autocomplete="new-password" required>
-              <button type="submit" class="btn sm">Save Password</button>
-            </div>
-            <div id="accountPwStatus" class="hint" style="margin-top:6px;display:none"></div>
-          </form>
           <div class="modal-actions">
-            ${isLocalSession ? "" : `<button type="button" class="btn" onclick="syncNow(true)">☁ Sync Now</button>`}
+            <button type="button" class="btn" onclick="syncNow(true)">☁ Sync Now</button>
+            <button type="button" class="btn out" onclick="closeAuthModal();openSharePatientModal(null)">📤 Share Patient</button>
             <button type="button" class="btn danger" onclick="signOutUser()">Sign Out</button>
           </div>
         `;
       } else {
-        title.textContent = authMode === "signup" ? "Create Doctor Account" : "Sign In to DS Builder v2";
+        title.textContent = "Sign In with Google";
         body.innerHTML = buildAuthPanelHTML(false);
       }
 
       modal.style.display = "flex";
     }
 
-    async function saveAccountEmailPassword(event) {
-      event.preventDefault();
-      if (!currentUser || !currentUser.email) return;
-      const inp = document.getElementById("accountLinkPassword");
-      const statusEl = document.getElementById("accountPwStatus");
-      const pw = inp ? inp.value : "";
-      if (!pw || pw.length < 6) return;
-
-      const email = normalizeEmail(currentUser.email);
-      const fullName = (currentUser.user_metadata && currentUser.user_metadata.full_name) || "";
-      saveLocalEmailAccount(email, pw, fullName, currentUser.id, hasCloudAuthSession());
-
-      if (hasCloudAuthSession() && navigator.onLine) {
-        suppressAuthReload = true;
-        try {
-          const { error } = await sbClient.auth.updateUser({ password: pw });
-          if (error) throw error;
-          clearPendingPasswordLink(email);
-          if (statusEl) {
-            statusEl.style.display = "block";
-            statusEl.style.color = "#1c6b3f";
-            statusEl.textContent = `Password saved for ${email} ✓ You can now sign in with Google or Email & Password.`;
-          }
-          toast("Email password linked to Google account ✓");
-        } catch (e) {
-          savePendingPasswordLink(email, pw, fullName);
-          if (statusEl) {
-            statusEl.style.display = "block";
-            statusEl.style.color = "#92400e";
-            statusEl.textContent = `Saved on this device (${e.message || "cloud pending"}).`;
-          }
-        } finally {
-          suppressAuthReload = false;
-        }
-      } else {
-        savePendingPasswordLink(email, pw, fullName);
-        if (statusEl) {
-          statusEl.style.display = "block";
-          statusEl.style.color = "#1c6b3f";
-          statusEl.textContent = `Password saved for ${email} ✓ Connect Google when ready to link to cloud.`;
-        }
-        toast("Email password saved ✓");
-      }
-      if (inp) inp.value = "";
-    }
-
     function closeAuthModal() {
       document.getElementById("authModal").style.display = "none";
-    }
-
-    async function submitAuthForm(event, prefix) {
-      event.preventDefault();
-      const emailEl = document.getElementById(`${prefix}AuthEmail`);
-      const passEl = document.getElementById(`${prefix}AuthPassword`);
-      const nameEl = document.getElementById(`${prefix}AuthName`);
-      const email = normalizeEmail(emailEl && emailEl.value);
-      const password = (passEl && passEl.value) || "";
-      const fullName = (nameEl && nameEl.value || "").trim();
-
-      if (!email || !password) return;
-      pendingVerifyEmail = email;
-      savePendingPasswordLink(email, password, fullName);
-
-      // If offline or Supabase client is unavailable, allow instant local email sign-up / login
-      if (!sbClient || !navigator.onLine) {
-        if (authMode === "signup") {
-          const acct = saveLocalEmailAccount(email, password, fullName, null, false);
-          await activateLocalEmailSession(email, fullName, acct && acct.id);
-          toast("Account created & signed in ✓");
-          return;
-        }
-        const verified = verifyLocalEmailAccount(email, password);
-        if (verified) {
-          await activateLocalEmailSession(email, verified.fullName, verified.id);
-          toast("Signed in ✓");
-        } else {
-          authFeedback = { type: "err", text: "Offline and password did not match this device's saved credentials." };
-          renderAuthFeedback();
-        }
-        return;
-      }
-
-      authFeedback = { type: "info", text: authMode === "signup" ? "Creating account..." : "Signing in..." };
-      renderAuthFeedback();
-
-      try {
-        const redirectUrl = getCanonicalAuthRedirectUrl();
-        if (authMode === "signup") {
-          const { data, error } = await sbClient.auth.signUp({
-            email,
-            password,
-            options: {
-              emailRedirectTo: redirectUrl,
-              data: fullName ? { full_name: fullName } : {}
-            }
-          });
-
-          if (!error && data && data.session) {
-            saveLocalEmailAccount(email, password, fullName, data.user && data.user.id, true);
-            clearPendingPasswordLink(email);
-            authFeedback = null;
-            toast("Account created & signed in ✓");
-            closeAuthModal();
-            return;
-          }
-
-          if (!error) {
-            // Try direct password sign-in in case auto-confirm is active; otherwise activate without blocking on OTP
-            const tryIn = await sbClient.auth.signInWithPassword({ email, password });
-            if (!tryIn.error && tryIn.data && tryIn.data.session) {
-              saveLocalEmailAccount(email, password, fullName, tryIn.data.user && tryIn.data.user.id, true);
-              clearPendingPasswordLink(email);
-              authFeedback = null;
-              toast("Account created & signed in ✓");
-              closeAuthModal();
-              return;
-            }
-            const acct = saveLocalEmailAccount(email, password, fullName, data && data.user && data.user.id, false);
-            await activateLocalEmailSession(email, fullName, acct && acct.id);
-            toast("Account created & signed in ✓ (no OTP needed)");
-            return;
-          }
-
-          const msg = error.message || "";
-          if (/already registered|already been registered|user_already_exists/i.test(msg)) {
-            const signRes = await sbClient.auth.signInWithPassword({ email, password });
-            if (!signRes.error && signRes.data && signRes.data.session) {
-              saveLocalEmailAccount(email, password, fullName, signRes.data.user && signRes.data.user.id, true);
-              clearPendingPasswordLink(email);
-              authFeedback = null;
-              toast("Signed in to your existing account ✓");
-              closeAuthModal();
-              return;
-            }
-            if (signRes.error && /email not confirmed/i.test(signRes.error.message || "")) {
-              const acct = saveLocalEmailAccount(email, password, fullName, null, false);
-              await activateLocalEmailSession(email, fullName, acct && acct.id);
-              toast("Signed in ✓");
-              return;
-            }
-            const localAcct = verifyLocalEmailAccount(email, password);
-            if (localAcct) {
-              await activateLocalEmailSession(email, localAcct.fullName || fullName, localAcct.id);
-              toast("Signed in ✓");
-              return;
-            }
-            authFeedback = {
-              type: "info",
-              text: `This email (${email}) is already registered. Click 'Sign in with Google' above once to link this password to your Google account, or try signing in with your existing password.`
-            };
-            renderAuthFeedback();
-            return;
-          }
-
-          // Email/OTP sending failed or rate-limited: never block user — sign them in seamlessly
-          const acct = saveLocalEmailAccount(email, password, fullName, null, false);
-          await activateLocalEmailSession(email, fullName, acct && acct.id);
-          toast("Account created & signed in ✓");
-          return;
-        }
-
-        // Sign In mode
-        const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
-        if (!error && data && data.session) {
-          const metaName = (data.user && data.user.user_metadata && data.user.user_metadata.full_name) || "";
-          saveLocalEmailAccount(email, password, metaName, data.user && data.user.id, true);
-          clearPendingPasswordLink(email);
-          authFeedback = null;
-          toast("Signed in ✓ Syncing summaries...");
-          closeAuthModal();
-          return;
-        }
-
-        if (error && /email not confirmed/i.test(error.message || "")) {
-          // Email+password validated by Supabase even though OTP email was never confirmed
-          const acct = saveLocalEmailAccount(email, password, "", null, false);
-          await activateLocalEmailSession(email, acct && acct.fullName, acct && acct.id);
-          toast("Signed in ✓");
-          return;
-        }
-
-        const localAcct = verifyLocalEmailAccount(email, password);
-        if (localAcct) {
-          await activateLocalEmailSession(email, localAcct.fullName, localAcct.id);
-          toast("Signed in ✓");
-          return;
-        }
-
-        authFeedback = {
-          type: "err",
-          text: `Invalid email or password. If you signed up using Google for ${email}, click 'Sign in with Google' above — your password will link automatically.`
-        };
-        renderAuthFeedback();
-      } catch (e) {
-        const localAcct = verifyLocalEmailAccount(email, password);
-        if (localAcct || authMode === "signup") {
-          const acct = localAcct || saveLocalEmailAccount(email, password, fullName, null, false);
-          await activateLocalEmailSession(email, (acct && acct.fullName) || fullName, acct && acct.id);
-          toast("Signed in ✓");
-        } else {
-          authFeedback = { type: "err", text: e.message || "Authentication failed" };
-          renderAuthFeedback();
-        }
-      }
-    }
-
-    async function submitVerifyOtpForm(event, prefix) {
-      event.preventDefault();
-      if (!sbClient) return;
-      const emailEl = document.getElementById(`${prefix}AuthEmail`);
-      const codeEl = document.getElementById(`${prefix}AuthOtpCode`);
-      const email = ((emailEl && emailEl.value) || pendingVerifyEmail || "").trim();
-      const token = (codeEl && codeEl.value || "").trim();
-      if (!email || !token) return;
-
-      authFeedback = { type: "info", text: "Verifying..." };
-      renderAuthFeedback();
-
-      try {
-        let verified = false;
-        let lastErr = null;
-        for (const otpType of ["signup", "email", "recovery", "magiclink"]) {
-          const { data, error } = await sbClient.auth.verifyOtp({ email, token, type: otpType });
-          if (!error && data && data.session) {
-            verified = true;
-            break;
-          }
-          lastErr = error;
-        }
-        if (!verified) throw (lastErr || new Error("Invalid or expired verification code"));
-        authFeedback = null;
-        closeAuthModal();
-        toast("Email verified & signed in ✓");
-      } catch (e) {
-        authFeedback = { type: "err", text: e.message || "Verification failed" };
-        renderAuthFeedback();
-      }
     }
 
     function renderAuthFeedback() {
@@ -4529,58 +4225,6 @@
         document.getElementById("authModalBody").innerHTML = buildAuthPanelHTML(false);
       }
       renderDashboardHeroAndAuth();
-    }
-
-    async function resendConfirmationEmail(emailInputId) {
-      if (!sbClient) {
-        toast("Connect Supabase first");
-        return;
-      }
-      const el = document.getElementById(emailInputId);
-      const email = ((el && el.value) || pendingVerifyEmail || prompt("Enter your email address to resend confirmation:") || "").trim();
-      if (!email) return;
-      pendingVerifyEmail = email;
-
-      try {
-        const redirectUrl = getCanonicalAuthRedirectUrl();
-        const { error } = await sbClient.auth.resend({
-          type: "signup",
-          email,
-          options: { emailRedirectTo: redirectUrl }
-        });
-        if (error) throw error;
-        authFeedback = {
-          type: "ok",
-          text: `Confirmation email sent to ${email}. Click the link in your email to sign in.`
-        };
-        renderAuthFeedback();
-        toast("Confirmation email sent ✓");
-      } catch (e) {
-        authFeedback = { type: "err", text: e.message || "Could not resend confirmation email" };
-        renderAuthFeedback();
-      }
-    }
-
-    async function requestPasswordReset(emailInputId) {
-      if (!sbClient) {
-        toast("Connect Supabase first");
-        return;
-      }
-      const el = document.getElementById(emailInputId);
-      const email = ((el && el.value) || prompt("Enter the email address for your doctor account:") || "").trim();
-      if (!email) return;
-
-      try {
-        const redirectUrl = getCanonicalAuthRedirectUrl();
-        const { error } = await sbClient.auth.resetPasswordForEmail(email, { redirectTo: redirectUrl });
-        if (error) throw error;
-        authFeedback = { type: "ok", text: `Password reset email sent to ${email}. Open the link on this device to set a new password.` };
-        renderAuthFeedback();
-        toast("Password reset email sent ✓");
-      } catch (e) {
-        authFeedback = { type: "err", text: e.message || "Could not send password reset email" };
-        renderAuthFeedback();
-      }
     }
 
     async function signOutUser() {
@@ -4595,7 +4239,7 @@
         }
       }
 
-      if (sbClient && currentUser && !currentUser.local_email_session) {
+      if (sbClient && currentUser) {
         try { await sbClient.auth.signOut(); } catch (e) { console.warn("signOut:", e); }
       }
       currentUser = null;
@@ -4605,25 +4249,646 @@
       toast("Signed out cleanly");
     }
 
-    /* ---------- Password Recovery Modal ---------- */
-    function openRecoveryModal() {
-      document.getElementById("recoveryNewPassword").value = "";
-      document.getElementById("recoveryModal").style.display = "flex";
+    /* ---------- Frequently Shared Contacts & Patient Sharing ---------- */
+    function sortFrequentContacts(list) {
+      return (Array.isArray(list) ? list : [])
+        .filter(c => c && normalizeEmail(c.email))
+        .sort((a, b) => {
+          const countDiff = (Number(b.share_count) || 0) - (Number(a.share_count) || 0);
+          if (countDiff !== 0) return countDiff;
+          const tB = new Date(b.last_shared_at || b.added_at || 0).getTime() || 0;
+          const tA = new Date(a.last_shared_at || a.added_at || 0).getTime() || 0;
+          return tB - tA;
+        });
     }
-    function closeRecoveryModal() {
-      document.getElementById("recoveryModal").style.display = "none";
+
+    async function loadFrequentContacts() {
+      const scope = getOwnerScope();
+      let list = safeParse(await store.get(getContactsKey(scope)));
+      if (!Array.isArray(list)) list = [];
+      frequentContacts = sortFrequentContacts(list);
+      renderFrequentContactsSection();
     }
-    async function submitPasswordRecovery(event) {
-      event.preventDefault();
-      if (!sbClient) return;
-      const pw = document.getElementById("recoveryNewPassword").value;
+
+    async function persistFrequentContacts(syncCloud = true) {
+      frequentContacts = sortFrequentContacts(frequentContacts).slice(0, 40);
+      await store.set(getContactsKey(), JSON.stringify(frequentContacts));
+      renderFrequentContactsSection();
+      if (syncCloud && hasCloudAuthSession() && navigator.onLine) {
+        pushUserSettingsToCloud().catch(() => {});
+      }
+    }
+
+    async function mergeRemoteFrequentContacts(remoteList) {
+      if (!Array.isArray(remoteList) || !remoteList.length) return;
+      const map = new Map();
+      frequentContacts.forEach(c => {
+        const key = normalizeEmail(c && c.email);
+        if (key) map.set(key, { ...c, email: key });
+      });
+      let changed = false;
+      remoteList.forEach(rc => {
+        const key = normalizeEmail(rc && rc.email);
+        if (!key) return;
+        const existing = map.get(key);
+        if (!existing) {
+          map.set(key, {
+            email: key,
+            full_name: String(rc.full_name || "").trim(),
+            avatar_url: String(rc.avatar_url || "").trim(),
+            user_id: rc.user_id || null,
+            google_verified: Boolean(rc.google_verified !== false),
+            share_count: Number(rc.share_count) || 0,
+            last_shared_at: rc.last_shared_at || "",
+            added_at: rc.added_at || new Date().toISOString()
+          });
+          changed = true;
+        } else {
+          const maxShares = Math.max(Number(existing.share_count) || 0, Number(rc.share_count) || 0);
+          const mergedName = existing.full_name || rc.full_name || "";
+          const mergedAvatar = existing.avatar_url || rc.avatar_url || "";
+          const mergedDate = new Date(existing.last_shared_at || 0) >= new Date(rc.last_shared_at || 0)
+            ? existing.last_shared_at
+            : rc.last_shared_at;
+          if (maxShares !== existing.share_count || mergedName !== existing.full_name || mergedAvatar !== existing.avatar_url || mergedDate !== existing.last_shared_at) {
+            map.set(key, {
+              ...existing,
+              full_name: mergedName,
+              avatar_url: mergedAvatar,
+              user_id: existing.user_id || rc.user_id || null,
+              google_verified: Boolean(existing.google_verified || rc.google_verified),
+              share_count: maxShares,
+              last_shared_at: mergedDate
+            });
+            changed = true;
+          }
+        }
+      });
+      if (changed) {
+        frequentContacts = sortFrequentContacts(Array.from(map.values())).slice(0, 40);
+        await store.set(getContactsKey(), JSON.stringify(frequentContacts));
+      }
+    }
+
+    async function recordFrequentContact(email, fullName = "", avatarUrl = "", incrementShare = true, googleVerified = true, userId = null) {
+      const key = normalizeEmail(email);
+      if (!key) return;
+      if (currentUser && key === normalizeEmail(currentUser.email)) return;
+      const nowIso = new Date().toISOString();
+      const idx = frequentContacts.findIndex(c => normalizeEmail(c.email) === key);
+      if (idx >= 0) {
+        const cur = frequentContacts[idx];
+        frequentContacts[idx] = {
+          ...cur,
+          email: key,
+          full_name: String(fullName || cur.full_name || "").trim(),
+          avatar_url: String(avatarUrl || cur.avatar_url || "").trim(),
+          user_id: userId || cur.user_id || null,
+          google_verified: Boolean(googleVerified || cur.google_verified),
+          share_count: (Number(cur.share_count) || 0) + (incrementShare ? 1 : 0),
+          last_shared_at: incrementShare ? nowIso : (cur.last_shared_at || "")
+        };
+      } else {
+        frequentContacts.unshift({
+          email: key,
+          full_name: String(fullName || "").trim(),
+          avatar_url: String(avatarUrl || "").trim(),
+          user_id: userId || null,
+          google_verified: Boolean(googleVerified),
+          share_count: incrementShare ? 1 : 0,
+          last_shared_at: incrementShare ? nowIso : "",
+          added_at: nowIso
+        });
+      }
+      await persistFrequentContacts(true);
+    }
+
+    async function removeFrequentContact(email) {
+      const key = normalizeEmail(email);
+      if (!key) return;
+      frequentContacts = frequentContacts.filter(c => normalizeEmail(c.email) !== key);
+      await persistFrequentContacts(true);
+      toast("Removed contact");
+    }
+
+    function toggleAddContactForm() {
+      contactsAddFormOpen = !contactsAddFormOpen;
+      contactsAddFeedback = null;
+      renderFrequentContactsSection();
+      if (contactsAddFormOpen) {
+        setTimeout(() => {
+          const inp = document.getElementById("quickAddContactEmail");
+          if (inp) inp.focus();
+        }, 40);
+      }
+    }
+
+    async function addFrequentContactFromDashboard(event) {
+      if (event) event.preventDefault();
+      const inp = document.getElementById("quickAddContactEmail");
+      const email = normalizeEmail(inp && inp.value);
+      if (!email) return;
+
+      if (!hasCloudAuthSession()) {
+        contactsAddFeedback = { type: "err", text: "Sign in with Google first to verify and save colleague contacts." };
+        renderFrequentContactsSection();
+        return;
+      }
+      if (!navigator.onLine) {
+        contactsAddFeedback = { type: "err", text: "Internet connection required to verify Google sign-in for this contact." };
+        renderFrequentContactsSection();
+        return;
+      }
+
+      contactsAddFeedback = { type: "info", text: `Checking Google sign-in for ${email}...` };
+      renderFrequentContactsSection();
+
+      const check = await verifyRecipientGoogleAccount(email);
+      if (!check.verified) {
+        contactsAddFeedback = { type: "err", text: check.message || `${email} has not signed in using Google yet.` };
+        renderFrequentContactsSection();
+        return;
+      }
+
+      await recordFrequentContact(check.email, check.full_name, check.avatar_url, false, true, check.user_id);
+      contactsAddFormOpen = false;
+      contactsAddFeedback = null;
+      renderFrequentContactsSection();
+      toast(`Added ${check.full_name || check.email} to Frequently Shared Contacts ✓`);
+    }
+
+    function getContactInitials(name, email) {
+      const src = String(name || email || "DR").trim();
+      const parts = src.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return src.slice(0, 2).toUpperCase();
+    }
+
+    function renderFrequentContactsSection() {
+      const box = document.getElementById("dashContactsSection");
+      if (!box) return;
+
+      const addFeedbackHtml = contactsAddFeedback
+        ? `<div class="auth-msg ${esc(contactsAddFeedback.type)}" style="margin-top:8px;margin-bottom:0">${esc(contactsAddFeedback.text)}</div>`
+        : "";
+
+      const addFormHtml = contactsAddFormOpen ? `
+        <form class="contacts-add-bar" onsubmit="addFrequentContactFromDashboard(event)">
+          <input type="email" id="quickAddContactEmail" placeholder="Colleague's Google email (e.g. doctor@gmail.com)" autocomplete="email" required>
+          <button type="submit" class="btn sm">✓ Verify &amp; Add</button>
+          <button type="button" class="btn sm out" onclick="toggleAddContactForm()">Cancel</button>
+        </form>
+        ${addFeedbackHtml}
+      ` : "";
+
+      const listHtml = frequentContacts.length ? `
+        <div class="contacts-grid">
+          ${frequentContacts.map(c => {
+            const label = c.full_name || c.email.split("@")[0];
+            const initials = getContactInitials(c.full_name, c.email);
+            const countLabel = (Number(c.share_count) || 0) > 0 ? `Shared ${c.share_count}×` : "Pinned contact";
+            return `
+              <div class="contact-chip-card">
+                <div class="contact-avatar">${c.avatar_url ? `<img src="${esc(c.avatar_url)}" alt="${esc(label)}" referrerpolicy="no-referrer">` : esc(initials)}</div>
+                <div class="contact-meta">
+                  <div class="contact-name-row">
+                    <span class="contact-name" title="${esc(label)}">${esc(label)}</span>
+                    <span class="contact-verified-badge" title="Signed in with Google">✓ Google</span>
+                  </div>
+                  <div class="contact-email" title="${esc(c.email)}">${esc(c.email)}</div>
+                  <div class="contact-sub">${esc(countLabel)}</div>
+                </div>
+                <div class="contact-actions">
+                  <button type="button" class="btn sm" onclick="quickShareToContact('${esc(c.email)}')" title="Share a patient summary to ${esc(c.email)}">📤 Share</button>
+                  <button type="button" class="contact-remove-btn" onclick="removeFrequentContact('${esc(c.email)}')" title="Remove contact" aria-label="Remove ${esc(c.email)}">×</button>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      ` : `
+        <div class="contacts-empty-hint">
+          No frequently shared contacts yet. Share a patient summary with a Google-signed-in colleague or click <b>+ Add Contact</b> to pin them here.
+        </div>
+      `;
+
+      box.innerHTML = `
+        <div class="contacts-header">
+          <div>
+            <h3>👥 Frequently Shared Contacts</h3>
+            <p>Quick-share patient details with colleagues verified via Google Sign-In</p>
+          </div>
+          <button type="button" class="btn sm out" onclick="toggleAddContactForm()">${contactsAddFormOpen ? "Close" : "+ Add Contact"}</button>
+        </div>
+        ${addFormHtml}
+        ${listHtml}
+      `;
+    }
+
+    async function verifyRecipientGoogleAccount(rawEmail) {
+      const email = normalizeEmail(rawEmail);
+      if (!email) {
+        return { verified: false, email: "", reason: "empty", message: "Enter the recipient's Google email address." };
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return { verified: false, email, reason: "invalid", message: "Enter a valid email address." };
+      }
+      if (!hasCloudAuthSession()) {
+        return { verified: false, email, reason: "sender_unauthenticated", message: "Please sign in with Google first before sharing patient details." };
+      }
+      if (!navigator.onLine) {
+        return { verified: false, email, reason: "offline", message: "You are offline. Connect to the internet to verify the recipient's Google sign-in." };
+      }
+      if (email === normalizeEmail(currentUser.email)) {
+        return { verified: false, email, reason: "self", message: "You cannot share a summary to your own signed-in email. Enter a colleague's Google email." };
+      }
+
       try {
-        const { error } = await sbClient.auth.updateUser({ password: pw });
-        if (error) throw error;
-        closeRecoveryModal();
-        toast("Password updated successfully ✓");
+        const { data, error } = await sbClient.rpc("verify_google_recipient", { target_email: email });
+        if (!error && data) {
+          if (data.verified) {
+            return {
+              verified: true,
+              user_id: data.user_id,
+              email: normalizeEmail(data.email || email),
+              full_name: String(data.full_name || "").trim(),
+              avatar_url: String(data.avatar_url || "").trim(),
+              message: `Verified: ${data.full_name ? `${data.full_name} (${email})` : email} is signed in using Google.`
+            };
+          }
+          return {
+            verified: false,
+            email,
+            reason: data.reason || "not_google_user",
+            message: `Not verified: ${email} has NOT signed in using Google on this app yet. Ask them to sign in with Google first before sharing.`
+          };
+        }
+
+        if (error && !isMissingRpcError(error)) {
+          throw error;
+        }
+
+        // Fallback if RPC isn't deployed yet: check public.user_directory directly
+        const { data: dirRow, error: dirErr } = await sbClient
+          .from("user_directory")
+          .select("user_id, email, full_name, avatar_url, provider")
+          .eq("email", email)
+          .eq("provider", "google")
+          .maybeSingle();
+
+        if (dirErr) {
+          if (isMissingTableError(dirErr)) {
+            return {
+              verified: false,
+              email,
+              reason: "schema_missing",
+              message: "Supabase sharing schema is not updated yet. Run the updated supabase-schema.sql in your Supabase SQL Editor first."
+            };
+          }
+          throw dirErr;
+        }
+
+        if (dirRow && dirRow.user_id) {
+          return {
+            verified: true,
+            user_id: dirRow.user_id,
+            email: normalizeEmail(dirRow.email),
+            full_name: String(dirRow.full_name || "").trim(),
+            avatar_url: String(dirRow.avatar_url || "").trim(),
+            message: `Verified: ${dirRow.full_name ? `${dirRow.full_name} (${email})` : email} is signed in using Google.`
+          };
+        }
+
+        return {
+          verified: false,
+          email,
+          reason: "not_google_user",
+          message: `Not verified: ${email} has NOT signed in using Google yet. Ask them to sign in with Google first.`
+        };
       } catch (e) {
-        toast(`Could not update password: ${e.message || "error"}`);
+        return {
+          verified: false,
+          email,
+          reason: "error",
+          message: e && e.message ? e.message : "Could not verify recipient's Google sign-in."
+        };
+      }
+    }
+
+    function cleanSharePayload(payload) {
+      const copy = JSON.parse(JSON.stringify(payload || {}));
+      delete copy.__shared_from;
+      return copy;
+    }
+
+    async function quickShareToContact(contactEmail) {
+      const targetId = (hasRecordPersisted && currentRecordId && records.some(r => r.id === currentRecordId))
+        ? currentRecordId
+        : (records[0] ? records[0].id : null);
+      await openSharePatientModal(targetId, contactEmail);
+    }
+
+    async function openSharePatientModal(recordId = null, prefillEmail = "") {
+      if (activeTab === "form" || activeTab === "summary") {
+        if (hasPatientContent(collectDraft()) || hasRecordPersisted) {
+          await saveCurrentRecordNow(false);
+        }
+      }
+
+      const resolvedId = recordId && records.some(r => r.id === recordId)
+        ? recordId
+        : (hasRecordPersisted && records.some(r => r.id === currentRecordId) ? currentRecordId : (records[0] ? records[0].id : null));
+      shareModalRecordId = resolvedId;
+
+      const normalizedPrefill = normalizeEmail(prefillEmail);
+      shareRecipientVerifyState = {
+        email: normalizedPrefill,
+        status: "idle",
+        verified: false,
+        user_id: null,
+        full_name: "",
+        avatar_url: "",
+        message: ""
+      };
+
+      renderSharePatientModalBody();
+      const modal = document.getElementById("sharePatientModal");
+      if (modal) modal.style.display = "flex";
+
+      if (normalizedPrefill && hasCloudAuthSession() && navigator.onLine) {
+        await checkShareRecipientGoogle();
+      }
+    }
+
+    function closeSharePatientModal() {
+      const modal = document.getElementById("sharePatientModal");
+      if (modal) modal.style.display = "none";
+    }
+
+    function onShareRecordChange(nextId) {
+      shareModalRecordId = nextId || null;
+      renderSharePatientModalBody();
+    }
+
+    function onShareEmailInputChange() {
+      const inp = document.getElementById("shareRecipientEmail");
+      const curEmail = normalizeEmail(inp && inp.value);
+      if (curEmail !== shareRecipientVerifyState.email) {
+        shareRecipientVerifyState = {
+          email: curEmail,
+          status: "idle",
+          verified: false,
+          user_id: null,
+          full_name: "",
+          avatar_url: "",
+          message: ""
+        };
+        renderShareVerifyStatusBox();
+      }
+    }
+
+    async function selectShareRecipient(email) {
+      const inp = document.getElementById("shareRecipientEmail");
+      if (inp) inp.value = normalizeEmail(email);
+      shareRecipientVerifyState = {
+        email: normalizeEmail(email),
+        status: "idle",
+        verified: false,
+        user_id: null,
+        full_name: "",
+        avatar_url: "",
+        message: ""
+      };
+      await checkShareRecipientGoogle();
+    }
+
+    function renderShareVerifyStatusBox() {
+      const box = document.getElementById("shareVerifyStatus");
+      if (!box) return;
+      const st = shareRecipientVerifyState;
+      if (st.status === "idle" || !st.message) {
+        box.style.display = "none";
+        box.className = "share-verify-box";
+        box.textContent = "";
+        return;
+      }
+      box.style.display = "block";
+      const cls = st.status === "verified" ? "ok" : (st.status === "checking" ? "info" : "err");
+      box.className = `share-verify-box ${cls}`;
+      box.textContent = st.message;
+    }
+
+    async function checkShareRecipientGoogle() {
+      const inp = document.getElementById("shareRecipientEmail");
+      const email = normalizeEmail((inp && inp.value) || shareRecipientVerifyState.email);
+      if (!email) {
+        shareRecipientVerifyState = {
+          email: "",
+          status: "error",
+          verified: false,
+          user_id: null,
+          full_name: "",
+          avatar_url: "",
+          message: "Enter the recipient's Google email address first."
+        };
+        renderShareVerifyStatusBox();
+        return shareRecipientVerifyState;
+      }
+
+      shareRecipientVerifyState = {
+        email,
+        status: "checking",
+        verified: false,
+        user_id: null,
+        full_name: "",
+        avatar_url: "",
+        message: `Checking Google sign-in for ${email}...`
+      };
+      renderShareVerifyStatusBox();
+
+      const res = await verifyRecipientGoogleAccount(email);
+      shareRecipientVerifyState = {
+        email: res.email || email,
+        status: res.verified ? "verified" : "unverified",
+        verified: Boolean(res.verified),
+        user_id: res.user_id || null,
+        full_name: res.full_name || "",
+        avatar_url: res.avatar_url || "",
+        message: res.message || ""
+      };
+      renderShareVerifyStatusBox();
+      return shareRecipientVerifyState;
+    }
+
+    function renderSharePatientModalBody() {
+      const body = document.getElementById("sharePatientModalBody");
+      if (!body) return;
+
+      if (!hasCloudAuthSession()) {
+        body.innerHTML = `
+          <div class="auth-msg info">
+            Sign in with your Google account to share patient summaries directly with another Google-signed-in doctor.
+          </div>
+          <button type="button" class="btn-google-primary" onclick="closeSharePatientModal();signInWithGoogle()">
+            ${GOOGLE_SVG}
+            <span>Sign in with Google</span>
+          </button>
+        `;
+        return;
+      }
+
+      if (!records.length) {
+        body.innerHTML = `
+          <div class="auth-msg info">
+            No saved patient summaries found yet. Create and fill a patient summary first before sharing.
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn" onclick="closeSharePatientModal();newSummary()">+ New Patient</button>
+            <button type="button" class="btn out" onclick="closeSharePatientModal()">Close</button>
+          </div>
+        `;
+        return;
+      }
+
+      const selectedRec = records.find(r => r.id === shareModalRecordId) || records[0];
+      if (selectedRec) shareModalRecordId = selectedRec.id;
+
+      const optionsHtml = records.map(r => {
+        const label = [r.patient_name || "Unnamed Patient", r.ip_no ? `IP ${r.ip_no}` : "", r.unit || ""].filter(Boolean).join(" · ");
+        return `<option value="${esc(r.id)}" ${selectedRec && r.id === selectedRec.id ? "selected" : ""}>${esc(label)}</option>`;
+      }).join("");
+
+      const dates = selectedRec
+        ? [selectedRec.doa ? `DOA ${fmtDate(selectedRec.doa)}` : "", selectedRec.dod ? `DOD ${fmtDate(selectedRec.dod)}` : ""].filter(Boolean).join(" · ")
+        : "";
+
+      const quickContactsHtml = frequentContacts.length ? `
+        <div class="field">
+          <label>Frequently Shared Contacts</label>
+          <div class="share-quick-contacts">
+            ${frequentContacts.map(c => {
+              const label = c.full_name ? `${c.full_name} (${c.email})` : c.email;
+              const isSelected = normalizeEmail(shareRecipientVerifyState.email) === normalizeEmail(c.email);
+              return `<button type="button" class="chip${isSelected ? " active-contact" : ""}" onclick="selectShareRecipient('${esc(c.email)}')">✓ ${esc(label)}</button>`;
+            }).join("")}
+          </div>
+        </div>
+      ` : "";
+
+      const curNoteEl = document.getElementById("sharePatientNote");
+      const curNote = curNoteEl ? curNoteEl.value : "";
+
+      body.innerHTML = `
+        <form onsubmit="sharePatientWithDoctor(event)">
+          <div class="field">
+            <label for="shareRecordSelect">Patient Summary to Share</label>
+            <select id="shareRecordSelect" onchange="onShareRecordChange(this.value)">${optionsHtml}</select>
+          </div>
+
+          ${selectedRec ? `
+            <div class="share-patient-preview">
+              <div><b>${esc(selectedRec.patient_name || "Unnamed Patient")}</b>${selectedRec.ip_no ? ` · IP: ${esc(selectedRec.ip_no)}` : ""}${selectedRec.unit ? ` · ${esc(selectedRec.unit)}` : ""}</div>
+              ${dates ? `<div class="hint" style="margin:2px 0">${esc(dates)}</div>` : ""}
+              ${selectedRec.diagnosis_preview ? `<div class="hint" style="margin:2px 0;color:var(--ink)">${esc(selectedRec.diagnosis_preview)}</div>` : ""}
+            </div>
+          ` : ""}
+
+          ${quickContactsHtml}
+
+          <div class="field">
+            <label for="shareRecipientEmail">Recipient Doctor's Google Email</label>
+            <div class="share-email-row">
+              <input type="email" id="shareRecipientEmail" value="${esc(shareRecipientVerifyState.email)}" placeholder="colleague@gmail.com" oninput="onShareEmailInputChange()" autocomplete="email" required>
+              <button type="button" class="btn sm out" onclick="checkShareRecipientGoogle()">Verify Google</button>
+            </div>
+            <p class="hint" style="margin:4px 0 0">Before sending, we verify that the recipient has signed in to this website using Google.</p>
+          </div>
+
+          <div id="shareVerifyStatus" class="share-verify-box" style="display:none"></div>
+
+          <div class="field">
+            <label for="sharePatientNote">Handover Note (optional)</label>
+            <textarea id="sharePatientNote" rows="2" placeholder="e.g. Please review labs and complete discharge advice">${esc(curNote)}</textarea>
+          </div>
+
+          <div class="modal-actions">
+            <button type="submit" class="btn" id="shareSubmitBtn">📤 Verify &amp; Share Patient Details</button>
+            <button type="button" class="btn out" onclick="closeSharePatientModal()">Cancel</button>
+          </div>
+        </form>
+      `;
+
+      renderShareVerifyStatusBox();
+    }
+
+    async function sharePatientWithDoctor(event) {
+      if (event) event.preventDefault();
+      if (!hasCloudAuthSession()) {
+        toast("Sign in with Google first");
+        return;
+      }
+      const rec = records.find(r => r.id === shareModalRecordId);
+      if (!rec) {
+        toast("Select a patient summary to share");
+        return;
+      }
+
+      const submitBtn = document.getElementById("shareSubmitBtn");
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const verification = await checkShareRecipientGoogle();
+        if (!verification.verified) {
+          toast("Recipient must be signed in using Google before sharing");
+          return;
+        }
+
+        const noteEl = document.getElementById("sharePatientNote");
+        const note = (noteEl && noteEl.value || "").trim();
+
+        const { data, error } = await sbClient.rpc("share_patient_summary", {
+          target_email: verification.email,
+          summary_status: rec.status || "incomplete",
+          p_patient_name: rec.patient_name || "",
+          p_ip_no: rec.ip_no || "",
+          p_doa: rec.doa || "",
+          p_dod: rec.dod || "",
+          p_unit: rec.unit || "",
+          p_diagnosis_preview: rec.diagnosis_preview || "",
+          p_payload: cleanSharePayload(rec.payload),
+          p_note: note,
+          p_source_summary_id: rec.id
+        });
+
+        if (error) {
+          if (isMissingRpcError(error) || isMissingTableError(error)) {
+            throw new Error("Supabase sharing schema is not updated yet. Run the updated supabase-schema.sql in Supabase SQL Editor.");
+          }
+          throw error;
+        }
+
+        const recName = (data && data.recipient_name) || verification.full_name || "";
+        await recordFrequentContact(
+          verification.email,
+          recName,
+          verification.avatar_url || "",
+          true,
+          true,
+          (data && data.recipient_id) || verification.user_id || null
+        );
+
+        closeSharePatientModal();
+        toast(`Shared "${rec.patient_name || "Patient"}" with ${recName || verification.email} ✓`);
+      } catch (e) {
+        shareRecipientVerifyState = {
+          ...shareRecipientVerifyState,
+          status: "error",
+          message: (e && e.message) ? e.message : "Could not share patient details."
+        };
+        renderShareVerifyStatusBox();
+        toast(shareRecipientVerifyState.message);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
     }
 
@@ -4760,6 +5025,7 @@
       await initSupabase();
       await loadScopedRecords();
       await loadSavedTemplates();
+      await loadFrequentContacts();
       await checkGuestDraftsForMigration();
 
       suppressSave = true;

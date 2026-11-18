@@ -3,11 +3,11 @@ project_id = "voczhrkycygwquxqswxx"
 
 [auth]
 enabled = true
-site_url = "https://syed98hafiz.github.io/dsum/"
+site_url = "https://dsum.shop/"
 additional_redirect_urls = [
+  "https://dsum.shop/",
+  "https://dsum.shop/index.html",
+  "https://www.dsum.shop/",
   "https://syed98hafiz.github.io/dsum/",
-  "https://syed98hafiz.github.io/dsum/index.html",
-  "https://dsum.shop/"
+  "https://syed98hafiz.github.io/dsum/index.html"
 ]
-
-

@@ -1,11 +1,11 @@
-const CACHE = "ds-v2-cache-v12";
+const CACHE = "ds-v2-cache-v13";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=12",
-  "./app.js?v=12",
-  "./supabase.min.js?v=12",
-  "./supabase-config.js?v=12",
+  "./styles.css?v=13",
+  "./app.js?v=13",
+  "./supabase.min.js?v=13",
+  "./supabase-config.js?v=13",
   "./html2pdf.bundle.min.js",
   "./icon-192.png",
   "./icon-512.png",
@@ -30,7 +30,7 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
   const reqUrl = new URL(e.request.url);
-  // Never intercept external API calls (Supabase auth/REST) or root `/` app files outside /v2/
+  // Never intercept external API calls (Supabase auth/REST) or other origins
   if (reqUrl.origin !== self.location.origin) return;
   const scopePath = new URL("./", self.location.href).pathname;
   if (!reqUrl.pathname.startsWith(scopePath)) return;
@@ -45,4 +45,3 @@ self.addEventListener("fetch", (e) => {
     }).catch(() => caches.match(e.request))
   );
 });
-

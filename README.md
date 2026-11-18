@@ -1,27 +1,21 @@
-# Discharge Summary Builder — v2 (Experimental Mirror + Dashboard + Supabase)
+# Discharge Summary Builder (`dsum`)
 
-`v2/` is a completely isolated mirror of the main Discharge Summary Builder designed for testing new features (starting with the **Patient Dashboard** and **Supabase Authentication & Cloud Draft Sync**) without risking or modifying the live main website at `/`.
+Standalone Patient Dashboard, Discharge Summary Builder, Google Cloud Sync, and Doctor-to-Doctor Patient Handover web app hosted at **[dsum.shop](https://dsum.shop/)** (`https://syed98hafiz.github.io/dsum/`).
 
-## Safety & Isolation Guarantees
-- **Separate Storage**: Uses IndexedDB `"ds-builder-v2"` and `ds-v2:*` keys in `localStorage` so experiments in `v2/` never overwrite or corrupt drafts/defaults saved in the main website (`ds-builder`).
-- **Separate Service Worker & Manifest**: `v2/sw.js` and `v2/manifest.json` are strictly scoped to `./` (`/v2/`) and only cache `./` `v2` static assets (never root `/` files and never Supabase Auth/REST requests).
+## Key Features
+- **Google-Only Doctor Authentication & Cloud Sync**:
+  - Doctors sign in using Google OAuth via Supabase Auth.
+  - Multi-device sync for patient summaries, institution defaults, saved templates, themes, and frequently shared contacts.
+- **Patient Details Sharing (Google-Verified)**:
+  - Share patient summaries from one doctor's Google email to another right inside the website (`📤 Share` on any patient card, table row, form bar, or summary bar).
+  - Before sending, the website verifies (both in the UI and in the Supabase `share_patient_summary` RPC) that the recipient email has signed in using Google.
+- **Frequently Shared Contacts Dashboard**:
+  - Automatically tracks and pins colleagues you share patient records with on the Dashboard for one-click sharing (`👥 Frequently Shared Contacts`).
+- **Offline-First + A4 Print / PDF**:
+  - Works offline via IndexedDB (`ds-builder-v2`) and Service Worker (`sw.js`), with direct inline A4 summary editing, smart pagination (`relaxed` / `compact` / `compact2`), and PDF export/sharing.
 
-## Setting Up Supabase (Cloud Login & Sync)
-1. Create a free project at [supabase.com](https://supabase.com).
-2. Open **SQL Editor → New query** in your Supabase Dashboard, paste the contents of [`supabase-schema.sql`](./supabase-schema.sql), and click **Run**.
-   - Creates `public.discharge_summaries` and `public.user_settings` with strict Row Level Security (`auth.uid() = user_id`).
-3. In **Authentication → Providers → Email**, make sure Email/Password auth is enabled (and in **Authentication → URL Configuration**, add your `/v2/` URL under **Redirect URLs**, e.g. `https://<username>.github.io/<repo>/v2/`).
-4. Copy your **Project URL** and **Anon (public) Key** from **Project Settings → API**:
-   - Either paste them into [`supabase-config.js`](./supabase-config.js) and push, **OR**
-   - Open `v2/` in your browser → click **Cloud Setup** on the Dashboard → paste your URL & Key → **Save & Connect**.
-
-## Features in v2
-- **Dashboard-First Workflow** (Desktop cards/table views + Mobile card layout):
-  - Create, search, filter (`All`, `Incomplete`, `Completed`), sort, duplicate, preview/print, and resume patient summaries anytime.
-  - Visual completion indicator and explicit `Incomplete` ↔ `Completed` status toggle.
-- **Offline-First + Cloud Auto-Sync**:
-  - Works offline in hospital wards; automatically queues unsynced edits/deletes locally and syncs with Supabase when logged in and online.
-  - Per-user local cache isolation on shared ward computers when signing out.
-- **Full Main Builder Parity**:
-  - Universal `DD.MM.YYYY` dates with numeric keypad support, A4 smart pagination (`relaxed` / `compact` / `compact2`), signature pin toggle, empty-lines spacing, print & mobile PDF sharing.
-
+## Supabase Setup
+1. Open **SQL Editor → New query** in your Supabase project (`voczhrkycygwquxqswxx`), paste [`supabase-schema.sql`](./supabase-schema.sql), and click **Run** (or push migrations under `supabase/migrations/`).
+   - Creates `public.discharge_summaries`, `public.user_settings`, `public.user_directory`, `public.patient_shares`, RLS policies, and the `verify_google_recipient` + `share_patient_summary` RPCs.
+2. In **Authentication → Providers**, keep **Google** enabled and disable **Email** provider.
+3. In **Authentication → URL Configuration**, set **Site URL** to `https://dsum.shop/` and add redirect URLs for `https://dsum.shop/**`, `https://www.dsum.shop/**`, and `https://syed98hafiz.github.io/dsum/**`.

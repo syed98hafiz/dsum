@@ -14,10 +14,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png">
   <link rel="icon" href="icon-192.png">
   <title>DS Builder v2 — Dashboard &amp; Discharge Summary</title>
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=13">
   <script src="html2pdf.bundle.min.js"></script>
-  <script src="supabase.min.js?v=12"></script>
-  <script src="supabase-config.js?v=12"></script>
+  <script src="supabase.min.js?v=13"></script>
+  <script src="supabase-config.js?v=13"></script>
 </head>
 
 <body>
@@ -186,9 +186,12 @@
       <button type="button" class="stat-card cloud" id="statSyncCard" onclick="handleSyncCardClick()">
         <span class="stat-label">Cloud Sync</span>
         <span class="stat-val stat-val-sm" id="statSyncText">Sign in</span>
-        <span class="stat-sub" id="statSyncSub">Google / Email</span>
+        <span class="stat-sub" id="statSyncSub">Google Account</span>
       </button>
     </section>
+
+    <!-- Frequently Shared Contacts -->
+    <section class="dash-contacts-card" id="dashContactsSection" aria-label="Frequently shared contacts"></section>
 
     <!-- Search, Filter, Sort & New CTA -->
     <section class="dash-toolbar">
@@ -202,6 +205,7 @@
           <button type="button" class="pill active" data-filter="all" onclick="setDashFilter('all')">All</button>
           <button type="button" class="pill" data-filter="incomplete" onclick="setDashFilter('incomplete')">Incomplete</button>
           <button type="button" class="pill" data-filter="completed" onclick="setDashFilter('completed')">Completed</button>
+          <button type="button" class="pill" data-filter="shared" onclick="setDashFilter('shared')">📨 Shared with me</button>
         </div>
         <div class="dash-right-controls">
           <select id="dashSort" aria-label="Sort patient summaries" onchange="setDashSort(this.value)">
@@ -241,6 +245,7 @@
         <button type="button" class="status-toggle-btn incomplete" id="activeStatusBtn" onclick="toggleActiveStatus()" title="Click to toggle Incomplete / Completed">
           <span id="activeStatusText">Incomplete</span>
         </button>
+        <button type="button" class="btn sm out" onclick="openSharePatientModal(currentRecordId)" title="Share patient details to another Google-signed-in doctor">📤 Share Patient</button>
         <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
       </div>
     </div>
@@ -687,6 +692,7 @@ Take diet as advised.</textarea>
         <button type="button" class="status-toggle-btn incomplete" id="summaryStatusBtn" onclick="toggleActiveStatus()">
           <span id="summaryStatusText">Incomplete</span>
         </button>
+        <button type="button" class="btn sm out" onclick="openSharePatientModal(currentRecordId)" title="Share patient details to another Google-signed-in doctor">📤 Share Patient</button>
         <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
       </div>
     </div>
@@ -733,29 +739,18 @@ Take diet as advised.</textarea>
     </div>
   </div>
 
-  <!-- ================= PASSWORD RECOVERY MODAL ================= -->
-  <div class="modal-backdrop no-print" id="recoveryModal" style="display:none">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="recoveryModalTitle">
+  <!-- ================= SHARE PATIENT MODAL ================= -->
+  <div class="modal-backdrop no-print" id="sharePatientModal" style="display:none" onclick="if(event.target===this) closeSharePatientModal()">
+    <div class="modal-card modal-wide" role="dialog" aria-modal="true" aria-labelledby="sharePatientModalTitle">
       <div class="modal-head">
-        <h2 id="recoveryModalTitle">Set New Password</h2>
-        <button type="button" class="modal-close" onclick="closeRecoveryModal()" aria-label="Close">×</button>
+        <h2 id="sharePatientModalTitle">📤 Share Patient Details</h2>
+        <button type="button" class="modal-close" onclick="closeSharePatientModal()" aria-label="Close">×</button>
       </div>
-      <div class="modal-body">
-        <form onsubmit="submitPasswordRecovery(event)">
-          <div class="field">
-            <label for="recoveryNewPassword">New Password (min 6 characters)</label>
-            <input type="password" id="recoveryNewPassword" minlength="6" required>
-          </div>
-          <div class="modal-actions">
-            <button type="submit" class="btn">Update Password</button>
-            <button type="button" class="btn out" onclick="closeRecoveryModal()">Cancel</button>
-          </div>
-        </form>
-      </div>
+      <div class="modal-body" id="sharePatientModalBody"></div>
     </div>
   </div>
 
-  <script src="app.js?v=12"></script>
+  <script src="app.js?v=13"></script>
 </body>
 
 </html>

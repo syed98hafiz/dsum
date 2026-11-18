@@ -1,6 +1,6 @@
 -- =============================================================================
 -- DS Builder v2 — Supabase Database Schema & Row Level Security (RLS)
--- Managed migration tracked in this monorepo (synced with v2/supabase-schema.sql)
+-- Managed migration tracked in this repository (synced with supabase-schema.sql)
 -- =============================================================================
 
 -- 1. Patient Discharge Summaries table (incomplete drafts & completed summaries)
@@ -19,7 +19,7 @@ create table if not exists public.discharge_summaries (
   updated_at timestamptz not null default now()
 );
 
--- 2. Per-user institution defaults & theme preferences table
+-- 2. Per-user institution defaults, templates, theme preferences & frequent contacts
 create table if not exists public.user_settings (
   user_id uuid primary key references auth.users(id) on delete cascade default auth.uid(),
   defaults jsonb not null default '{}'::jsonb,
@@ -115,4 +115,3 @@ create policy "Users can delete own settings"
   on public.user_settings for delete
   to authenticated
   using (auth.uid() = user_id);
-
