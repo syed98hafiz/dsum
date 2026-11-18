@@ -1,0 +1,13 @@
+# Supabase CLI & Monorepo Project Configuration
+project_id = "voczhrkycygwquxqswxx"
+
+[auth]
+enabled = true
+site_url = "https://syed98hafiz.github.io/dsum/"
+additional_redirect_urls = [
+  "https://syed98hafiz.github.io/dsum/",
+  "https://syed98hafiz.github.io/dsum/index.html",
+  "https://dsum.shop/"
+]
+
+
