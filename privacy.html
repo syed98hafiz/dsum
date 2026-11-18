@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#14425f">
+  <link rel="icon" href="icon-192.png">
+  <title>Privacy Policy — Discharge Summary Builder</title>
+  <style>
+    :root {
+      --primary: #14425f;
+      --accent: #0284c7;
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #cbd5e1;
+      --soft: #e0f2fe;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: #fff;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.14);
+    }
+    .brand {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .back-btn:hover { background: rgba(255, 255, 255, 0.26); }
+    .container {
+      max-width: 840px;
+      margin: 28px auto 48px;
+      padding: 0 16px;
+    }
+    .doc-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px 30px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      color: var(--primary);
+      letter-spacing: -0.02em;
+    }
+    .meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    h2 {
+      margin: 24px 0 8px;
+      font-size: 17px;
+      color: var(--primary);
+    }
+    p, li {
+      font-size: 14.5px;
+      color: var(--ink);
+    }
+    ul {
+      margin: 8px 0 12px;
+      padding-left: 20px;
+    }
+    li { margin-bottom: 6px; }
+    .highlight-box {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin: 14px 0;
+      font-size: 14px;
+    }
+    a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    a:hover { text-decoration: underline; }
+    .footer-nav {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    @media (max-width: 600px) {
+      .doc-card { padding: 20px 18px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Discharge Summary Builder</div>
+    <a href="https://dsum.shop/" class="back-btn">← Back to Discharge Summary Builder</a>
+  </header>
+
+  <main class="container">
+    <article class="doc-card">
+      <h1>Privacy Policy</h1>
+      <div class="meta">
+        Application: <b>Discharge Summary Builder (dsum)</b> · Website: <a href="https://dsum.shop/">https://dsum.shop/</a> · Effective Date: 18 November 2026
+      </div>
+
+      <h2>1. Overview &amp; Local-First Design</h2>
+      <p>
+        Discharge Summary Builder (<b>dsum.shop</b>) is an offline-first progressive web application built to help clinicians draft, format, print, and export A4 medical discharge summaries. By default (<b>Local mode</b>), your patient drafts, saved templates, defaults, and theme settings remain strictly inside your device's browser storage (IndexedDB and localStorage) and are never transmitted to any external server.
+      </p>
+
+      <h2>2. Google User Data Accessed</h2>
+      <p>
+        Cloud synchronization and colleague handover features use optional <b>Google Sign-In</b> via Supabase Auth. When you choose to sign in with Google, the application requests and accesses only basic profile identity information permitted by your Google account:
+      </p>
+      <ul>
+        <li><b>Email address</b> — used to identify your doctor account, isolate your synced workspace, and verify recipients for patient summary handover.</li>
+        <li><b>Display name &amp; profile picture URL</b> — displayed in your signed-in dashboard header and colleague contact cards so doctors can confirm the identity of a handover recipient.</li>
+      </ul>
+      <div class="highlight-box">
+        The application does <b>not</b> request access to your Gmail messages, Google Drive files, Google Contacts, Calendar, or any other sensitive Google workspace scopes.
+      </div>
+
+      <h2>3. How Data Is Stored &amp; Processed</h2>
+      <ul>
+        <li><b>On-Device Storage:</b> All discharge summary drafts, institution defaults, custom themes, and saved templates are cached locally in browser IndexedDB (<code>ds-builder-v2</code>) and <code>localStorage</code> so the app functions offline.</li>
+        <li><b>Optional Cloud Sync (Supabase):</b> If you sign in with Google, your records, templates, frequently shared contacts, and preferences are synced over HTTPS to Supabase PostgreSQL under Row-Level Security (RLS) policies scoped to your authenticated user ID.</li>
+      </ul>
+
+      <h2>4. Doctor-to-Doctor Patient Details Sharing</h2>
+      <p>
+        When you explicitly share a patient summary from the app to a colleague's email address:
+      </p>
+      <ul>
+        <li>The app verifies that the recipient uses Google Sign-In before dispatching the handover payload.</li>
+        <li>Shared patient details are delivered only to the specified recipient via Supabase sharing tables / Realtime broadcast and local account scope, along with your sender name, sender email, and optional handover note.</li>
+      </ul>
+
+      <h2>5. Data Sharing, Third Parties &amp; Google API Limited Use</h2>
+      <p>
+        Your data and Google user information are treated strictly as private operational data:
+      </p>
+      <ul>
+        <li>We do <b>not</b> sell, rent, trade, or monetize user data or clinical records.</li>
+        <li>We do <b>not</b> serve advertisements or run third-party marketing/analytics trackers.</li>
+        <li>If you inspect Google Workspace domains during recipient verification, a standard DNS-over-HTTPS MX lookup (<code>dns.google</code>) is performed on the recipient's domain only — no patient details are ever included in that query.</li>
+        <li>Our use and transfer of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.</li>
+      </ul>
+
+      <h2>6. Data Retention, Export &amp; Deletion Controls</h2>
+      <p>You remain in full control of your data at all times:</p>
+      <ul>
+        <li><b>Export Anytime:</b> Export individual patient drafts or templates as local JSON files or A4 PDFs directly from your browser.</li>
+        <li><b>Local Deletion:</b> Delete individual records or clear browser site data at any time to wipe all cached information from your device.</li>
+        <li><b>Cloud Deletion &amp; Revocation:</b> Deleting a summary or contact removes it from your synced workspace. You may also revoke Google OAuth access anytime in your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">Google Account Permissions</a>.</li>
+      </ul>
+
+      <h2>7. Contact &amp; Open-Source Repository</h2>
+      <p>
+        For privacy questions or data deletion assistance, please contact the maintainer via the official repository:
+        <a href="https://github.com/syed98hafiz/dsum" target="_blank" rel="noopener noreferrer">https://github.com/syed98hafiz/dsum</a>.
+      </p>
+
+      <div class="footer-nav">
+        <span>© 2026 Discharge Summary Builder · MIT License</span>
+        <span>
+          <a href="terms.html">Terms of Service</a> ·
+          <a href="https://github.com/syed98hafiz/dsum/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">License</a>
+        </span>
+      </div>
+    </article>
+  </main>
+</body>
+</html>
