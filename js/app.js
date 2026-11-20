@@ -1,442 +1,243 @@
 /* ---------- clinical presets & bundles (mirrored from main) ---------- */
-const COMMON_CC = ["fever", "breathlessness", "cough", "chest pain", "palpitations",
-  "abdominal pain", "vomiting", "loose stools", "decreased urine output", "pedal edema",
-  "giddiness", "headache", "altered sensorium", "seizures", "loss of consciousness",
-  "weakness of limbs", "yellowish discolouration of eyes", "decreased appetite",
-  "hematemesis", "melena", "burning micturition"];
-const COMMON_LABS = ["Hb", "TC", "DC", "Platelet", "PCV", "ESR", "Urea", "Creatinine", "Na", "K",
-  "Cl", "HCO3", "RBS", "FBS", "PPBS", "HbA1c", "T.Bilirubin", "D.Bilirubin", "SGOT", "SGPT", "ALP",
-  "T.Protein", "Albumin", "PT", "INR", "aPTT", "TSH", "Ca", "PO4", "Mg", "CRP", "Troponin"];
-const PANELS = {
-  "CBC": ["Hb", "TC", "DC", "Platelet", "PCV"],
-  "RFT": ["Urea", "Creatinine", "Na", "K", "Cl"],
-  "LFT": ["T.Bilirubin", "D.Bilirubin", "SGOT", "SGPT", "ALP", "T.Protein", "Albumin"],
-  "Coagulation": ["PT", "INR", "aPTT"],
-  "Sugar": ["RBS", "HbA1c"]
-};
-const COMMON_DRUGS = ["Inj. Ceftriaxone", "Inj. Piperacillin-Tazobactam", "Inj. Meropenem",
-  "Inj. Doxycycline", "Tab. Doxycycline", "Tab. Azithromycin", "Inj. Pantoprazole", "Tab. Pantoprazole",
-  "Inj. Ondansetron", "Inj. Paracetamol", "Tab. Paracetamol", "Inj. Metronidazole", "Tab. Metformin",
-  "Inj. Insulin (HAI)", "Inj. Furosemide", "Tab. Furosemide", "Tab. Aspirin", "Tab. Atorvastatin",
-  "Tab. Clopidogrel", "Tab. Amlodipine", "Tab. Telmisartan", "Inj. Hydrocortisone", "Neb. Ipravent",
-  "Neb. Budecort", "Inj. Vitamin K", "Inj. Thiamine", "Tab. Ecosprin", "Tab. Pan 40"];
-const COMMON_COND = ["Stable", "Improved", "Symptomatically better", "Hemodynamically stable",
-  "Afebrile and stable", "Discharged at request", "Discharged against medical advice"];
-const COMMON_PAST = ["K/C/O T2DM on medication", "K/C/O Systemic Hypertension on medication",
-  "K/C/O CAD", "K/C/O CVA", "K/C/O Epilepsy", "K/C/O Bronchial Asthma/COPD", "K/C/O CKD",
-  "K/C/O Koch's disease (TB) — treated", "K/C/O Chronic Liver Disease", "K/C/O Hypothyroidism",
-  "No significant past history"];
+    const COMMON_CC = ["fever", "breathlessness", "cough", "chest pain", "palpitations",
+      "abdominal pain", "vomiting", "loose stools", "decreased urine output", "pedal edema",
+      "giddiness", "headache", "altered sensorium", "seizures", "loss of consciousness",
+      "weakness of limbs", "yellowish discolouration of eyes", "decreased appetite",
+      "hematemesis", "melena", "burning micturition"];
+    const COMMON_LABS = ["Hb", "TC", "DC", "Platelet", "PCV", "ESR", "Urea", "Creatinine", "Na", "K",
+      "Cl", "HCO3", "RBS", "FBS", "PPBS", "HbA1c", "T.Bilirubin", "D.Bilirubin", "SGOT", "SGPT", "ALP",
+      "T.Protein", "Albumin", "PT", "INR", "aPTT", "TSH", "Ca", "PO4", "Mg", "CRP", "Troponin"];
+    const PANELS = {
+      "CBC": ["Hb", "TC", "DC", "Platelet", "PCV"],
+      "RFT": ["Urea", "Creatinine", "Na", "K", "Cl"],
+      "LFT": ["T.Bilirubin", "D.Bilirubin", "SGOT", "SGPT", "ALP", "T.Protein", "Albumin"],
+      "Coagulation": ["PT", "INR", "aPTT"],
+      "Sugar": ["RBS", "HbA1c"]
+    };
+    const COMMON_DRUGS = ["Inj. Ceftriaxone", "Inj. Piperacillin-Tazobactam", "Inj. Meropenem",
+      "Inj. Doxycycline", "Tab. Doxycycline", "Tab. Azithromycin", "Inj. Pantoprazole", "Tab. Pantoprazole",
+      "Inj. Ondansetron", "Inj. Paracetamol", "Tab. Paracetamol", "Inj. Metronidazole", "Tab. Metformin",
+      "Inj. Insulin (HAI)", "Inj. Furosemide", "Tab. Furosemide", "Tab. Aspirin", "Tab. Atorvastatin",
+      "Tab. Clopidogrel", "Tab. Amlodipine", "Tab. Telmisartan", "Inj. Hydrocortisone", "Neb. Ipravent",
+      "Neb. Budecort", "Inj. Vitamin K", "Inj. Thiamine", "Tab. Ecosprin", "Tab. Pan 40"];
+    const COMMON_COND = ["Stable", "Improved", "Symptomatically better", "Hemodynamically stable",
+      "Afebrile and stable", "Discharged at request", "Discharged against medical advice"];
+    const COMMON_PAST = ["K/C/O T2DM on medication", "K/C/O Systemic Hypertension on medication",
+      "K/C/O CAD", "K/C/O CVA", "K/C/O Epilepsy", "K/C/O Bronchial Asthma/COPD", "K/C/O CKD",
+      "K/C/O Koch's disease (TB) — treated", "K/C/O Chronic Liver Disease", "K/C/O Hypothyroidism",
+      "No significant past history"];
 
-const RX_BUNDLES = {
-  "CAD": ["Tab. Aspirin 75 mg OD (continue)", "Tab. Clopidogrel 75 mg OD × 12 months", "Tab. Atorvastatin 40 mg HS (continue)", "Tab. Metoprolol 25 mg BD (continue)", "Tab. Ramipril 2.5 mg OD (continue)", "Tab. Sorbitrate 5 mg SL SOS (for chest pain)"],
-  "HFrEF": ["Tab. Furosemide 40 mg BD (continue)", "Tab. Sacubitril-Valsartan 50 mg BD (continue)", "Tab. Carvedilol 3.125 mg BD (continue)", "Tab. Spironolactone 25 mg OD (continue)", "Tab. Dapagliflozin 10 mg OD (continue)"],
-  "COPD": ["MDI Budesonide-Formoterol 1 puff BD (continue)", "MDI Tiotropium 1 puff OD (continue)", "Tab. Prednisolone 40 mg OD × 5 days", "Tab. Pantoprazole 40 mg OD × 5 days"],
-  "CAP": ["Tab. Cefpodoxime 200 mg BD × 5 days", "Tab. Azithromycin 500 mg OD × 3 days", "Tab. Paracetamol 650 mg TDS SOS × 3 days", "Tab. Pantoprazole 40 mg OD × 5 days"],
-  "T2DM": ["Tab. Metformin 500 mg BD (continue)", "Tab. Glimepiride 1 mg OD before breakfast (continue)", "GRBS monitoring + diabetic diet"],
-  "SHTN": ["Tab. Amlodipine 5 mg OD (continue)", "Tab. Telmisartan 40 mg OD (continue)", "Tab. Chlorthalidone 12.5 mg OD (continue)", "Home BP monitoring"]
-};
-const RX_BUNDLES = {
-  "CAD": ["Tab. Aspirin 75 mg OD (continue)", "Tab. Clopidogrel 75 mg OD × 12 months", "Tab. Atorvastatin 40 mg HS (continue)", "Tab. Metoprolol 25 mg BD (continue)", "Tab. Ramipril 2.5 mg OD (continue)", "Tab. Sorbitrate 5 mg SL SOS (for chest pain)"],
-  "HFrEF": ["Tab. Furosemide 40 mg BD (continue)", "Tab. Sacubitril-Valsartan 50 mg BD (continue)", "Tab. Carvedilol 3.125 mg BD (continue)", "Tab. Spironolactone 25 mg OD (continue)", "Tab. Dapagliflozin 10 mg OD (continue)"],
-  "COPD": ["MDI Budesonide-Formoterol 1 puff BD (continue)", "MDI Tiotropium 1 puff OD (continue)", "Tab. Prednisolone 40 mg OD × 5 days", "Tab. Pantoprazole 40 mg OD × 5 days"],
-  "CAP": ["Tab. Cefpodoxime 200 mg BD × 5 days", "Tab. Azithromycin 500 mg OD × 3 days", "Tab. Paracetamol 650 mg TDS SOS × 3 days", "Tab. Pantoprazole 40 mg OD × 5 days"],
-  "T2DM": ["Tab. Metformin 500 mg BD (continue)", "Tab. Glimepiride 1 mg OD before breakfast (continue)", "GRBS monitoring + diabetic diet"],
-  "SHTN": ["Tab. Amlodipine 5 mg OD (continue)", "Tab. Telmisartan 40 mg OD (continue)", "Tab. Chlorthalidone 12.5 mg OD (continue)", "Home BP monitoring"]
-};
+    const RX_BUNDLES = {
+      "CAD": ["Tab. Aspirin 75 mg OD (continue)", "Tab. Clopidogrel 75 mg OD × 12 months", "Tab. Atorvastatin 40 mg HS (continue)", "Tab. Metoprolol 25 mg BD (continue)", "Tab. Ramipril 2.5 mg OD (continue)", "Tab. Sorbitrate 5 mg SL SOS (for chest pain)"],
+      "HFrEF": ["Tab. Furosemide 40 mg BD (continue)", "Tab. Sacubitril-Valsartan 50 mg BD (continue)", "Tab. Carvedilol 3.125 mg BD (continue)", "Tab. Spironolactone 25 mg OD (continue)", "Tab. Dapagliflozin 10 mg OD (continue)"],
+      "COPD": ["MDI Budesonide-Formoterol 1 puff BD (continue)", "MDI Tiotropium 1 puff OD (continue)", "Tab. Prednisolone 40 mg OD × 5 days", "Tab. Pantoprazole 40 mg OD × 5 days"],
+      "CAP": ["Tab. Cefpodoxime 200 mg BD × 5 days", "Tab. Azithromycin 500 mg OD × 3 days", "Tab. Paracetamol 650 mg TDS SOS × 3 days", "Tab. Pantoprazole 40 mg OD × 5 days"],
+      "T2DM": ["Tab. Metformin 500 mg BD (continue)", "Tab. Glimepiride 1 mg OD before breakfast (continue)", "GRBS monitoring + diabetic diet"],
+      "SHTN": ["Tab. Amlodipine 5 mg OD (continue)", "Tab. Telmisartan 40 mg OD (continue)", "Tab. Chlorthalidone 12.5 mg OD (continue)", "Home BP monitoring"]
+    };
 
-const TX_BUNDLES = {
-  "CAD": ["Tab. Aspirin 75 mg PO OD", "Tab. Clopidogrel 75 mg PO OD", "Tab. Atorvastatin 40 mg PO HS", "Tab. Metoprolol 25 mg PO BD", "Tab. Ramipril 2.5 mg PO OD", "Inj. Enoxaparin 0.6 mL SC BD", "Tab. Nitroglycerin 0.5 mg SL SOS"],
-  "HFrEF": ["Inj. Furosemide 40 mg IV BD", "Tab. Sacubitril-Valsartan 50 mg PO BD", "Tab. Carvedilol 3.125 mg PO BD", "Tab. Spironolactone 25 mg PO OD", "Tab. Dapagliflozin 10 mg PO OD"],
-  "COPD": ["Neb. Ipratropium-Salbutamol Q6H", "Neb. Budesonide BD", "Inj. Hydrocortisone 100 mg IV Q8H", "Inj. Ceftriaxone 1 g IV BD", "Tab. Pantoprazole 40 mg PO OD", "Controlled O2 to target SpO2 88–92%"],
-  "CAP": ["Inj. Ceftriaxone 1 g IV BD", "Tab. Azithromycin 500 mg PO OD", "Inj. Paracetamol 1 g IV SOS", "Tab. Pantoprazole 40 mg PO OD"],
-  "T2DM": ["Inj. Insulin (HAI) SC TDS (pre-meal / sliding scale)", "Tab. Metformin 500 mg PO BD", "GRBS monitoring QID"],
-  "SHTN": ["Tab. Amlodipine 5 mg PO OD", "Tab. Telmisartan 40 mg PO OD", "Tab. Chlorthalidone 12.5 mg PO OD", "BP monitoring"]
-};
-const TX_BUNDLES = {
-  "CAD": ["Tab. Aspirin 75 mg PO OD", "Tab. Clopidogrel 75 mg PO OD", "Tab. Atorvastatin 40 mg PO HS", "Tab. Metoprolol 25 mg PO BD", "Tab. Ramipril 2.5 mg PO OD", "Inj. Enoxaparin 0.6 mL SC BD", "Tab. Nitroglycerin 0.5 mg SL SOS"],
-  "HFrEF": ["Inj. Furosemide 40 mg IV BD", "Tab. Sacubitril-Valsartan 50 mg PO BD", "Tab. Carvedilol 3.125 mg PO BD", "Tab. Spironolactone 25 mg PO OD", "Tab. Dapagliflozin 10 mg PO OD"],
-  "COPD": ["Neb. Ipratropium-Salbutamol Q6H", "Neb. Budesonide BD", "Inj. Hydrocortisone 100 mg IV Q8H", "Inj. Ceftriaxone 1 g IV BD", "Tab. Pantoprazole 40 mg PO OD", "Controlled O2 to target SpO2 88–92%"],
-  "CAP": ["Inj. Ceftriaxone 1 g IV BD", "Tab. Azithromycin 500 mg PO OD", "Inj. Paracetamol 1 g IV SOS", "Tab. Pantoprazole 40 mg PO OD"],
-  "T2DM": ["Inj. Insulin (HAI) SC TDS (pre-meal / sliding scale)", "Tab. Metformin 500 mg PO BD", "GRBS monitoring QID"],
-  "SHTN": ["Tab. Amlodipine 5 mg PO OD", "Tab. Telmisartan 40 mg PO OD", "Tab. Chlorthalidone 12.5 mg PO OD", "BP monitoring"]
-};
+    const TX_BUNDLES = {
+      "CAD": ["Tab. Aspirin 75 mg PO OD", "Tab. Clopidogrel 75 mg PO OD", "Tab. Atorvastatin 40 mg PO HS", "Tab. Metoprolol 25 mg PO BD", "Tab. Ramipril 2.5 mg PO OD", "Inj. Enoxaparin 0.6 mL SC BD", "Tab. Nitroglycerin 0.5 mg SL SOS"],
+      "HFrEF": ["Inj. Furosemide 40 mg IV BD", "Tab. Sacubitril-Valsartan 50 mg PO BD", "Tab. Carvedilol 3.125 mg PO BD", "Tab. Spironolactone 25 mg PO OD", "Tab. Dapagliflozin 10 mg PO OD"],
+      "COPD": ["Neb. Ipratropium-Salbutamol Q6H", "Neb. Budesonide BD", "Inj. Hydrocortisone 100 mg IV Q8H", "Inj. Ceftriaxone 1 g IV BD", "Tab. Pantoprazole 40 mg PO OD", "Controlled O2 to target SpO2 88–92%"],
+      "CAP": ["Inj. Ceftriaxone 1 g IV BD", "Tab. Azithromycin 500 mg PO OD", "Inj. Paracetamol 1 g IV SOS", "Tab. Pantoprazole 40 mg PO OD"],
+      "T2DM": ["Inj. Insulin (HAI) SC TDS (pre-meal / sliding scale)", "Tab. Metformin 500 mg PO BD", "GRBS monitoring QID"],
+      "SHTN": ["Tab. Amlodipine 5 mg PO OD", "Tab. Telmisartan 40 mg PO OD", "Tab. Chlorthalidone 12.5 mg PO OD", "BP monitoring"]
+    };
 
-const COURSE_TEMPLATES = [
-  { label: "Dengue", text: `Patient admitted with above complaints. On evaluation found to have thrombocytopenia with [NS1/IgM] positivity, suggestive of Dengue fever [with/without warning signs]. Managed with IV fluids as per dengue protocol, antipyretics and serial platelet monitoring. Platelet count reached a nadir of [___] on [__/__] and subsequently improved. Patient remained hemodynamically stable, became afebrile with improving counts, and is being discharged in a stable condition.` },
-  { label: "LRTI / CAP", text: `Patient admitted with above complaints. Clinically and radiologically diagnosed as Community-acquired pneumonia (LRTI). Started on IV antibiotics, nebulisation, antipyretics and supportive care. Saturation monitored and maintained [on room air / with O2 support]. Symptomatically improved — afebrile, breathlessness settled, maintaining saturation on room air — and is being discharged in a stable condition with oral antibiotics to complete the course.` },
-  { label: "AGE w/ dehydration", text: `Patient admitted with above complaints with features of [mild/moderate] dehydration, diagnosed as Acute gastroenteritis with dehydration. Rehydrated with IV fluids, given antiemetics, [antibiotics] and supportive care. Electrolytes monitored and corrected. Stool frequency reduced, tolerating orals well, and is being discharged in a stable condition.` },
-  { label: "CKD", text: `Patient admitted with above complaints. [Known/Newly detected] Chronic kidney disease (Stage [__]). Evaluated with RFT, electrolytes, urine analysis and USG abdomen. Managed with fluid and salt restriction, [diuretics], correction of electrolyte and acid-base derangements and supportive care. [Nephrology opinion obtained.] Symptomatically improved, hemodynamically stable, and is being discharged in a stable condition with renal diet advice and follow-up.` },
-  { label: "Tropical fever", text: `Patient admitted with above complaints. Evaluated for acute febrile illness — septic screen, dengue / leptospira / scrub typhus serology and peripheral smear sent. Started on empirical [doxycycline/ceftriaxone] with antipyretics and supportive care. [Scrub typhus/leptospirosis] [confirmed/considered clinically]. Became afebrile with treatment, remained hemodynamically stable, and is being discharged in a stable condition.` },
-  { label: "COPD exac.", text: `Patient, a known case of COPD, admitted with acute exacerbation. Managed with nebulised bronchodilators, systemic steroids, antibiotics, controlled oxygen and [NIV / BiPAP support]. Breathlessness improved, maintaining saturation on room air, and is being discharged in a stable condition with inhaler technique advice.` },
-  { label: "DKA", text: `Patient admitted with above complaints, found to have hyperglycemia with ketosis and metabolic acidosis suggestive of Diabetic ketoacidosis. Managed with IV fluids, insulin infusion and potassium monitoring as per DKA protocol. Blood sugars and anion gap normalised; transitioned to subcutaneous insulin. Tolerating orals, stable, and is being discharged with insulin / OHA and diabetic diet advice.` },
-  { label: "ACS", text: `Patient admitted with above complaints. ECG and cardiac markers suggestive of [STEMI / NSTEMI / Unstable angina]. Managed as Acute coronary syndrome with antiplatelets, statin, anticoagulation and supportive care. Cardiology opinion obtained; [thrombolysed / advised coronary angiogram]. Hemodynamically stable, chest pain settled, and is being discharged in a stable condition on cardiac medications.` },
-  { label: "CVA / Stroke", text: `Patient admitted with above complaints. CT / MRI brain suggestive of [ischemic / hemorrhagic] stroke. Managed with [antiplatelets / anti-edema measures], physiotherapy and supportive care. Neurology opinion obtained. Vitals stable, [neurological deficit improving], and is being discharged in a stable condition with physiotherapy and follow-up advice.` },
-  { label: "UTI / Pyelo", text: `Patient admitted with above complaints. Urine analysis and culture suggestive of [urinary tract infection / pyelonephritis]. Started on IV antibiotics [as per sensitivity], antipyretics and adequate hydration. Became afebrile with treatment, symptomatically improved, and is being discharged in a stable condition with oral antibiotics to complete the course.` },
-  { label: "ALD / Hepatitis", text: `Patient, [chronic alcoholic], admitted with above complaints. Evaluated with LFT, USG abdomen and coagulation profile suggestive of [alcoholic hepatitis / decompensated chronic liver disease]. Managed with [diuretics for ascites], hepatoprotective measures, vitamin supplementation, [lactulose] and supportive care. Alcohol abstinence counselling given. Symptomatically improved, stable, and is being discharged with follow-up advice.` },
-  { label: "Cellulitis", text: `Patient admitted with above complaints suggestive of cellulitis of [site]. Managed with IV antibiotics, limb elevation, analgesics and wound care. [Blood sugars optimised.] Local signs of inflammation reduced, became afebrile, and is being discharged in a stable condition with oral antibiotics.` },
-  { label: "Seizure / GTCS", text: `Patient admitted following [new-onset / breakthrough] generalised tonic-clonic seizures. Evaluated with CT / MRI brain, EEG and metabolic workup. [Started on / optimised] anti-epileptic drugs. Neurology opinion obtained. No further seizure episodes during the stay, conscious and oriented, and is being discharged in a stable condition on AEDs with advice.` }
-];
-const COURSE_TEMPLATES = [
-  { label: "Dengue", text: `Patient admitted with above complaints. On evaluation found to have thrombocytopenia with [NS1/IgM] positivity, suggestive of Dengue fever [with/without warning signs]. Managed with IV fluids as per dengue protocol, antipyretics and serial platelet monitoring. Platelet count reached a nadir of [___] on [__/__] and subsequently improved. Patient remained hemodynamically stable, became afebrile with improving counts, and is being discharged in a stable condition.` },
-  { label: "LRTI / CAP", text: `Patient admitted with above complaints. Clinically and radiologically diagnosed as Community-acquired pneumonia (LRTI). Started on IV antibiotics, nebulisation, antipyretics and supportive care. Saturation monitored and maintained [on room air / with O2 support]. Symptomatically improved — afebrile, breathlessness settled, maintaining saturation on room air — and is being discharged in a stable condition with oral antibiotics to complete the course.` },
-  { label: "AGE w/ dehydration", text: `Patient admitted with above complaints with features of [mild/moderate] dehydration, diagnosed as Acute gastroenteritis with dehydration. Rehydrated with IV fluids, given antiemetics, [antibiotics] and supportive care. Electrolytes monitored and corrected. Stool frequency reduced, tolerating orals well, and is being discharged in a stable condition.` },
-  { label: "CKD", text: `Patient admitted with above complaints. [Known/Newly detected] Chronic kidney disease (Stage [__]). Evaluated with RFT, electrolytes, urine analysis and USG abdomen. Managed with fluid and salt restriction, [diuretics], correction of electrolyte and acid-base derangements and supportive care. [Nephrology opinion obtained.] Symptomatically improved, hemodynamically stable, and is being discharged in a stable condition with renal diet advice and follow-up.` },
-  { label: "Tropical fever", text: `Patient admitted with above complaints. Evaluated for acute febrile illness — septic screen, dengue / leptospira / scrub typhus serology and peripheral smear sent. Started on empirical [doxycycline/ceftriaxone] with antipyretics and supportive care. [Scrub typhus/leptospirosis] [confirmed/considered clinically]. Became afebrile with treatment, remained hemodynamically stable, and is being discharged in a stable condition.` },
-  { label: "COPD exac.", text: `Patient, a known case of COPD, admitted with acute exacerbation. Managed with nebulised bronchodilators, systemic steroids, antibiotics, controlled oxygen and [NIV / BiPAP support]. Breathlessness improved, maintaining saturation on room air, and is being discharged in a stable condition with inhaler technique advice.` },
-  { label: "DKA", text: `Patient admitted with above complaints, found to have hyperglycemia with ketosis and metabolic acidosis suggestive of Diabetic ketoacidosis. Managed with IV fluids, insulin infusion and potassium monitoring as per DKA protocol. Blood sugars and anion gap normalised; transitioned to subcutaneous insulin. Tolerating orals, stable, and is being discharged with insulin / OHA and diabetic diet advice.` },
-  { label: "ACS", text: `Patient admitted with above complaints. ECG and cardiac markers suggestive of [STEMI / NSTEMI / Unstable angina]. Managed as Acute coronary syndrome with antiplatelets, statin, anticoagulation and supportive care. Cardiology opinion obtained; [thrombolysed / advised coronary angiogram]. Hemodynamically stable, chest pain settled, and is being discharged in a stable condition on cardiac medications.` },
-  { label: "CVA / Stroke", text: `Patient admitted with above complaints. CT / MRI brain suggestive of [ischemic / hemorrhagic] stroke. Managed with [antiplatelets / anti-edema measures], physiotherapy and supportive care. Neurology opinion obtained. Vitals stable, [neurological deficit improving], and is being discharged in a stable condition with physiotherapy and follow-up advice.` },
-  { label: "UTI / Pyelo", text: `Patient admitted with above complaints. Urine analysis and culture suggestive of [urinary tract infection / pyelonephritis]. Started on IV antibiotics [as per sensitivity], antipyretics and adequate hydration. Became afebrile with treatment, symptomatically improved, and is being discharged in a stable condition with oral antibiotics to complete the course.` },
-  { label: "ALD / Hepatitis", text: `Patient, [chronic alcoholic], admitted with above complaints. Evaluated with LFT, USG abdomen and coagulation profile suggestive of [alcoholic hepatitis / decompensated chronic liver disease]. Managed with [diuretics for ascites], hepatoprotective measures, vitamin supplementation, [lactulose] and supportive care. Alcohol abstinence counselling given. Symptomatically improved, stable, and is being discharged with follow-up advice.` },
-  { label: "Cellulitis", text: `Patient admitted with above complaints suggestive of cellulitis of [site]. Managed with IV antibiotics, limb elevation, analgesics and wound care. [Blood sugars optimised.] Local signs of inflammation reduced, became afebrile, and is being discharged in a stable condition with oral antibiotics.` },
-  { label: "Seizure / GTCS", text: `Patient admitted following [new-onset / breakthrough] generalised tonic-clonic seizures. Evaluated with CT / MRI brain, EEG and metabolic workup. [Started on / optimised] anti-epileptic drugs. Neurology opinion obtained. No further seizure episodes during the stay, conscious and oriented, and is being discharged in a stable condition on AEDs with advice.` }
-];
+    const COURSE_TEMPLATES = [
+      { label: "Dengue", text: `Patient admitted with above complaints. On evaluation found to have thrombocytopenia with [NS1/IgM] positivity, suggestive of Dengue fever [with/without warning signs]. Managed with IV fluids as per dengue protocol, antipyretics and serial platelet monitoring. Platelet count reached a nadir of [___] on [__/__] and subsequently improved. Patient remained hemodynamically stable, became afebrile with improving counts, and is being discharged in a stable condition.` },
+      { label: "LRTI / CAP", text: `Patient admitted with above complaints. Clinically and radiologically diagnosed as Community-acquired pneumonia (LRTI). Started on IV antibiotics, nebulisation, antipyretics and supportive care. Saturation monitored and maintained [on room air / with O2 support]. Symptomatically improved — afebrile, breathlessness settled, maintaining saturation on room air — and is being discharged in a stable condition with oral antibiotics to complete the course.` },
+      { label: "AGE w/ dehydration", text: `Patient admitted with above complaints with features of [mild/moderate] dehydration, diagnosed as Acute gastroenteritis with dehydration. Rehydrated with IV fluids, given antiemetics, [antibiotics] and supportive care. Electrolytes monitored and corrected. Stool frequency reduced, tolerating orals well, and is being discharged in a stable condition.` },
+      { label: "CKD", text: `Patient admitted with above complaints. [Known/Newly detected] Chronic kidney disease (Stage [__]). Evaluated with RFT, electrolytes, urine analysis and USG abdomen. Managed with fluid and salt restriction, [diuretics], correction of electrolyte and acid-base derangements and supportive care. [Nephrology opinion obtained.] Symptomatically improved, hemodynamically stable, and is being discharged in a stable condition with renal diet advice and follow-up.` },
+      { label: "Tropical fever", text: `Patient admitted with above complaints. Evaluated for acute febrile illness — septic screen, dengue / leptospira / scrub typhus serology and peripheral smear sent. Started on empirical [doxycycline/ceftriaxone] with antipyretics and supportive care. [Scrub typhus/leptospirosis] [confirmed/considered clinically]. Became afebrile with treatment, remained hemodynamically stable, and is being discharged in a stable condition.` },
+      { label: "COPD exac.", text: `Patient, a known case of COPD, admitted with acute exacerbation. Managed with nebulised bronchodilators, systemic steroids, antibiotics, controlled oxygen and [NIV / BiPAP support]. Breathlessness improved, maintaining saturation on room air, and is being discharged in a stable condition with inhaler technique advice.` },
+      { label: "DKA", text: `Patient admitted with above complaints, found to have hyperglycemia with ketosis and metabolic acidosis suggestive of Diabetic ketoacidosis. Managed with IV fluids, insulin infusion and potassium monitoring as per DKA protocol. Blood sugars and anion gap normalised; transitioned to subcutaneous insulin. Tolerating orals, stable, and is being discharged with insulin / OHA and diabetic diet advice.` },
+      { label: "ACS", text: `Patient admitted with above complaints. ECG and cardiac markers suggestive of [STEMI / NSTEMI / Unstable angina]. Managed as Acute coronary syndrome with antiplatelets, statin, anticoagulation and supportive care. Cardiology opinion obtained; [thrombolysed / advised coronary angiogram]. Hemodynamically stable, chest pain settled, and is being discharged in a stable condition on cardiac medications.` },
+      { label: "CVA / Stroke", text: `Patient admitted with above complaints. CT / MRI brain suggestive of [ischemic / hemorrhagic] stroke. Managed with [antiplatelets / anti-edema measures], physiotherapy and supportive care. Neurology opinion obtained. Vitals stable, [neurological deficit improving], and is being discharged in a stable condition with physiotherapy and follow-up advice.` },
+      { label: "UTI / Pyelo", text: `Patient admitted with above complaints. Urine analysis and culture suggestive of [urinary tract infection / pyelonephritis]. Started on IV antibiotics [as per sensitivity], antipyretics and adequate hydration. Became afebrile with treatment, symptomatically improved, and is being discharged in a stable condition with oral antibiotics to complete the course.` },
+      { label: "ALD / Hepatitis", text: `Patient, [chronic alcoholic], admitted with above complaints. Evaluated with LFT, USG abdomen and coagulation profile suggestive of [alcoholic hepatitis / decompensated chronic liver disease]. Managed with [diuretics for ascites], hepatoprotective measures, vitamin supplementation, [lactulose] and supportive care. Alcohol abstinence counselling given. Symptomatically improved, stable, and is being discharged with follow-up advice.` },
+      { label: "Cellulitis", text: `Patient admitted with above complaints suggestive of cellulitis of [site]. Managed with IV antibiotics, limb elevation, analgesics and wound care. [Blood sugars optimised.] Local signs of inflammation reduced, became afebrile, and is being discharged in a stable condition with oral antibiotics.` },
+      { label: "Seizure / GTCS", text: `Patient admitted following [new-onset / breakthrough] generalised tonic-clonic seizures. Evaluated with CT / MRI brain, EEG and metabolic workup. [Started on / optimised] anti-epileptic drugs. Neurology opinion obtained. No further seizure episodes during the stay, conscious and oriented, and is being discharged in a stable condition on AEDs with advice.` }
+    ];
 
-/* ---------- editor & dashboard state ---------- */
-let complaints = [], treatment = [], rxMeds = [];
-let invDates = [], invParams = [], invSeq = 0;
-const DEFAULT_LOGO = "data:image/jpeg;base64,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";
-let logoData = DEFAULT_LOGO;
-let pastHistory = [], rxHistory = [];
-let ynState = { physio: "", equip: "", dress: "" };
-let signaturePinned = true;
-let saveTimer;
-let pageCheckTimer;
-const includeEmpty = {};
-const includeEmptyLines = {};
-const DISPLAY_DATE_FIELDS = new Set(["doa", "dod"]);
-/* ---------- editor & dashboard state ---------- */
-let complaints = [], treatment = [], rxMeds = [];
-let invDates = [], invParams = [], invSeq = 0;
-const DEFAULT_LOGO = "data:image/jpeg;base64,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";
-let logoData = DEFAULT_LOGO;
-let pastHistory = [], rxHistory = [];
-let ynState = { physio: "", equip: "", dress: "" };
-let signaturePinned = true;
-let saveTimer;
-let pageCheckTimer;
-const includeEmpty = {};
-const includeEmptyLines = {};
-const DISPLAY_DATE_FIELDS = new Set(["doa", "dod"]);
+    /* ---------- editor & dashboard state ---------- */
+    let complaints = [], treatment = [], rxMeds = [];
+    let invDates = [], invParams = [], invSeq = 0;
+    const DEFAULT_LOGO = "data:image/jpeg;base64,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";
+    let logoData = DEFAULT_LOGO;
+    let pastHistory = [], rxHistory = [];
+    let ynState = { physio: "", equip: "", dress: "" };
+    let signaturePinned = true;
+    let saveTimer;
+    let pageCheckTimer;
+    const includeEmpty = {};
+    const includeEmptyLines = {};
+    const DISPLAY_DATE_FIELDS = new Set(["doa", "dod"]);
 
-/* ---------- v2 Dashboard, Records & Supabase Cloud Sync State ---------- */
-let activeTab = "dashboard";
-let records = [];
-let pendingDeletes = [];
-let currentRecordId = null;
-let currentRecordStatus = "incomplete";
-let currentRecordCreatedAt = null;
-let hasRecordPersisted = false;
-let suppressSave = false;
-/* ---------- v2 Dashboard, Records & Supabase Cloud Sync State ---------- */
-let activeTab = "dashboard";
-let records = [];
-let pendingDeletes = [];
-let currentRecordId = null;
-let currentRecordStatus = "incomplete";
-let currentRecordCreatedAt = null;
-let hasRecordPersisted = false;
-let suppressSave = false;
+    /* ---------- v2 Dashboard, Records & Supabase Cloud Sync State ---------- */
+    let activeTab = "dashboard";
+    let records = [];
+    let pendingDeletes = [];
+    let currentRecordId = null;
+    let currentRecordStatus = "incomplete";
+    let currentRecordCreatedAt = null;
+    let hasRecordPersisted = false;
+    let suppressSave = false;
 
-let dashFilter = "all";
-let dashSearch = "";
-let dashSort = "updated_desc";
-let dashViewMode = "cards";
-let authFeedback = null;
-let offlineDismissedAuthCard = false;
-let dashFilter = "all";
-let dashSearch = "";
-let dashSort = "updated_desc";
-let dashViewMode = "cards";
-let authFeedback = null;
-let offlineDismissedAuthCard = false;
+    let dashFilter = "all";
+    let dashSearch = "";
+    let dashSort = "updated_desc";
+    let dashViewMode = "cards";
+    let authFeedback = null;
+    let offlineDismissedAuthCard = false;
 
-let sbClient = null;
-let sbConfig = { url: "", anonKey: "", source: "none" };
-let currentUser = null;
-let syncState = "local"; // "local" | "syncing" | "synced" | "pending" | "offline" | "error"
-let lastSyncError = "";
-let lastSyncTime = null;
-let cloudSaveTimer = null;
-let syncInFlight = false;
-let suppressAuthReload = false;
-let guestDraftsPromptVisible = false;
-let guestDraftsCount = 0;
-let savedTemplates = [];
-let frequentContacts = [];
-let contactsAddFormOpen = false;
-let contactsAddFeedback = null;
-let shareModalRecordId = null;
-let shareRecipientVerifyState = {
-  email: "",
-  status: "idle", // "idle" | "checking" | "verified" | "unverified" | "error"
-  verified: false,
-  user_id: null,
-  full_name: "",
-  avatar_url: "",
-  message: ""
-};
-const LOCAL_GOOGLE_REGISTRY_KEY = "ds-v2:google-users-registry";
-let realtimeSharingChannel = null;
-let realtimeSharingUserId = null;
-let themeConfig = { mode: "solid", color: "#14425f", color2: "#0284c7" };
-let sbClient = null;
-let sbConfig = { url: "", anonKey: "", source: "none" };
-let currentUser = null;
-let syncState = "local"; // "local" | "syncing" | "synced" | "pending" | "offline" | "error"
-let lastSyncError = "";
-let lastSyncTime = null;
-let cloudSaveTimer = null;
-let syncInFlight = false;
-let suppressAuthReload = false;
-let guestDraftsPromptVisible = false;
-let guestDraftsCount = 0;
-let savedTemplates = [];
-let frequentContacts = [];
-let contactsAddFormOpen = false;
-let contactsAddFeedback = null;
-let shareModalRecordId = null;
-let shareRecipientVerifyState = {
-  email: "",
-  status: "idle", // "idle" | "checking" | "verified" | "unverified" | "error"
-  verified: false,
-  user_id: null,
-  full_name: "",
-  avatar_url: "",
-  message: ""
-};
-const LOCAL_GOOGLE_REGISTRY_KEY = "ds-v2:google-users-registry";
-let realtimeSharingChannel = null;
-let realtimeSharingUserId = null;
-let themeConfig = { mode: "solid", color: "#14425f", color2: "#0284c7" };
+    let sbClient = null;
+    let sbConfig = { url: "", anonKey: "", source: "none" };
+    let currentUser = null;
+    let syncState = "local"; // "local" | "syncing" | "synced" | "pending" | "offline" | "error"
+    let lastSyncError = "";
+    let lastSyncTime = null;
+    let cloudSaveTimer = null;
+    let syncInFlight = false;
+    let suppressAuthReload = false;
+    let guestDraftsPromptVisible = false;
+    let guestDraftsCount = 0;
+    let savedTemplates = [];
+    let frequentContacts = [];
+    let contactsAddFormOpen = false;
+    let contactsAddFeedback = null;
+    let shareModalRecordId = null;
+    let shareRecipientVerifyState = {
+      email: "",
+      status: "idle", // "idle" | "checking" | "verified" | "unverified" | "error"
+      verified: false,
+      user_id: null,
+      full_name: "",
+      avatar_url: "",
+      message: ""
+    };
+    const LOCAL_GOOGLE_REGISTRY_KEY = "ds-v2:google-users-registry";
+    let realtimeSharingChannel = null;
+    let realtimeSharingUserId = null;
+    let themeConfig = { mode: "solid", color: "#14425f", color2: "#0284c7" };
 
-/* ---------- UUID & date normalization helpers ---------- */
-function generateUUID() {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
-    const bytes = new Uint8Array(16);
-    crypto.getRandomValues(bytes);
-    bytes[6] = (bytes[6] & 0x0f) | 0x40;
-    bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    const hex = Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
-    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
-  }
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-/* ---------- UUID & date normalization helpers ---------- */
-function generateUUID() {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
-  }
-  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
-    const bytes = new Uint8Array(16);
-    crypto.getRandomValues(bytes);
-    bytes[6] = (bytes[6] & 0x0f) | 0x40;
-    bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    const hex = Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
-    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
-  }
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-    const r = Math.random() * 16 | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
+    /* ---------- UUID & date normalization helpers ---------- */
+    function generateUUID() {
+      if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+        return crypto.randomUUID();
+      }
+      if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+        const bytes = new Uint8Array(16);
+        crypto.getRandomValues(bytes);
+        bytes[6] = (bytes[6] & 0x0f) | 0x40;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        const hex = Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("");
+        return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+      }
+      return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        const v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      });
+    }
 
-function normalizeDateValue(value) {
-  const v = (value || "").trim();
-  if (!v) return "";
-  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
-  const dotOrSlash = v.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2}|\d{4})$/);
-  if (dotOrSlash) {
-    const dd = dotOrSlash[1].padStart(2, "0");
-    const mm = dotOrSlash[2].padStart(2, "0");
-    const yyyy = dotOrSlash[3].length === 2 ? `20${dotOrSlash[3]}` : dotOrSlash[3];
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  const digits = v.replace(/\D/g, "");
-  if (digits.length === 8) {
-    return `${digits.slice(4, 8)}-${digits.slice(2, 4)}-${digits.slice(0, 2)}`;
-  }
-  if (digits.length === 6) {
-    return `20${digits.slice(4, 6)}-${digits.slice(2, 4)}-${digits.slice(0, 2)}`;
-  }
-  return "";
-}
-function normalizeDateValue(value) {
-  const v = (value || "").trim();
-  if (!v) return "";
-  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
-  const dotOrSlash = v.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2}|\d{4})$/);
-  if (dotOrSlash) {
-    const dd = dotOrSlash[1].padStart(2, "0");
-    const mm = dotOrSlash[2].padStart(2, "0");
-    const yyyy = dotOrSlash[3].length === 2 ? `20${dotOrSlash[3]}` : dotOrSlash[3];
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  const digits = v.replace(/\D/g, "");
-  if (digits.length === 8) {
-    return `${digits.slice(4, 8)}-${digits.slice(2, 4)}-${digits.slice(0, 2)}`;
-  }
-  if (digits.length === 6) {
-    return `20${digits.slice(4, 6)}-${digits.slice(2, 4)}-${digits.slice(0, 2)}`;
-  }
-  return "";
-}
+    function normalizeDateValue(value) {
+      const v = (value || "").trim();
+      if (!v) return "";
+      if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+      const dotOrSlash = v.match(/^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2}|\d{4})$/);
+      if (dotOrSlash) {
+        const dd = dotOrSlash[1].padStart(2, "0");
+        const mm = dotOrSlash[2].padStart(2, "0");
+        const yyyy = dotOrSlash[3].length === 2 ? `20${dotOrSlash[3]}` : dotOrSlash[3];
+        return `${yyyy}-${mm}-${dd}`;
+      }
+      const digits = v.replace(/\D/g, "");
+      if (digits.length === 8) {
+        return `${digits.slice(4, 8)}-${digits.slice(2, 4)}-${digits.slice(0, 2)}`;
+      }
+      if (digits.length === 6) {
+        return `20${digits.slice(4, 6)}-${digits.slice(2, 4)}-${digits.slice(0, 2)}`;
+      }
+      return "";
+    }
 
-function isIOSDevice() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-}
-function isSafariBrowser() {
-  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-}
-function isIOSDevice() {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-}
-function isSafariBrowser() {
-  return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-}
+    function isIOSDevice() {
+      return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    }
+    function isSafariBrowser() {
+      return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }
 
-let activeCustomStop = 1;
-let syncingFromThemeSlider = false;
-let activeCustomStop = 1;
-let syncingFromThemeSlider = false;
+    let activeCustomStop = 1;
+    let syncingFromThemeSlider = false;
 
-function hexToHsl(hex) {
-  const m = String(hex || "").trim().match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-  if (!m) return { h: 203, s: 65, l: 23 };
-  const r = parseInt(m[1], 16) / 255;
-  const g = parseInt(m[2], 16) / 255;
-  const b = parseInt(m[3], 16) / 255;
-  const max = Math.max(r, g, b), min = Math.min(r, g, b);
-  let h = 0, s = 0;
-  const l = (max + min) / 2;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-      case g: h = (b - r) / d + 2; break;
-      case b: h = (r - g) / d + 4; break;
-        function hexToHsl(hex) {
-          const m = String(hex || "").trim().match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-          if (!m) return { h: 203, s: 65, l: 23 };
-          const r = parseInt(m[1], 16) / 255;
-          const g = parseInt(m[2], 16) / 255;
-          const b = parseInt(m[3], 16) / 255;
-          const max = Math.max(r, g, b), min = Math.min(r, g, b);
-          let h = 0, s = 0;
-          const l = (max + min) / 2;
-          if (max !== min) {
-            const d = max - min;
-            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-            switch (max) {
-              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-              case g: h = (b - r) / d + 2; break;
-              case b: h = (r - g) / d + 4; break;
-            }
-            h /= 6;
-          }
-          return {
-            h: Math.round(h * 360),
-            s: Math.round(s * 100),
-            l: Math.round(l * 100)
-          };
+    function hexToHsl(hex) {
+      const m = String(hex || "").trim().match(/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+      if (!m) return { h: 203, s: 65, l: 23 };
+      const r = parseInt(m[1], 16) / 255;
+      const g = parseInt(m[2], 16) / 255;
+      const b = parseInt(m[3], 16) / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
         }
         h /= 6;
+      }
+      return {
+        h: Math.round(h * 360),
+        s: Math.round(s * 100),
+        l: Math.round(l * 100)
+      };
     }
-    return {
-      h: Math.round(h * 360),
-      s: Math.round(s * 100),
-      l: Math.round(l * 100)
-    };
-  }
 
-  function hslToHex(h, s, l) {
-    const hue = ((Number(h) % 360) + 360) % 360;
-    const sat = Math.max(0, Math.min(100, Number(s))) / 100;
-    const lig = Math.max(0, Math.min(100, Number(l))) / 100;
-    const k = n => (n + hue / 30) % 12;
-    const a = sat * Math.min(lig, 1 - lig);
-    const f = n => lig - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
-    const toHex = x => Math.round(x * 255).toString(16).padStart(2, "0");
-    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
-  }
-  function hslToHex(h, s, l) {
-    const hue = ((Number(h) % 360) + 360) % 360;
-    const sat = Math.max(0, Math.min(100, Number(s))) / 100;
-    const lig = Math.max(0, Math.min(100, Number(l))) / 100;
-    const k = n => (n + hue / 30) % 12;
-    const a = sat * Math.min(lig, 1 - lig);
-    const f = n => lig - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
-    const toHex = x => Math.round(x * 255).toString(16).padStart(2, "0");
-    return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
-  }
+    function hslToHex(h, s, l) {
+      const hue = ((Number(h) % 360) + 360) % 360;
+      const sat = Math.max(0, Math.min(100, Number(s))) / 100;
+      const lig = Math.max(0, Math.min(100, Number(l))) / 100;
+      const k = n => (n + hue / 30) % 12;
+      const a = sat * Math.min(lig, 1 - lig);
+      const f = n => lig - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1));
+      const toHex = x => Math.round(x * 255).toString(16).padStart(2, "0");
+      return `#${toHex(f(0))}${toHex(f(8))}${toHex(f(4))}`;
+    }
 
-  function parseThemeString(raw) {
-    const s = String(raw || "").trim();
-    const gradMatch = s.match(/^gradient:(#[0-9a-f]{6}):(#[0-9a-f]{6})$/i);
-    if (gradMatch) {
-      return { mode: "gradient", color: gradMatch[1].toLowerCase(), color2: gradMatch[2].toLowerCase() };
+    function parseThemeString(raw) {
+      const s = String(raw || "").trim();
+      const gradMatch = s.match(/^gradient:(#[0-9a-f]{6}):(#[0-9a-f]{6})$/i);
+      if (gradMatch) {
+        return { mode: "gradient", color: gradMatch[1].toLowerCase(), color2: gradMatch[2].toLowerCase() };
+      }
+      if (/^#[0-9a-f]{6}$/i.test(s)) {
+        return { mode: "solid", color: s.toLowerCase(), color2: themeConfig.color2 || "#0284c7" };
+      }
+      return null;
     }
-    if (/^#[0-9a-f]{6}$/i.test(s)) {
-      return { mode: "solid", color: s.toLowerCase(), color2: themeConfig.color2 || "#0284c7" };
-    }
-    return null;
-  }
-  function parseThemeString(raw) {
-    const s = String(raw || "").trim();
-    const gradMatch = s.match(/^gradient:(#[0-9a-f]{6}):(#[0-9a-f]{6})$/i);
-    if (gradMatch) {
-      return { mode: "gradient", color: gradMatch[1].toLowerCase(), color2: gradMatch[2].toLowerCase() };
-    }
-    if (/^#[0-9a-f]{6}$/i.test(s)) {
-      return { mode: "solid", color: s.toLowerCase(), color2: themeConfig.color2 || "#0284c7" };
-    }
-    return null;
-  }
 
-  function serializeThemeString(cfg = themeConfig) {
-    if (cfg && cfg.mode === "gradient" && /^#[0-9a-f]{6}$/i.test(cfg.color) && /^#[0-9a-f]{6}$/i.test(cfg.color2)) {
-      return `gradient:${cfg.color.toLowerCase()}:${cfg.color2.toLowerCase()}`;
+    function serializeThemeString(cfg = themeConfig) {
+      if (cfg && cfg.mode === "gradient" && /^#[0-9a-f]{6}$/i.test(cfg.color) && /^#[0-9a-f]{6}$/i.test(cfg.color2)) {
+        return `gradient:${cfg.color.toLowerCase()}:${cfg.color2.toLowerCase()}`;
+      }
+      return (cfg && /^#[0-9a-f]{6}$/i.test(cfg.color)) ? cfg.color.toLowerCase() : "#14425f";
     }
-    return (cfg && /^#[0-9a-f]{6}$/i.test(cfg.color)) ? cfg.color.toLowerCase() : "#14425f";
-  }
-  function serializeThemeString(cfg = themeConfig) {
-    if (cfg && cfg.mode === "gradient" && /^#[0-9a-f]{6}$/i.test(cfg.color) && /^#[0-9a-f]{6}$/i.test(cfg.color2)) {
-      return `gradient:${cfg.color.toLowerCase()}:${cfg.color2.toLowerCase()}`;
-    }
-    return (cfg && /^#[0-9a-f]{6}$/i.test(cfg.color)) ? cfg.color.toLowerCase() : "#14425f";
-  }
 
-  function syncCustomThemeSliders(hexColor) {
-    const hsl = hexToHsl(hexColor);
-    const hueSlider = document.getElementById("themeHueSlider");
-    const lightSlider = document.getElementById("themeLightSlider");
-    if (hueSlider && !syncingFromThemeSlider) hueSlider.value = String(hsl.h);
-    if (lightSlider) {
-      if (!syncingFromThemeSlider) {
-        lightSlider.value = String(Math.max(15, Math.min(65, hsl.l)));
-        function syncCustomThemeSliders(hexColor) {
-          const hsl = hexToHsl(hexColor);
-          const hueSlider = document.getElementById("themeHueSlider");
-          const lightSlider = document.getElementById("themeLightSlider");
-          if (hueSlider && !syncingFromThemeSlider) hueSlider.value = String(hsl.h);
-          if (lightSlider) {
-            if (!syncingFromThemeSlider) {
-              lightSlider.value = String(Math.max(15, Math.min(65, hsl.l)));
-            }
-            const curH = hueSlider ? Number(hueSlider.value) : hsl.h;
-            lightSlider.style.background = `linear-gradient(to right, hsl(${curH}, 78%, 15%), hsl(${curH}, 78%, 40%), hsl(${curH}, 78%, 65%))`;
-          }
+    function syncCustomThemeSliders(hexColor) {
+      const hsl = hexToHsl(hexColor);
+      const hueSlider = document.getElementById("themeHueSlider");
+      const lightSlider = document.getElementById("themeLightSlider");
+      if (hueSlider && !syncingFromThemeSlider) hueSlider.value = String(hsl.h);
+      if (lightSlider) {
+        if (!syncingFromThemeSlider) {
+          lightSlider.value = String(Math.max(15, Math.min(65, hsl.l)));
         }
         const curH = hueSlider ? Number(hueSlider.value) : hsl.h;
         lightSlider.style.background = `linear-gradient(to right, hsl(${curH}, 78%, 15%), hsl(${curH}, 78%, 40%), hsl(${curH}, 78%, 65%))`;
@@ -449,118 +250,63 @@ function hexToHsl(hex) {
       const c2 = /^#[0-9a-f]{6}$/i.test(nextCfg.color2) ? nextCfg.color2.toLowerCase() : (themeConfig.color2 || "#0284c7");
       const mode = nextCfg.mode === "gradient" ? "gradient" : "solid";
       themeConfig = { mode, color: c1, color2: c2 };
-      function applyThemeConfig(nextCfg, syncToCloud = true) {
-        if (!nextCfg || typeof nextCfg !== "object") return;
-        const c1 = /^#[0-9a-f]{6}$/i.test(nextCfg.color) ? nextCfg.color.toLowerCase() : (themeConfig.color || "#14425f");
-        const c2 = /^#[0-9a-f]{6}$/i.test(nextCfg.color2) ? nextCfg.color2.toLowerCase() : (themeConfig.color2 || "#0284c7");
-        const mode = nextCfg.mode === "gradient" ? "gradient" : "solid";
-        themeConfig = { mode, color: c1, color2: c2 };
 
-        const rgb1 = c1.match(/[0-9a-f]{2}/gi).map(v => parseInt(v, 16));
-        const rgb2 = c2.match(/[0-9a-f]{2}/gi).map(v => parseInt(v, 16));
-        const mixRgb = mode === "gradient"
-          ? rgb1.map((v, idx) => Math.round((v + rgb2[idx]) / 2))
-          : rgb1;
-        const soft = mixRgb.map(v => Math.round(v + (255 - v) * 0.88));
-        const rgb1 = c1.match(/[0-9a-f]{2}/gi).map(v => parseInt(v, 16));
-        const rgb2 = c2.match(/[0-9a-f]{2}/gi).map(v => parseInt(v, 16));
-        const mixRgb = mode === "gradient"
-          ? rgb1.map((v, idx) => Math.round((v + rgb2[idx]) / 2))
-          : rgb1;
-        const soft = mixRgb.map(v => Math.round(v + (255 - v) * 0.88));
+      const rgb1 = c1.match(/[0-9a-f]{2}/gi).map(v => parseInt(v, 16));
+      const rgb2 = c2.match(/[0-9a-f]{2}/gi).map(v => parseInt(v, 16));
+      const mixRgb = mode === "gradient"
+        ? rgb1.map((v, idx) => Math.round((v + rgb2[idx]) / 2))
+        : rgb1;
+      const soft = mixRgb.map(v => Math.round(v + (255 - v) * 0.88));
 
-        document.documentElement.removeAttribute("data-theme");
-        document.documentElement.style.setProperty("--primary", c1);
-        document.documentElement.style.setProperty("--primary-accent", mode === "gradient" ? c2 : c1);
-        document.documentElement.style.setProperty(
-          "--primary-bg",
-          mode === "gradient" ? `linear-gradient(135deg, ${c1} 0%, ${c2} 100%)` : c1
-        );
-        document.documentElement.style.setProperty("--primary-soft", `rgb(${soft.join(", ")})`);
-        document.documentElement.style.setProperty("--chip", `rgb(${soft.map(v => Math.max(0, v - 12)).join(", ")})`);
-        document.documentElement.style.setProperty("--chip-ink", c1);
-        document.documentElement.removeAttribute("data-theme");
-        document.documentElement.style.setProperty("--primary", c1);
-        document.documentElement.style.setProperty("--primary-accent", mode === "gradient" ? c2 : c1);
-        document.documentElement.style.setProperty(
-          "--primary-bg",
-          mode === "gradient" ? `linear-gradient(135deg, ${c1} 0%, ${c2} 100%)` : c1
-        );
-        document.documentElement.style.setProperty("--primary-soft", `rgb(${soft.join(", ")})`);
-        document.documentElement.style.setProperty("--chip", `rgb(${soft.map(v => Math.max(0, v - 12)).join(", ")})`);
-        document.documentElement.style.setProperty("--chip-ink", c1);
+      document.documentElement.removeAttribute("data-theme");
+      document.documentElement.style.setProperty("--primary", c1);
+      document.documentElement.style.setProperty("--primary-accent", mode === "gradient" ? c2 : c1);
+      document.documentElement.style.setProperty(
+        "--primary-bg",
+        mode === "gradient" ? `linear-gradient(135deg, ${c1} 0%, ${c2} 100%)` : c1
+      );
+      document.documentElement.style.setProperty("--primary-soft", `rgb(${soft.join(", ")})`);
+      document.documentElement.style.setProperty("--chip", `rgb(${soft.map(v => Math.max(0, v - 12)).join(", ")})`);
+      document.documentElement.style.setProperty("--chip-ink", c1);
 
-        const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) metaTheme.setAttribute("content", c1);
-        const metaTheme = document.querySelector('meta[name="theme-color"]');
-        if (metaTheme) metaTheme.setAttribute("content", c1);
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      if (metaTheme) metaTheme.setAttribute("content", c1);
 
-        const picker1 = document.getElementById("themeColor");
-        if (picker1) picker1.value = c1;
-        const picker2 = document.getElementById("themeColor2");
-        if (picker2) picker2.value = c2;
-        const hex1 = document.getElementById("themeHex1");
-        if (hex1 && document.activeElement !== hex1) hex1.value = c1;
-        const hex2 = document.getElementById("themeHex2");
-        if (hex2 && document.activeElement !== hex2) hex2.value = c2;
-        const picker1 = document.getElementById("themeColor");
-        if (picker1) picker1.value = c1;
-        const picker2 = document.getElementById("themeColor2");
-        if (picker2) picker2.value = c2;
-        const hex1 = document.getElementById("themeHex1");
-        if (hex1 && document.activeElement !== hex1) hex1.value = c1;
-        const hex2 = document.getElementById("themeHex2");
-        if (hex2 && document.activeElement !== hex2) hex2.value = c2;
+      const picker1 = document.getElementById("themeColor");
+      if (picker1) picker1.value = c1;
+      const picker2 = document.getElementById("themeColor2");
+      if (picker2) picker2.value = c2;
+      const hex1 = document.getElementById("themeHex1");
+      if (hex1 && document.activeElement !== hex1) hex1.value = c1;
+      const hex2 = document.getElementById("themeHex2");
+      if (hex2 && document.activeElement !== hex2) hex2.value = c2;
 
-        const gradBtn = document.getElementById("gradToggleBtn");
-        if (gradBtn) gradBtn.classList.toggle("active", mode === "gradient");
-        const gradBtn = document.getElementById("gradToggleBtn");
-        if (gradBtn) gradBtn.classList.toggle("active", mode === "gradient");
+      const gradBtn = document.getElementById("gradToggleBtn");
+      if (gradBtn) gradBtn.classList.toggle("active", mode === "gradient");
 
-        const stopBtn1 = document.getElementById("stopBtn1");
-        const stopBtn2 = document.getElementById("stopBtn2");
-        if (stopBtn1) stopBtn1.classList.toggle("active", activeCustomStop === 1);
-        if (stopBtn2) stopBtn2.classList.toggle("active", activeCustomStop === 2);
-        const stopBtn1 = document.getElementById("stopBtn1");
-        const stopBtn2 = document.getElementById("stopBtn2");
-        if (stopBtn1) stopBtn1.classList.toggle("active", activeCustomStop === 1);
-        if (stopBtn2) stopBtn2.classList.toggle("active", activeCustomStop === 2);
+      const stopBtn1 = document.getElementById("stopBtn1");
+      const stopBtn2 = document.getElementById("stopBtn2");
+      if (stopBtn1) stopBtn1.classList.toggle("active", activeCustomStop === 1);
+      if (stopBtn2) stopBtn2.classList.toggle("active", activeCustomStop === 2);
 
-        syncCustomThemeSliders(activeCustomStop === 2 ? c2 : c1);
-        syncCustomThemeSliders(activeCustomStop === 2 ? c2 : c1);
+      syncCustomThemeSliders(activeCustomStop === 2 ? c2 : c1);
 
-        document.querySelectorAll(".theme-swatch").forEach(btn => {
-          const oc = btn.getAttribute("onclick") || "";
-          const isMatch = mode === "solid"
-            ? oc.includes(`'solid','${c1}'`)
-            : oc.includes(`'gradient','${c1}','${c2}'`);
-          btn.classList.toggle("active", isMatch);
-        });
-        document.querySelectorAll(".theme-swatch").forEach(btn => {
-          const oc = btn.getAttribute("onclick") || "";
-          const isMatch = mode === "solid"
-            ? oc.includes(`'solid','${c1}'`)
-            : oc.includes(`'gradient','${c1}','${c2}'`);
-          btn.classList.toggle("active", isMatch);
-        });
+      document.querySelectorAll(".theme-swatch").forEach(btn => {
+        const oc = btn.getAttribute("onclick") || "";
+        const isMatch = mode === "solid"
+          ? oc.includes(`'solid','${c1}'`)
+          : oc.includes(`'gradient','${c1}','${c2}'`);
+        btn.classList.toggle("active", isMatch);
+      });
 
-        const encoded = serializeThemeString(themeConfig);
-        try {
-          localStorage.setItem("ds-v2:theme-color", encoded);
-          localStorage.setItem("ds-v2:theme-config", JSON.stringify(themeConfig));
-        } catch (e) { }
-        const encoded = serializeThemeString(themeConfig);
-        try {
-          localStorage.setItem("ds-v2:theme-color", encoded);
-          localStorage.setItem("ds-v2:theme-config", JSON.stringify(themeConfig));
-        } catch (e) { }
+      const encoded = serializeThemeString(themeConfig);
+      try {
+        localStorage.setItem("ds-v2:theme-color", encoded);
+        localStorage.setItem("ds-v2:theme-config", JSON.stringify(themeConfig));
+      } catch (e) { }
 
-        if (syncToCloud && currentUser && sbClient && navigator.onLine) {
-          pushUserSettingsToCloud().catch(() => { });
-        }
-      }
       if (syncToCloud && currentUser && sbClient && navigator.onLine) {
-        pushUserSettingsToCloud().catch(() => { });
+        pushUserSettingsToCloud().catch(() => {});
       }
     }
 
@@ -569,15 +315,7 @@ function hexToHsl(hex) {
       if (!parsed) return;
       applyThemeConfig(parsed, syncToCloud);
     }
-    function setThemeColor(colorOrEncoded, syncToCloud = true) {
-      const parsed = parseThemeString(colorOrEncoded);
-      if (!parsed) return;
-      applyThemeConfig(parsed, syncToCloud);
-    }
 
-    function setThemeGradient(color1, color2, syncToCloud = true) {
-      applyThemeConfig({ mode: "gradient", color: color1, color2: color2 || themeConfig.color2 }, syncToCloud);
-    }
     function setThemeGradient(color1, color2, syncToCloud = true) {
       applyThemeConfig({ mode: "gradient", color: color1, color2: color2 || themeConfig.color2 }, syncToCloud);
     }
@@ -588,17 +326,7 @@ function hexToHsl(hex) {
       applyThemeConfig({ ...themeConfig, mode: nextMode }, true);
       toast(nextMode === "gradient" ? "Gradient theme enabled 🌈" : "Solid theme enabled 🎨");
     }
-    function toggleGradientTheme() {
-      const nextMode = themeConfig.mode === "gradient" ? "solid" : "gradient";
-      if (nextMode === "solid") activeCustomStop = 1;
-      applyThemeConfig({ ...themeConfig, mode: nextMode }, true);
-      toast(nextMode === "gradient" ? "Gradient theme enabled 🌈" : "Solid theme enabled 🎨");
-    }
 
-    function selectThemePreset(mode, color1, color2) {
-      activeCustomStop = 1;
-      applyThemeConfig({ mode, color: color1, color2: color2 || themeConfig.color2 }, true);
-    }
     function selectThemePreset(mode, color1, color2) {
       activeCustomStop = 1;
       applyThemeConfig({ mode, color: color1, color2: color2 || themeConfig.color2 }, true);
@@ -616,31 +344,7 @@ function hexToHsl(hex) {
         syncCustomThemeSliders(activeCustomStop === 2 ? themeConfig.color2 : themeConfig.color);
       }
     }
-    function setCustomStopTarget(stopNum) {
-      activeCustomStop = stopNum === 2 ? 2 : 1;
-      const stopBtn1 = document.getElementById("stopBtn1");
-      const stopBtn2 = document.getElementById("stopBtn2");
-      if (stopBtn1) stopBtn1.classList.toggle("active", activeCustomStop === 1);
-      if (stopBtn2) stopBtn2.classList.toggle("active", activeCustomStop === 2);
-      if (activeCustomStop === 2 && themeConfig.mode !== "gradient") {
-        applyThemeConfig({ ...themeConfig, mode: "gradient" }, true);
-      } else {
-        syncCustomThemeSliders(activeCustomStop === 2 ? themeConfig.color2 : themeConfig.color);
-      }
-    }
 
-    function onThemeHexInput(stopNum, rawVal) {
-      const clean = String(rawVal || "").trim();
-      const normalized = clean.startsWith("#") ? clean : `#${clean}`;
-      if (!/^#[0-9a-f]{6}$/i.test(normalized)) return;
-      const stop = stopNum === 2 ? 2 : 1;
-      activeCustomStop = stop;
-      if (stop === 2) {
-        applyThemeConfig({ ...themeConfig, mode: "gradient", color2: normalized.toLowerCase() }, true);
-      } else {
-        applyThemeConfig({ ...themeConfig, color: normalized.toLowerCase() }, true);
-      }
-    }
     function onThemeHexInput(stopNum, rawVal) {
       const clean = String(rawVal || "").trim();
       const normalized = clean.startsWith("#") ? clean : `#${clean}`;
@@ -668,599 +372,311 @@ function hexToHsl(hex) {
           applyThemeConfig({ ...themeConfig, mode: "gradient", color2: nextHex }, true);
         } else {
           applyThemeConfig({ ...themeConfig, color: nextHex }, true);
-          function onThemeSliderChange() {
-            const hueSlider = document.getElementById("themeHueSlider");
-            const lightSlider = document.getElementById("themeLightSlider");
-            if (!hueSlider || !lightSlider) return;
-            const targetColor = activeCustomStop === 2 ? themeConfig.color2 : themeConfig.color;
-            const prevHsl = hexToHsl(targetColor);
-            const sat = prevHsl.s >= 20 ? prevHsl.s : 78;
-            const nextHex = hslToHex(hueSlider.value, sat, lightSlider.value);
-            syncingFromThemeSlider = true;
-            try {
-              if (activeCustomStop === 2) {
-                applyThemeConfig({ ...themeConfig, mode: "gradient", color2: nextHex }, true);
-              } else {
-                applyThemeConfig({ ...themeConfig, color: nextHex }, true);
-              }
-            } finally {
-              syncingFromThemeSlider = false;
-            }
-          }
-        } finally {
-          syncingFromThemeSlider = false;
         }
+      } finally {
+        syncingFromThemeSlider = false;
       }
+    }
 
-function onThemeColorPickerChange() {
-        const p1 = document.getElementById("themeColor");
-        if (!p1) return;
-        activeCustomStop = 1;
-        applyThemeConfig({ ...themeConfig, color: p1.value }, true);
-      }
-      function onThemeColorPickerChange() {
-        const p1 = document.getElementById("themeColor");
-        if (!p1) return;
-        activeCustomStop = 1;
-        applyThemeConfig({ ...themeConfig, color: p1.value }, true);
-      }
+    function onThemeColorPickerChange() {
+      const p1 = document.getElementById("themeColor");
+      if (!p1) return;
+      activeCustomStop = 1;
+      applyThemeConfig({ ...themeConfig, color: p1.value }, true);
+    }
 
-      function onThemeColor2PickerChange() {
-        const p2 = document.getElementById("themeColor2");
-        if (!p2) return;
-        activeCustomStop = 2;
-        applyThemeConfig({ ...themeConfig, mode: "gradient", color2: p2.value }, true);
-      }
-      function onThemeColor2PickerChange() {
-        const p2 = document.getElementById("themeColor2");
-        if (!p2) return;
-        activeCustomStop = 2;
-        applyThemeConfig({ ...themeConfig, mode: "gradient", color2: p2.value }, true);
-      }
+    function onThemeColor2PickerChange() {
+      const p2 = document.getElementById("themeColor2");
+      if (!p2) return;
+      activeCustomStop = 2;
+      applyThemeConfig({ ...themeConfig, mode: "gradient", color2: p2.value }, true);
+    }
 
-      try {
-        const savedCfg = safeParse(localStorage.getItem("ds-v2:theme-config"));
-        if (savedCfg && savedCfg.color) {
-          applyThemeConfig(savedCfg, false);
-        } else {
-          setThemeColor(localStorage.getItem("ds-v2:theme-color") || "#14425f", false);
-        }
-      } catch (e) {
-        setThemeColor("#14425f", false);
+    try {
+      const savedCfg = safeParse(localStorage.getItem("ds-v2:theme-config"));
+      if (savedCfg && savedCfg.color) {
+        applyThemeConfig(savedCfg, false);
+      } else {
+        setThemeColor(localStorage.getItem("ds-v2:theme-color") || "#14425f", false);
       }
-      try {
-        const savedCfg = safeParse(localStorage.getItem("ds-v2:theme-config"));
-        if (savedCfg && savedCfg.color) {
-          applyThemeConfig(savedCfg, false);
-        } else {
-          setThemeColor(localStorage.getItem("ds-v2:theme-color") || "#14425f", false);
-        }
-      } catch (e) {
-        setThemeColor("#14425f", false);
-      }
+    } catch (e) {
+      setThemeColor("#14425f", false);
+    }
 
-      /* ---------- init datalists & chips ---------- */
-      function fillDatalist(id, arr) { document.getElementById(id).innerHTML = arr.map(x => `<option value="${x}">`).join(""); }
-      fillDatalist("ccList", COMMON_CC);
-      fillDatalist("labList", COMMON_LABS);
-      fillDatalist("drugList", COMMON_DRUGS);
-      /* ---------- init datalists & chips ---------- */
-      function fillDatalist(id, arr) { document.getElementById(id).innerHTML = arr.map(x => `<option value="${x}">`).join(""); }
-      fillDatalist("ccList", COMMON_CC);
-      fillDatalist("labList", COMMON_LABS);
-      fillDatalist("drugList", COMMON_DRUGS);
+    /* ---------- init datalists & chips ---------- */
+    function fillDatalist(id, arr) { document.getElementById(id).innerHTML = arr.map(x => `<option value="${x}">`).join(""); }
+    fillDatalist("ccList", COMMON_CC);
+    fillDatalist("labList", COMMON_LABS);
+    fillDatalist("drugList", COMMON_DRUGS);
 
-      document.getElementById("ccChips").innerHTML =
-        COMMON_CC.slice(0, 12).map(c => `<span class="chip" onclick="document.getElementById('ccText').value='${c}';document.getElementById('ccDur').focus()">${c}</span>`).join("");
-      document.getElementById("condChips").innerHTML =
-        COMMON_COND.map(c => `<span class="chip" onclick="document.getElementById('condition').value='${c}';render()">${c}</span>`).join("");
-      document.getElementById("pastChips").innerHTML =
-        COMMON_PAST.map((c, i) => `<span class="chip" onclick="addPastPreset(${i})">${c}</span>`).join("");
-      document.getElementById("invPanels").innerHTML =
-        Object.keys(PANELS).map(p => `<span class="chip" onclick="addPanel('${p}')">+ ${p}</span>`).join("");
-      document.getElementById("courseTpl").innerHTML =
-        COURSE_TEMPLATES.map((t, i) => `<span class="chip" onclick="insertCourse(${i})">${t.label}</span>`).join("");
-      document.getElementById("txBundles").innerHTML =
-        Object.keys(TX_BUNDLES).map(k => `<span class="chip" onclick="addBundle('${k}')">+ ${k}</span>`).join("");
-      document.getElementById("rxBundles").innerHTML =
-        Object.keys(RX_BUNDLES).map(k => `<span class="chip" onclick="addRxBundle('${k}')">+ ${k}</span>`).join("");
-      document.getElementById("ccChips").innerHTML =
-        COMMON_CC.slice(0, 12).map(c => `<span class="chip" onclick="document.getElementById('ccText').value='${c}';document.getElementById('ccDur').focus()">${c}</span>`).join("");
-      document.getElementById("condChips").innerHTML =
-        COMMON_COND.map(c => `<span class="chip" onclick="document.getElementById('condition').value='${c}';render()">${c}</span>`).join("");
-      document.getElementById("pastChips").innerHTML =
-        COMMON_PAST.map((c, i) => `<span class="chip" onclick="addPastPreset(${i})">${c}</span>`).join("");
-      document.getElementById("invPanels").innerHTML =
-        Object.keys(PANELS).map(p => `<span class="chip" onclick="addPanel('${p}')">+ ${p}</span>`).join("");
-      document.getElementById("courseTpl").innerHTML =
-        COURSE_TEMPLATES.map((t, i) => `<span class="chip" onclick="insertCourse(${i})">${t.label}</span>`).join("");
-      document.getElementById("txBundles").innerHTML =
-        Object.keys(TX_BUNDLES).map(k => `<span class="chip" onclick="addBundle('${k}')">+ ${k}</span>`).join("");
-      document.getElementById("rxBundles").innerHTML =
-        Object.keys(RX_BUNDLES).map(k => `<span class="chip" onclick="addRxBundle('${k}')">+ ${k}</span>`).join("");
+    document.getElementById("ccChips").innerHTML =
+      COMMON_CC.slice(0, 12).map(c => `<span class="chip" onclick="document.getElementById('ccText').value='${c}';document.getElementById('ccDur').focus()">${c}</span>`).join("");
+    document.getElementById("condChips").innerHTML =
+      COMMON_COND.map(c => `<span class="chip" onclick="document.getElementById('condition').value='${c}';render()">${c}</span>`).join("");
+    document.getElementById("pastChips").innerHTML =
+      COMMON_PAST.map((c, i) => `<span class="chip" onclick="addPastPreset(${i})">${c}</span>`).join("");
+    document.getElementById("invPanels").innerHTML =
+      Object.keys(PANELS).map(p => `<span class="chip" onclick="addPanel('${p}')">+ ${p}</span>`).join("");
+    document.getElementById("courseTpl").innerHTML =
+      COURSE_TEMPLATES.map((t, i) => `<span class="chip" onclick="insertCourse(${i})">${t.label}</span>`).join("");
+    document.getElementById("txBundles").innerHTML =
+      Object.keys(TX_BUNDLES).map(k => `<span class="chip" onclick="addBundle('${k}')">+ ${k}</span>`).join("");
+    document.getElementById("rxBundles").innerHTML =
+      Object.keys(RX_BUNDLES).map(k => `<span class="chip" onclick="addRxBundle('${k}')">+ ${k}</span>`).join("");
 
-      function addBundle(k) {
-        (TX_BUNDLES[k] || []).forEach(d => { if (!treatment.includes(d)) treatment.push(d); });
-        renderTx(); render();
-      }
-      function addPastPreset(i) {
-        document.getElementById("pastText").value = COMMON_PAST[i];
-        addPast();
-      }
-      function addRxBundle(k) {
-        (RX_BUNDLES[k] || []).forEach(d => { if (!rxMeds.includes(d)) rxMeds.push(d); });
-        renderRx(); render();
-      }
-      function addBundle(k) {
-        (TX_BUNDLES[k] || []).forEach(d => { if (!treatment.includes(d)) treatment.push(d); });
-        renderTx(); render();
-      }
-      function addPastPreset(i) {
-        document.getElementById("pastText").value = COMMON_PAST[i];
-        addPast();
-      }
-      function addRxBundle(k) {
-        (RX_BUNDLES[k] || []).forEach(d => { if (!rxMeds.includes(d)) rxMeds.push(d); });
-        renderRx(); render();
-      }
+    function addBundle(k) {
+      (TX_BUNDLES[k] || []).forEach(d => { if (!treatment.includes(d)) treatment.push(d); });
+      renderTx(); render();
+    }
+    function addPastPreset(i) {
+      document.getElementById("pastText").value = COMMON_PAST[i];
+      addPast();
+    }
+    function addRxBundle(k) {
+      (RX_BUNDLES[k] || []).forEach(d => { if (!rxMeds.includes(d)) rxMeds.push(d); });
+      renderRx(); render();
+    }
 
-      function insertCourse(i) {
-        const el = document.getElementById("course");
-        const t = COURSE_TEMPLATES[i].text;
-        el.value = el.value.trim() ? el.value.trim() + "\n\n" + t : t;
-        render();
-      }
-      function insertCourse(i) {
-        const el = document.getElementById("course");
-        const t = COURSE_TEMPLATES[i].text;
-        el.value = el.value.trim() ? el.value.trim() + "\n\n" + t : t;
-        render();
-      }
+    function insertCourse(i) {
+      const el = document.getElementById("course");
+      const t = COURSE_TEMPLATES[i].text;
+      el.value = el.value.trim() ? el.value.trim() + "\n\n" + t : t;
+      render();
+    }
 
-      /* ---------- complaints ---------- */
-      function addComplaint() {
-        const t = document.getElementById("ccText").value.trim();
-        if (!t) return;
-        const d = document.getElementById("ccDur").value.trim();
-        const u = document.getElementById("ccUnit").value.trim();
-        const durPart = [d, u].filter(Boolean).join(" ");
-        complaints.push(d && durPart ? `H/o ${t} for ${durPart}` : `H/o ${t}`);
-        document.getElementById("ccText").value = ""; document.getElementById("ccDur").value = "";
-        renderComplaints(); render();
-      }
-      function renderComplaints() {
-        document.getElementById("ccListOut").innerHTML = complaints.map((c, i) =>
-          `<li><span>${esc(c)}</span><button onclick="complaints.splice(${i},1);renderComplaints();render()">×</button></li>`).join("");
-      }
-      /* ---------- complaints ---------- */
-      function addComplaint() {
-        const t = document.getElementById("ccText").value.trim();
-        if (!t) return;
-        const d = document.getElementById("ccDur").value.trim();
-        const u = document.getElementById("ccUnit").value.trim();
-        const durPart = [d, u].filter(Boolean).join(" ");
-        complaints.push(d && durPart ? `H/o ${t} for ${durPart}` : `H/o ${t}`);
-        document.getElementById("ccText").value = ""; document.getElementById("ccDur").value = "";
-        renderComplaints(); render();
-      }
-      function renderComplaints() {
-        document.getElementById("ccListOut").innerHTML = complaints.map((c, i) =>
-          `<li><span>${esc(c)}</span><button onclick="complaints.splice(${i},1);renderComplaints();render()">×</button></li>`).join("");
-      }
+    /* ---------- complaints ---------- */
+    function addComplaint() {
+      const t = document.getElementById("ccText").value.trim();
+      if (!t) return;
+      const d = document.getElementById("ccDur").value.trim();
+      const u = document.getElementById("ccUnit").value.trim();
+      const durPart = [d, u].filter(Boolean).join(" ");
+      complaints.push(d && durPart ? `H/o ${t} for ${durPart}` : `H/o ${t}`);
+      document.getElementById("ccText").value = ""; document.getElementById("ccDur").value = "";
+      renderComplaints(); render();
+    }
+    function renderComplaints() {
+      document.getElementById("ccListOut").innerHTML = complaints.map((c, i) =>
+        `<li><span>${esc(c)}</span><button onclick="complaints.splice(${i},1);renderComplaints();render()">×</button></li>`).join("");
+    }
 
-      /* ---------- past history / rx history ---------- */
-      function addPast() {
-        const t = document.getElementById("pastText").value.trim(); if (!t) return;
-        pastHistory.push(t); document.getElementById("pastText").value = "";
-        renderPast(); render();
-      }
-      function renderPast() {
-        document.getElementById("pastListOut").innerHTML = pastHistory.map((c, i) =>
-          `<li><span>${esc(c)}</span><button onclick="pastHistory.splice(${i},1);renderPast();render()">×</button></li>`).join("");
-      }
-      function addRxHistory() {
-        const n = document.getElementById("rxhName").value.trim(); if (!n) return;
-        const parts = [n, document.getElementById("rxhDose").value.trim(), document.getElementById("rxhFreq").value].filter(Boolean);
-        rxHistory.push(parts.join(" "));
-        ["rxhName", "rxhDose"].forEach(id => document.getElementById(id).value = "");
-        setVal_("rxhFreq", "");
-        renderRxHistory(); render();
-      }
-      function renderRxHistory() {
-        document.getElementById("rxhListOut").innerHTML = rxHistory.map((t, i) =>
-          `<li><span>${esc(t)}</span><button onclick="rxHistory.splice(${i},1);renderRxHistory();render()">×</button></li>`).join("");
-      }
-      /* ---------- past history / rx history ---------- */
-      function addPast() {
-        const t = document.getElementById("pastText").value.trim(); if (!t) return;
-        pastHistory.push(t); document.getElementById("pastText").value = "";
-        renderPast(); render();
-      }
-      function renderPast() {
-        document.getElementById("pastListOut").innerHTML = pastHistory.map((c, i) =>
-          `<li><span>${esc(c)}</span><button onclick="pastHistory.splice(${i},1);renderPast();render()">×</button></li>`).join("");
-      }
-      function addRxHistory() {
-        const n = document.getElementById("rxhName").value.trim(); if (!n) return;
-        const parts = [n, document.getElementById("rxhDose").value.trim(), document.getElementById("rxhFreq").value].filter(Boolean);
-        rxHistory.push(parts.join(" "));
-        ["rxhName", "rxhDose"].forEach(id => document.getElementById(id).value = "");
-        setVal_("rxhFreq", "");
-        renderRxHistory(); render();
-      }
-      function renderRxHistory() {
-        document.getElementById("rxhListOut").innerHTML = rxHistory.map((t, i) =>
-          `<li><span>${esc(t)}</span><button onclick="rxHistory.splice(${i},1);renderRxHistory();render()">×</button></li>`).join("");
-      }
+    /* ---------- past history / rx history ---------- */
+    function addPast() {
+      const t = document.getElementById("pastText").value.trim(); if (!t) return;
+      pastHistory.push(t); document.getElementById("pastText").value = "";
+      renderPast(); render();
+    }
+    function renderPast() {
+      document.getElementById("pastListOut").innerHTML = pastHistory.map((c, i) =>
+        `<li><span>${esc(c)}</span><button onclick="pastHistory.splice(${i},1);renderPast();render()">×</button></li>`).join("");
+    }
+    function addRxHistory() {
+      const n = document.getElementById("rxhName").value.trim(); if (!n) return;
+      const parts = [n, document.getElementById("rxhDose").value.trim(), document.getElementById("rxhFreq").value].filter(Boolean);
+      rxHistory.push(parts.join(" "));
+      ["rxhName", "rxhDose"].forEach(id => document.getElementById(id).value = "");
+      setVal_("rxhFreq", "");
+      renderRxHistory(); render();
+    }
+    function renderRxHistory() {
+      document.getElementById("rxhListOut").innerHTML = rxHistory.map((t, i) =>
+        `<li><span>${esc(t)}</span><button onclick="rxHistory.splice(${i},1);renderRxHistory();render()">×</button></li>`).join("");
+    }
 
-      /* ---------- general exam & yes/no ---------- */
-      function insertGeneralExam() {
-        const el = document.getElementById("generalExam");
-        const line = "Patient conscious, oriented, afebrile. No pallor, icterus, cyanosis, clubbing, lymphadenopathy or pedal edema.";
-        el.value = el.value.trim() ? el.value.trim() + "\n" + line : line;
-        render();
-      }
-      function setYN(key, val_) {
-        ynState[key] = ynState[key] === val_ ? "" : val_;
-        const map = { physio: "ynPhysio", equip: "ynEquip", dress: "ynDress" };
-        const box = document.getElementById(map[key]);
-        if (box) [...box.children].forEach(b => b.classList.toggle("sel", b.textContent === ynState[key]));
-        render();
-      }
-      /* ---------- general exam & yes/no ---------- */
-      function insertGeneralExam() {
-        const el = document.getElementById("generalExam");
-        const line = "Patient conscious, oriented, afebrile. No pallor, icterus, cyanosis, clubbing, lymphadenopathy or pedal edema.";
-        el.value = el.value.trim() ? el.value.trim() + "\n" + line : line;
-        render();
-      }
-      function setYN(key, val_) {
-        ynState[key] = ynState[key] === val_ ? "" : val_;
-        const map = { physio: "ynPhysio", equip: "ynEquip", dress: "ynDress" };
-        const box = document.getElementById(map[key]);
-        if (box) [...box.children].forEach(b => b.classList.toggle("sel", b.textContent === ynState[key]));
-        render();
-      }
+    /* ---------- general exam & yes/no ---------- */
+    function insertGeneralExam() {
+      const el = document.getElementById("generalExam");
+      const line = "Patient conscious, oriented, afebrile. No pallor, icterus, cyanosis, clubbing, lymphadenopathy or pedal edema.";
+      el.value = el.value.trim() ? el.value.trim() + "\n" + line : line;
+      render();
+    }
+    function setYN(key, val_) {
+      ynState[key] = ynState[key] === val_ ? "" : val_;
+      const map = { physio: "ynPhysio", equip: "ynEquip", dress: "ynDress" };
+      const box = document.getElementById(map[key]);
+      if (box) [...box.children].forEach(b => b.classList.toggle("sel", b.textContent === ynState[key]));
+      render();
+    }
 
-      /* ---------- unit & honorific helpers ---------- */
-      function getUnit() {
-        return (val("unitPrefix") || "") + (document.getElementById("unitRoman").value || "");
+    /* ---------- unit & honorific helpers ---------- */
+    function getUnit() {
+      return (val("unitPrefix") || "") + (document.getElementById("unitRoman").value || "");
+    }
+    function displayDateValue(value) {
+      const iso = normalizeDateValue(value);
+      return iso ? fmtDate(iso) : "";
+    }
+    function formatDisplayDate(input) {
+      const formatted = displayDateValue(input.value);
+      if (formatted) {
+        input.value = formatted;
       }
-      function displayDateValue(value) {
-        const iso = normalizeDateValue(value);
-        return iso ? fmtDate(iso) : "";
-      }
-      function formatDisplayDate(input) {
-        const formatted = displayDateValue(input.value);
-        if (formatted) {
-          input.value = formatted;
-        }
-        render();
-      }
-      function ensureDr(name) {
-        const n = (name || "").trim();
-        if (!n) return "";
-        return /^dr\.?\s/i.test(n) ? n : "Dr. " + n;
-      }
-      function todayISO() {
-        const d = new Date(); const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-        return local.toISOString().slice(0, 10);
-      }
-      function clearDOD() { document.getElementById("dod").value = ""; render(); }
-      /* ---------- unit & honorific helpers ---------- */
-      function getUnit() {
-        return (val("unitPrefix") || "") + (document.getElementById("unitRoman").value || "");
-      }
-      function displayDateValue(value) {
-        const iso = normalizeDateValue(value);
-        return iso ? fmtDate(iso) : "";
-      }
-      function formatDisplayDate(input) {
-        const formatted = displayDateValue(input.value);
-        if (formatted) {
-          input.value = formatted;
-        }
-        render();
-      }
-      function ensureDr(name) {
-        const n = (name || "").trim();
-        if (!n) return "";
-        return /^dr\.?\s/i.test(n) ? n : "Dr. " + n;
-      }
-      function todayISO() {
-        const d = new Date(); const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-        return local.toISOString().slice(0, 10);
-      }
-      function clearDOD() { document.getElementById("dod").value = ""; render(); }
+      render();
+    }
+    function ensureDr(name) {
+      const n = (name || "").trim();
+      if (!n) return "";
+      return /^dr\.?\s/i.test(n) ? n : "Dr. " + n;
+    }
+    function todayISO() {
+      const d = new Date(); const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+      return local.toISOString().slice(0, 10);
+    }
+    function clearDOD() { document.getElementById("dod").value = ""; render(); }
 
-      async function clearFormSection(event, button) {
-        event.preventDefault();
-        event.stopPropagation();
-        const section = button.closest("details");
-        const key = section.dataset.clear;
-        if (!confirm(`Clear all entries in "${section.querySelector("summary").textContent.replace("Clear", "").trim()}"?`)) return;
-        async function clearFormSection(event, button) {
-          event.preventDefault();
-          event.stopPropagation();
-          const section = button.closest("details");
-          const key = section.dataset.clear;
-          if (!confirm(`Clear all entries in "${section.querySelector("summary").textContent.replace("Clear", "").trim()}"?`)) return;
+    async function clearFormSection(event, button) {
+      event.preventDefault();
+      event.stopPropagation();
+      const section = button.closest("details");
+      const key = section.dataset.clear;
+      if (!confirm(`Clear all entries in "${section.querySelector("summary").textContent.replace("Clear", "").trim()}"?`)) return;
 
-          section.querySelectorAll("input, textarea").forEach(el => {
-            el.value = "";
-          });
-          section.querySelectorAll("select").forEach(el => {
-            el.value = "";
-            if (el.selectedIndex < 0) el.selectedIndex = 0;
-            syncEditableSelectUI(el, true);
-          });
-          section.querySelectorAll("input, textarea").forEach(el => {
-            el.value = "";
-          });
-          section.querySelectorAll("select").forEach(el => {
-            el.value = "";
-            if (el.selectedIndex < 0) el.selectedIndex = 0;
-            syncEditableSelectUI(el, true);
-          });
+      section.querySelectorAll("input, textarea").forEach(el => {
+        el.value = "";
+      });
+      section.querySelectorAll("select").forEach(el => {
+        el.value = "";
+        if (el.selectedIndex < 0) el.selectedIndex = 0;
+        syncEditableSelectUI(el, true);
+      });
 
-          if (key === "complaints") complaints = [];
-          if (key === "history") {
-            pastHistory = [];
-            rxHistory = [];
-          }
-          if (key === "advice") {
-            rxMeds = [];
-            ynState = { physio: "", equip: "", dress: "" };
-          }
-          if (key === "investigations") {
-            invDates = [];
-            invParams = [];
-            invSeq = 0;
-          }
-          if (key === "treatment") treatment = [];
-          if (key === "institution") {
-            logoData = "";
-            await store.remove("ds-v2:logo");
-          }
-          if (key === "setup") await store.remove(getDefaultsKey());
-          if (key === "complaints") complaints = [];
-          if (key === "history") {
-            pastHistory = [];
-            rxHistory = [];
-          }
-          if (key === "advice") {
-            rxMeds = [];
-            ynState = { physio: "", equip: "", dress: "" };
-          }
-          if (key === "investigations") {
-            invDates = [];
-            invParams = [];
-            invSeq = 0;
-          }
-          if (key === "treatment") treatment = [];
-          if (key === "institution") {
-            logoData = "";
-            await store.remove("ds-v2:logo");
-          }
-          if (key === "setup") await store.remove(getDefaultsKey());
+      if (key === "complaints") complaints = [];
+      if (key === "history") {
+        pastHistory = [];
+        rxHistory = [];
+      }
+      if (key === "advice") {
+        rxMeds = [];
+        ynState = { physio: "", equip: "", dress: "" };
+      }
+      if (key === "investigations") {
+        invDates = [];
+        invParams = [];
+        invSeq = 0;
+      }
+      if (key === "treatment") treatment = [];
+      if (key === "institution") {
+        logoData = "";
+        await store.remove("ds-v2:logo");
+      }
+      if (key === "setup") await store.remove(getDefaultsKey());
 
-          renderComplaints();
-          renderTx();
-          renderRx();
-          renderInvEditor();
-          renderPast();
-          renderRxHistory();
-          ["physio", "equip", "dress"].forEach(name => {
-            const box = document.getElementById(`yn${name[0].toUpperCase()}${name.slice(1)}`);
-            if (box) [...box.children].forEach(child => child.classList.remove("sel"));
-          });
-          delete includeEmpty[key];
-          delete includeEmptyLines[key];
-          render();
-        }
-        renderComplaints();
-        renderTx();
-        renderRx();
-        renderInvEditor();
-        renderPast();
-        renderRxHistory();
-        ["physio", "equip", "dress"].forEach(name => {
-          const box = document.getElementById(`yn${name[0].toUpperCase()}${name.slice(1)}`);
-          if (box) [...box.children].forEach(child => child.classList.remove("sel"));
-        });
-        delete includeEmpty[key];
-        delete includeEmptyLines[key];
-        render();
-      }
+      renderComplaints();
+      renderTx();
+      renderRx();
+      renderInvEditor();
+      renderPast();
+      renderRxHistory();
+      ["physio", "equip", "dress"].forEach(name => {
+        const box = document.getElementById(`yn${name[0].toUpperCase()}${name.slice(1)}`);
+        if (box) [...box.children].forEach(child => child.classList.remove("sel"));
+      });
+      delete includeEmpty[key];
+      delete includeEmptyLines[key];
+      render();
+    }
 
-      /* ---------- treatment ---------- */
-      function addTx() {
-        const n = document.getElementById("txName").value.trim(); if (!n) return;
-        const parts = [n, document.getElementById("txDose").value.trim(),
-          document.getElementById("txRoute").value, document.getElementById("txFreq").value].filter(Boolean);
-        treatment.push(parts.join(" "));
-        ["txName", "txDose"].forEach(id => document.getElementById(id).value = "");
-        setVal_("txRoute", ""); setVal_("txFreq", "");
-        renderTx(); render();
-      }
-      function renderTx() {
-        document.getElementById("txListOut").innerHTML = treatment.map((t, i) =>
-          `<li><span>${esc(t)}</span><button onclick="treatment.splice(${i},1);renderTx();render()">×</button></li>`).join("");
-      }
-      /* ---------- treatment ---------- */
-      function addTx() {
-        const n = document.getElementById("txName").value.trim(); if (!n) return;
-        const parts = [n, document.getElementById("txDose").value.trim(),
-          document.getElementById("txRoute").value, document.getElementById("txFreq").value].filter(Boolean);
-        treatment.push(parts.join(" "));
-        ["txName", "txDose"].forEach(id => document.getElementById(id).value = "");
-        setVal_("txRoute", ""); setVal_("txFreq", "");
-        renderTx(); render();
-      }
-      function renderTx() {
-        document.getElementById("txListOut").innerHTML = treatment.map((t, i) =>
-          `<li><span>${esc(t)}</span><button onclick="treatment.splice(${i},1);renderTx();render()">×</button></li>`).join("");
-      }
+    /* ---------- treatment ---------- */
+    function addTx() {
+      const n = document.getElementById("txName").value.trim(); if (!n) return;
+      const parts = [n, document.getElementById("txDose").value.trim(),
+        document.getElementById("txRoute").value, document.getElementById("txFreq").value].filter(Boolean);
+      treatment.push(parts.join(" "));
+      ["txName", "txDose"].forEach(id => document.getElementById(id).value = "");
+      setVal_("txRoute", ""); setVal_("txFreq", "");
+      renderTx(); render();
+    }
+    function renderTx() {
+      document.getElementById("txListOut").innerHTML = treatment.map((t, i) =>
+        `<li><span>${esc(t)}</span><button onclick="treatment.splice(${i},1);renderTx();render()">×</button></li>`).join("");
+    }
 
-      /* ---------- discharge meds ---------- */
-      function addRx() {
-        const n = document.getElementById("rxName").value.trim(); if (!n) return;
-        const parts = [n, document.getElementById("rxDose").value.trim(),
-          document.getElementById("rxFreq").value, document.getElementById("rxDur").value.trim()].filter(Boolean);
-        rxMeds.push(parts.join(" "));
-        ["rxName", "rxDose", "rxDur"].forEach(id => document.getElementById(id).value = "");
-        setVal_("rxFreq", "");
-        renderRx(); render();
-      }
-      function renderRx() {
-        document.getElementById("rxListOut").innerHTML = rxMeds.map((t, i) =>
-          `<li><span>${esc(t)}</span><button onclick="rxMeds.splice(${i},1);renderRx();render()">×</button></li>`).join("");
-      }
-      /* ---------- discharge meds ---------- */
-      function addRx() {
-        const n = document.getElementById("rxName").value.trim(); if (!n) return;
-        const parts = [n, document.getElementById("rxDose").value.trim(),
-          document.getElementById("rxFreq").value, document.getElementById("rxDur").value.trim()].filter(Boolean);
-        rxMeds.push(parts.join(" "));
-        ["rxName", "rxDose", "rxDur"].forEach(id => document.getElementById(id).value = "");
-        setVal_("rxFreq", "");
-        renderRx(); render();
-      }
-      function renderRx() {
-        document.getElementById("rxListOut").innerHTML = rxMeds.map((t, i) =>
-          `<li><span>${esc(t)}</span><button onclick="rxMeds.splice(${i},1);renderRx();render()">×</button></li>`).join("");
-      }
+    /* ---------- discharge meds ---------- */
+    function addRx() {
+      const n = document.getElementById("rxName").value.trim(); if (!n) return;
+      const parts = [n, document.getElementById("rxDose").value.trim(),
+        document.getElementById("rxFreq").value, document.getElementById("rxDur").value.trim()].filter(Boolean);
+      rxMeds.push(parts.join(" "));
+      ["rxName", "rxDose", "rxDur"].forEach(id => document.getElementById(id).value = "");
+      setVal_("rxFreq", "");
+      renderRx(); render();
+    }
+    function renderRx() {
+      document.getElementById("rxListOut").innerHTML = rxMeds.map((t, i) =>
+        `<li><span>${esc(t)}</span><button onclick="rxMeds.splice(${i},1);renderRx();render()">×</button></li>`).join("");
+    }
 
-      /* ---------- investigations table editor ---------- */
-      function addInvDate() { invDates.push({ id: ++invSeq, date: "" }); renderInvEditor(); render(); }
-      function addInvParam(name) { invParams.push({ id: ++invSeq, name: name, values: {} }); renderInvEditor(); render(); }
-      function addPanel(p) {
-        PANELS[p].forEach(n => invParams.push({ id: ++invSeq, name: n, values: {} }));
-        if (invDates.length === 0) addInvDate(); else { renderInvEditor(); render(); }
-      }
-      function delInvDate(id) { invDates = invDates.filter(d => d.id !== id); renderInvEditor(); render(); }
-      function delInvParam(id) { invParams = invParams.filter(p => p.id !== id); renderInvEditor(); render(); }
-      /* ---------- investigations table editor ---------- */
-      function addInvDate() { invDates.push({ id: ++invSeq, date: "" }); renderInvEditor(); render(); }
-      function addInvParam(name) { invParams.push({ id: ++invSeq, name: name, values: {} }); renderInvEditor(); render(); }
-      function addPanel(p) {
-        PANELS[p].forEach(n => invParams.push({ id: ++invSeq, name: n, values: {} }));
-        if (invDates.length === 0) addInvDate(); else { renderInvEditor(); render(); }
-      }
-      function delInvDate(id) { invDates = invDates.filter(d => d.id !== id); renderInvEditor(); render(); }
-      function delInvParam(id) { invParams = invParams.filter(p => p.id !== id); renderInvEditor(); render(); }
+    /* ---------- investigations table editor ---------- */
+    function addInvDate() { invDates.push({ id: ++invSeq, date: "" }); renderInvEditor(); render(); }
+    function addInvParam(name) { invParams.push({ id: ++invSeq, name: name, values: {} }); renderInvEditor(); render(); }
+    function addPanel(p) {
+      PANELS[p].forEach(n => invParams.push({ id: ++invSeq, name: n, values: {} }));
+      if (invDates.length === 0) addInvDate(); else { renderInvEditor(); render(); }
+    }
+    function delInvDate(id) { invDates = invDates.filter(d => d.id !== id); renderInvEditor(); render(); }
+    function delInvParam(id) { invParams = invParams.filter(p => p.id !== id); renderInvEditor(); render(); }
 
-      function renderInvEditor() {
-        const box = document.getElementById("invEditor");
-        if (invDates.length === 0 && invParams.length === 0) {
-          box.innerHTML = `<p class="hint">Add a date column, then add lab rows (or tap a panel like CBC / RFT above).</p>`; return;
-        }
-        let h = '<table class="invtable"><thead><tr><th style="min-width:120px">Investigation</th>';
-        invDates.forEach(d => {
-          h += `<th><input type="text" inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" value="${displayDateValue(d.date)}" oninput="setDisplayInvDate(${d.id},this)" onblur="setDisplayInvDate(${d.id},this,true)"><button class="xbtn" title="remove date" onclick="delInvDate(${d.id})">×</button></th>`;
-        });
-        h += '<th></th></tr></thead><tbody>';
-        invParams.forEach(p => {
-          h += `<tr><td class="pname"><input type="text" list="labList" value="${esc(p.name)}" placeholder="parameter" oninput="setPName(${p.id},this.value)"></td>`;
-          invDates.forEach(d => { h += `<td><input type="text" value="${esc(p.values[d.id] || '')}" oninput="setVal(${p.id},${d.id},this.value)"></td>`; });
-          h += `<td><button class="xbtn" onclick="delInvParam(${p.id})">×</button></td></tr>`;
-        });
-        h += '</tbody></table>';
-        box.innerHTML = h;
+    function renderInvEditor() {
+      const box = document.getElementById("invEditor");
+      if (invDates.length === 0 && invParams.length === 0) {
+        box.innerHTML = `<p class="hint">Add a date column, then add lab rows (or tap a panel like CBC / RFT above).</p>`; return;
       }
-      function setDate(id, v) { const d = invDates.find(x => x.id === id); if (d) { d.date = v; render(); } }
-      function setDisplayInvDate(id, inputOrValue, formatInput = false) {
-        const raw = typeof inputOrValue === "string" ? inputOrValue : inputOrValue.value;
-        const iso = normalizeDateValue(raw);
-        if (formatInput && typeof inputOrValue === "object" && inputOrValue && iso) {
-          inputOrValue.value = fmtDate(iso);
-        }
-        setDate(id, iso);
+      let h = '<table class="invtable"><thead><tr><th style="min-width:120px">Investigation</th>';
+      invDates.forEach(d => {
+        h += `<th><input type="text" inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" value="${displayDateValue(d.date)}" oninput="setDisplayInvDate(${d.id},this)" onblur="setDisplayInvDate(${d.id},this,true)"><button class="xbtn" title="remove date" onclick="delInvDate(${d.id})">×</button></th>`;
+      });
+      h += '<th></th></tr></thead><tbody>';
+      invParams.forEach(p => {
+        h += `<tr><td class="pname"><input type="text" list="labList" value="${esc(p.name)}" placeholder="parameter" oninput="setPName(${p.id},this.value)"></td>`;
+        invDates.forEach(d => { h += `<td><input type="text" value="${esc(p.values[d.id] || '')}" oninput="setVal(${p.id},${d.id},this.value)"></td>`; });
+        h += `<td><button class="xbtn" onclick="delInvParam(${p.id})">×</button></td></tr>`;
+      });
+      h += '</tbody></table>';
+      box.innerHTML = h;
+    }
+    function setDate(id, v) { const d = invDates.find(x => x.id === id); if (d) { d.date = v; render(); } }
+    function setDisplayInvDate(id, inputOrValue, formatInput = false) {
+      const raw = typeof inputOrValue === "string" ? inputOrValue : inputOrValue.value;
+      const iso = normalizeDateValue(raw);
+      if (formatInput && typeof inputOrValue === "object" && inputOrValue && iso) {
+        inputOrValue.value = fmtDate(iso);
       }
-      function setPName(id, v) { const p = invParams.find(x => x.id === id); if (p) { p.name = v; render(); } }
-      function setVal(pid, did, v) { const p = invParams.find(x => x.id === pid); if (p) { p.values[did] = v; render(); } }
-      function renderInvEditor() {
-        const box = document.getElementById("invEditor");
-        if (invDates.length === 0 && invParams.length === 0) {
-          box.innerHTML = `<p class="hint">Add a date column, then add lab rows (or tap a panel like CBC / RFT above).</p>`; return;
-        }
-        let h = '<table class="invtable"><thead><tr><th style="min-width:120px">Investigation</th>';
-        invDates.forEach(d => {
-          h += `<th><input type="text" inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" value="${displayDateValue(d.date)}" oninput="setDisplayInvDate(${d.id},this)" onblur="setDisplayInvDate(${d.id},this,true)"><button class="xbtn" title="remove date" onclick="delInvDate(${d.id})">×</button></th>`;
-        });
-        h += '<th></th></tr></thead><tbody>';
-        invParams.forEach(p => {
-          h += `<tr><td class="pname"><input type="text" list="labList" value="${esc(p.name)}" placeholder="parameter" oninput="setPName(${p.id},this.value)"></td>`;
-          invDates.forEach(d => { h += `<td><input type="text" value="${esc(p.values[d.id] || '')}" oninput="setVal(${p.id},${d.id},this.value)"></td>`; });
-          h += `<td><button class="xbtn" onclick="delInvParam(${p.id})">×</button></td></tr>`;
-        });
-        h += '</tbody></table>';
-        box.innerHTML = h;
-      }
-      function setDate(id, v) { const d = invDates.find(x => x.id === id); if (d) { d.date = v; render(); } }
-      function setDisplayInvDate(id, inputOrValue, formatInput = false) {
-        const raw = typeof inputOrValue === "string" ? inputOrValue : inputOrValue.value;
-        const iso = normalizeDateValue(raw);
-        if (formatInput && typeof inputOrValue === "object" && inputOrValue && iso) {
-          inputOrValue.value = fmtDate(iso);
-        }
-        setDate(id, iso);
-      }
-      function setPName(id, v) { const p = invParams.find(x => x.id === id); if (p) { p.name = v; render(); } }
-      function setVal(pid, did, v) { const p = invParams.find(x => x.id === pid); if (p) { p.values[did] = v; render(); } }
+      setDate(id, iso);
+    }
+    function setPName(id, v) { const p = invParams.find(x => x.id === id); if (p) { p.name = v; render(); } }
+    function setVal(pid, did, v) { const p = invParams.find(x => x.id === pid); if (p) { p.values[did] = v; render(); } }
 
-      /* ---------- helpers ---------- */
-      function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
-      function val(id) {
-        const el = document.getElementById(id);
-        if (!el) return "";
-        const value = el.value.trim();
-        return DISPLAY_DATE_FIELDS.has(id) ? normalizeDateValue(value) : value;
-      }
-      function fmtDate(v) { if (!v) return ""; const parts = String(v).split("-"); if (parts.length !== 3) return v; const [y, m, d] = parts; return `${d}.${m}.${y}`; }
-      function fmtDateShort(v) { return fmtDate(v); }
-      function lines(t) { return (t || "").split("\n").map(s => s.trim()).filter(Boolean); }
-      /* ---------- helpers ---------- */
-      function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
-      function val(id) {
-        const el = document.getElementById(id);
-        if (!el) return "";
-        const value = el.value.trim();
-        return DISPLAY_DATE_FIELDS.has(id) ? normalizeDateValue(value) : value;
-      }
-      function fmtDate(v) { if (!v) return ""; const parts = String(v).split("-"); if (parts.length !== 3) return v; const [y, m, d] = parts; return `${d}.${m}.${y}`; }
-      function fmtDateShort(v) { return fmtDate(v); }
-      function lines(t) { return (t || "").split("\n").map(s => s.trim()).filter(Boolean); }
+    /* ---------- helpers ---------- */
+    function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
+    function val(id) {
+      const el = document.getElementById(id);
+      if (!el) return "";
+      const value = el.value.trim();
+      return DISPLAY_DATE_FIELDS.has(id) ? normalizeDateValue(value) : value;
+    }
+    function fmtDate(v) { if (!v) return ""; const parts = String(v).split("-"); if (parts.length !== 3) return v; const [y, m, d] = parts; return `${d}.${m}.${y}`; }
+    function fmtDateShort(v) { return fmtDate(v); }
+    function lines(t) { return (t || "").split("\n").map(s => s.trim()).filter(Boolean); }
 
-      /* ---------- render preview ---------- */
-      function render(shouldSave = true) {
-        const kind = val("summaryType").toUpperCase();
-        const logoHTML = logoData
-          ? `<img class="logo-box" src="${logoData}" alt="logo">`
-          : `<img class="logo-box" src="assets/omandurar_footer.jpg" alt="logo">`;
-        let h = "";
-        h += `<div class="doc-head">
     /* ---------- render preview ---------- */
     function render(shouldSave = true) {
       const kind = val("summaryType").toUpperCase();
       const logoHTML = logoData
-        ? `< img class="logo-box" src = "${logoData}" alt = "logo" > `
-        : `< img class="logo-box" src = "assets/omandurar_footer.jpg" alt = "logo" > `;
+        ? `<img class="logo-box" src="${logoData}" alt="logo">`
+        : `<img class="logo-box" src="assets/omandurar_footer.jpg" alt="logo">`;
       let h = "";
-      h += `< div class="doc-head" >
-          ${ logoHTML }
-        <div class="head-text">
-          <div class="college" contenteditable="true" data-edit-field="college" data-placeholder="Institution Name">${esc(val("college"))}</div>
-          ${val("address") ? `<div class="addr" contenteditable="true" data-edit-field="address" data-placeholder="Address">${esc(val("address"))}</div>` : ""}
-          <div class="dept" contenteditable="true" data-edit-field="dept" data-placeholder="Department">${esc(val("dept"))}</div>
-          <div class="kind" contenteditable="true" data-edit-field="summaryType" data-placeholder="DISCHARGE SUMMARY">${esc(kind)}</div>
-        </div>
-  </div > `;
+      h += `<div class="doc-head">
+    ${logoHTML}
+    <div class="head-text">
+      <div class="college" contenteditable="true" data-edit-field="college" data-placeholder="Institution Name">${esc(val("college"))}</div>
+      ${val("address") ? `<div class="addr" contenteditable="true" data-edit-field="address" data-placeholder="Address">${esc(val("address"))}</div>` : ""}
+      <div class="dept" contenteditable="true" data-edit-field="dept" data-placeholder="Department">${esc(val("dept"))}</div>
+      <div class="kind" contenteditable="true" data-edit-field="summaryType" data-placeholder="DISCHARGE SUMMARY">${esc(kind)}</div>
+    </div>
+  </div>`;
 
-  const ageSex = [val("age"), val("sex")].filter(Boolean).join(" / ");
-  h += `< div class="pt-grid" >
       const ageSex = [val("age"), val("sex")].filter(Boolean).join(" / ");
-        h += `<div class="pt-grid">
+      h += `<div class="pt-grid">
     <div><b>Name</b> : <span class="pt-edit" contenteditable="true" data-edit-field="name" data-placeholder="Patient Name">${esc(val("name"))}</span></div>
     <div><b>Age/Sex</b> : <span class="pt-edit" contenteditable="true" data-edit-custom="ageSex" data-placeholder="Age / Sex">${esc(ageSex)}</span></div>
     <div><b>IP No.</b> : <span class="pt-edit" contenteditable="true" data-edit-field="ipno" data-placeholder="IP No.">${esc(val("ipno"))}</span></div>
@@ -1270,131 +686,69 @@ function onThemeColorPickerChange() {
     <div><b>Mode of D/C</b> : <span class="pt-edit" contenteditable="true" data-edit-field="modeOfDischarge" data-placeholder="Discharge">${esc(val("modeOfDischarge"))}</span></div>
   </div>`;
 
-        h += section("Diagnosis", listOrText(val("diagnosis"), "diagnosis", "diagnosis"), "diagnosis");
-        h += section("Diagnosis", listOrText(val("diagnosis"), "diagnosis", "diagnosis"), "diagnosis");
+      h += section("Diagnosis", listOrText(val("diagnosis"), "diagnosis", "diagnosis"), "diagnosis");
 
-        h += section("Presenting Complaints (Chief C/O)", complaints.length ? ul(complaints, "complaints") : empty("complaints"), "complaints");
-        if (val("hopi")) h += section("HOPI", `<div class="content" contenteditable="true" data-edit-field="hopi" data-placeholder="History of present illness">${esc(val("hopi"))}</div>`, "history");
-        if (pastHistory.length || rxHistory.length) {
-          if (pastHistory.length && rxHistory.length) {
-            h += `<div class="two-col">`;
-            h += `<div class="col-half">${section("Past History", ul(pastHistory, "pastHistory"), "history")}</div>`;
-            h += `<div class="col-half">${section("Rx History (Pre-admission)", ul(rxHistory, "rxHistory"), "history")}</div>`;
-            h += `</div>`;
-          } else if (pastHistory.length) {
-            h += section("Past History", ul(pastHistory, "pastHistory"), "history");
-          } else {
-            h += section("Rx History (Pre-admission)", ul(rxHistory, "rxHistory"), "history");
-          }
-        } else if (!val("hopi") && (includeEmpty.history || (includeEmptyLines.history > 0))) {
-          h += section("History", empty("history"), "history");
-        }
-        h += section("Presenting Complaints (Chief C/O)", complaints.length ? ul(complaints, "complaints") : empty("complaints"), "complaints");
-        if (val("hopi")) h += section("HOPI", `<div class="content" contenteditable="true" data-edit-field="hopi" data-placeholder="History of present illness">${esc(val("hopi"))}</div>`, "history");
-        if (pastHistory.length || rxHistory.length) {
-          if (pastHistory.length && rxHistory.length) {
-            h += `<div class="two-col">`;
-            h += `<div class="col-half">${section("Past History", ul(pastHistory, "pastHistory"), "history")}</div>`;
-            h += `<div class="col-half">${section("Rx History (Pre-admission)", ul(rxHistory, "rxHistory"), "history")}</div>`;
-            h += `</div>`;
-          } else if (pastHistory.length) {
-            h += section("Past History", ul(pastHistory, "pastHistory"), "history");
-          } else {
-            h += section("Rx History (Pre-admission)", ul(rxHistory, "rxHistory"), "history");
-          }
-        } else if (!val("hopi") && (includeEmpty.history || (includeEmptyLines.history > 0))) {
-          h += section("History", empty("history"), "history");
-        }
-
-        const exam = examinationHTML();
-        if (exam || includeEmpty.examination || (includeEmptyLines.examination > 0)) {
-          h += section("Examination", exam || empty("examination"), "examination");
-        }
-        const exam = examinationHTML();
-        if (exam || includeEmpty.examination || (includeEmptyLines.examination > 0)) {
-          h += section("Examination", exam || empty("examination"), "examination");
-        }
-
-        h += section("Investigations", investigationsHTML(), "investigations");
-        h += section("Opinions", val("opinions") ? `<div class="content" contenteditable="true" data-edit-field="opinions" data-placeholder="Specialist opinions">${esc(val("opinions"))}</div>` : empty("opinions"), "opinions");
-        h += section("Course in the Hospital", val("course") ? `<div class="content" contenteditable="true" data-edit-field="course" data-placeholder="Hospital course">${esc(val("course"))}</div>` : empty("course"), "course");
-        if (treatment.length > 0 && treatment.length <= 6) {
-          h += section("Treatment Given", contentColumns(treatment, "", "treatment"), "treatment");
+      h += section("Presenting Complaints (Chief C/O)", complaints.length ? ul(complaints, "complaints") : empty("complaints"), "complaints");
+      if (val("hopi")) h += section("HOPI", `<div class="content" contenteditable="true" data-edit-field="hopi" data-placeholder="History of present illness">${esc(val("hopi"))}</div>`, "history");
+      if (pastHistory.length || rxHistory.length) {
+        if (pastHistory.length && rxHistory.length) {
+          h += `<div class="two-col">`;
+          h += `<div class="col-half">${section("Past History", ul(pastHistory, "pastHistory"), "history")}</div>`;
+          h += `<div class="col-half">${section("Rx History (Pre-admission)", ul(rxHistory, "rxHistory"), "history")}</div>`;
+          h += `</div>`;
+        } else if (pastHistory.length) {
+          h += section("Past History", ul(pastHistory, "pastHistory"), "history");
         } else {
-          h += section("Treatment Given", treatment.length ? ul(treatment, "treatment") : empty("treatment"), "treatment");
+          h += section("Rx History (Pre-admission)", ul(rxHistory, "rxHistory"), "history");
         }
-        const cond = [val("condition"), val("condExtra")].filter(Boolean).join(" — ");
-        h += section("Condition at Discharge", cond ? `<div class="content" contenteditable="true" data-edit-custom="conditionFull" data-placeholder="Condition at discharge">${esc(cond)}</div>` : empty("condition"), "condition");
-        h += section("Investigations", investigationsHTML(), "investigations");
-        h += section("Opinions", val("opinions") ? `<div class="content" contenteditable="true" data-edit-field="opinions" data-placeholder="Specialist opinions">${esc(val("opinions"))}</div>` : empty("opinions"), "opinions");
-        h += section("Course in the Hospital", val("course") ? `<div class="content" contenteditable="true" data-edit-field="course" data-placeholder="Hospital course">${esc(val("course"))}</div>` : empty("course"), "course");
-        if (treatment.length > 0 && treatment.length <= 6) {
-          h += section("Treatment Given", contentColumns(treatment, "", "treatment"), "treatment");
-        } else {
-          h += section("Treatment Given", treatment.length ? ul(treatment, "treatment") : empty("treatment"), "treatment");
-        }
-        const cond = [val("condition"), val("condExtra")].filter(Boolean).join(" — ");
-        h += section("Condition at Discharge", cond ? `<div class="content" contenteditable="true" data-edit-custom="conditionFull" data-placeholder="Condition at discharge">${esc(cond)}</div>` : empty("condition"), "condition");
+      } else if (!val("hopi") && (includeEmpty.history || (includeEmptyLines.history > 0))) {
+        h += section("History", empty("history"), "history");
+      }
 
-        let adv = "";
-        const advBits = [];
-        if (val("diet")) advBits.push(`<div class="adv-item"><b>Diet:</b> <span class="inline-edit" contenteditable="true" data-edit-field="diet" data-placeholder="Diet">${esc(val("diet"))}</span></div>`);
-        if (val("physicalActivity")) advBits.push(`<div class="adv-item"><b>Physical Activity:</b> <span class="inline-edit" contenteditable="true" data-edit-field="physicalActivity" data-placeholder="Activity">${esc(val("physicalActivity"))}</span></div>`);
-        if (ynState.physio) advBits.push(`<div class="adv-item"><b>Physiotherapy at home:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="physio" data-placeholder="Yes / No">${esc(ynState.physio)}</span></div>`);
-        if (ynState.equip) advBits.push(`<div class="adv-item"><b>Home medical equipment needed:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="equip" data-placeholder="Yes / No">${esc(ynState.equip)}</span></div>`);
-        if (ynState.dress) advBits.push(`<div class="adv-item"><b>Dressing needs at home:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="dress" data-placeholder="Yes / No">${esc(ynState.dress)}</span></div>`);
-        if (val("otherNeeds")) advBits.push(`<div class="adv-item"><b>Other needs:</b> <span class="inline-edit" contenteditable="true" data-edit-field="otherNeeds" data-placeholder="Other needs">${esc(val("otherNeeds"))}</span></div>`);
-        if (advBits.length) adv += `<div class="adv-items-group">${advBits.join("")}</div>`;
-        if (rxMeds.length) {
-          adv += `<div class="adv-item" style="font-weight:700;margin-top:6px;margin-bottom:2px">Medications:</div>`;
-          adv += contentColumns(rxMeds, "med-list", "rxMeds");
-        }
-        if (val("advice")) adv += `<div class="content adv-item" style="margin-top:5px" contenteditable="true" data-edit-field="advice" data-placeholder="Discharge advice">${esc(val("advice"))}</div>`;
-        if (val("emergencyContact")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Emergency contact:</b> <span class="inline-edit" contenteditable="true" data-edit-field="emergencyContact" data-placeholder="Contact">${esc(val("emergencyContact"))}</span></div>`;
-        if (val("review")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Follow-Up:</b> <span class="inline-edit" contenteditable="true" data-edit-field="review" data-placeholder="Follow-up">${esc(val("review"))}</span></div>`;
-        if (val("warning")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Return immediately if:</b> <span class="inline-edit" contenteditable="true" data-edit-field="warning" data-placeholder="Return advice">${esc(val("warning"))}</span></div>`;
-        h += section("Advice on Discharge (Rx)", adv || empty("advice"), "advice");
-        let adv = "";
-        const advBits = [];
-        if (val("diet")) advBits.push(`<div class="adv-item"><b>Diet:</b> <span class="inline-edit" contenteditable="true" data-edit-field="diet" data-placeholder="Diet">${esc(val("diet"))}</span></div>`);
-        if (val("physicalActivity")) advBits.push(`<div class="adv-item"><b>Physical Activity:</b> <span class="inline-edit" contenteditable="true" data-edit-field="physicalActivity" data-placeholder="Activity">${esc(val("physicalActivity"))}</span></div>`);
-        if (ynState.physio) advBits.push(`<div class="adv-item"><b>Physiotherapy at home:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="physio" data-placeholder="Yes / No">${esc(ynState.physio)}</span></div>`);
-        if (ynState.equip) advBits.push(`<div class="adv-item"><b>Home medical equipment needed:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="equip" data-placeholder="Yes / No">${esc(ynState.equip)}</span></div>`);
-        if (ynState.dress) advBits.push(`<div class="adv-item"><b>Dressing needs at home:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="dress" data-placeholder="Yes / No">${esc(ynState.dress)}</span></div>`);
-        if (val("otherNeeds")) advBits.push(`<div class="adv-item"><b>Other needs:</b> <span class="inline-edit" contenteditable="true" data-edit-field="otherNeeds" data-placeholder="Other needs">${esc(val("otherNeeds"))}</span></div>`);
-        if (advBits.length) adv += `<div class="adv-items-group">${advBits.join("")}</div>`;
-        if (rxMeds.length) {
-          adv += `<div class="adv-item" style="font-weight:700;margin-top:6px;margin-bottom:2px">Medications:</div>`;
-          adv += contentColumns(rxMeds, "med-list", "rxMeds");
-        }
-        if (val("advice")) adv += `<div class="content adv-item" style="margin-top:5px" contenteditable="true" data-edit-field="advice" data-placeholder="Discharge advice">${esc(val("advice"))}</div>`;
-        if (val("emergencyContact")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Emergency contact:</b> <span class="inline-edit" contenteditable="true" data-edit-field="emergencyContact" data-placeholder="Contact">${esc(val("emergencyContact"))}</span></div>`;
-        if (val("review")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Follow-Up:</b> <span class="inline-edit" contenteditable="true" data-edit-field="review" data-placeholder="Follow-up">${esc(val("review"))}</span></div>`;
-        if (val("warning")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Return immediately if:</b> <span class="inline-edit" contenteditable="true" data-edit-field="warning" data-placeholder="Return advice">${esc(val("warning"))}</span></div>`;
-        h += section("Advice on Discharge (Rx)", adv || empty("advice"), "advice");
+      const exam = examinationHTML();
+      if (exam || includeEmpty.examination || (includeEmptyLines.examination > 0)) {
+        h += section("Examination", exam || empty("examination"), "examination");
+      }
 
-        const prep = ensureDr(val("preparedBy")), chf = ensureDr(val("chief"));
-        const sigLines = includeEmptyLines.signatures || 0;
-        if (prep || chf || val("signDateTime") || includeEmpty.signatures || sigLines > 0) {
-          const sigSpace = sigLines > 0 ? `<div class="empty-lines-space" style="height:${(sigLines * 1.4).toFixed(2)}em"></div>` : "";
-          h += `<div class="sign-row${signaturePinned ? " signature-pinned" : ""}">
+      h += section("Investigations", investigationsHTML(), "investigations");
+      h += section("Opinions", val("opinions") ? `<div class="content" contenteditable="true" data-edit-field="opinions" data-placeholder="Specialist opinions">${esc(val("opinions"))}</div>` : empty("opinions"), "opinions");
+      h += section("Course in the Hospital", val("course") ? `<div class="content" contenteditable="true" data-edit-field="course" data-placeholder="Hospital course">${esc(val("course"))}</div>` : empty("course"), "course");
+      if (treatment.length > 0 && treatment.length <= 6) {
+        h += section("Treatment Given", contentColumns(treatment, "", "treatment"), "treatment");
+      } else {
+        h += section("Treatment Given", treatment.length ? ul(treatment, "treatment") : empty("treatment"), "treatment");
+      }
+      const cond = [val("condition"), val("condExtra")].filter(Boolean).join(" — ");
+      h += section("Condition at Discharge", cond ? `<div class="content" contenteditable="true" data-edit-custom="conditionFull" data-placeholder="Condition at discharge">${esc(cond)}</div>` : empty("condition"), "condition");
+
+      let adv = "";
+      const advBits = [];
+      if (val("diet")) advBits.push(`<div class="adv-item"><b>Diet:</b> <span class="inline-edit" contenteditable="true" data-edit-field="diet" data-placeholder="Diet">${esc(val("diet"))}</span></div>`);
+      if (val("physicalActivity")) advBits.push(`<div class="adv-item"><b>Physical Activity:</b> <span class="inline-edit" contenteditable="true" data-edit-field="physicalActivity" data-placeholder="Activity">${esc(val("physicalActivity"))}</span></div>`);
+      if (ynState.physio) advBits.push(`<div class="adv-item"><b>Physiotherapy at home:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="physio" data-placeholder="Yes / No">${esc(ynState.physio)}</span></div>`);
+      if (ynState.equip) advBits.push(`<div class="adv-item"><b>Home medical equipment needed:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="equip" data-placeholder="Yes / No">${esc(ynState.equip)}</span></div>`);
+      if (ynState.dress) advBits.push(`<div class="adv-item"><b>Dressing needs at home:</b> <span class="inline-edit" contenteditable="true" data-edit-yn="dress" data-placeholder="Yes / No">${esc(ynState.dress)}</span></div>`);
+      if (val("otherNeeds")) advBits.push(`<div class="adv-item"><b>Other needs:</b> <span class="inline-edit" contenteditable="true" data-edit-field="otherNeeds" data-placeholder="Other needs">${esc(val("otherNeeds"))}</span></div>`);
+      if (advBits.length) adv += `<div class="adv-items-group">${advBits.join("")}</div>`;
+      if (rxMeds.length) {
+        adv += `<div class="adv-item" style="font-weight:700;margin-top:6px;margin-bottom:2px">Medications:</div>`;
+        adv += contentColumns(rxMeds, "med-list", "rxMeds");
+      }
+      if (val("advice")) adv += `<div class="content adv-item" style="margin-top:5px" contenteditable="true" data-edit-field="advice" data-placeholder="Discharge advice">${esc(val("advice"))}</div>`;
+      if (val("emergencyContact")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Emergency contact:</b> <span class="inline-edit" contenteditable="true" data-edit-field="emergencyContact" data-placeholder="Contact">${esc(val("emergencyContact"))}</span></div>`;
+      if (val("review")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Follow-Up:</b> <span class="inline-edit" contenteditable="true" data-edit-field="review" data-placeholder="Follow-up">${esc(val("review"))}</span></div>`;
+      if (val("warning")) adv += `<div class="content adv-item" style="margin-top:5px"><b>Return immediately if:</b> <span class="inline-edit" contenteditable="true" data-edit-field="warning" data-placeholder="Return advice">${esc(val("warning"))}</span></div>`;
+      h += section("Advice on Discharge (Rx)", adv || empty("advice"), "advice");
+
       const prep = ensureDr(val("preparedBy")), chf = ensureDr(val("chief"));
       const sigLines = includeEmptyLines.signatures || 0;
       if (prep || chf || val("signDateTime") || includeEmpty.signatures || sigLines > 0) {
-        const sigSpace = sigLines > 0 ? `< div class="empty-lines-space" style = "height:${(sigLines * 1.4).toFixed(2)}em" ></div > ` : "";
-        h += `< div class="sign-row${signaturePinned ? " signature - pinned" : ""}" >
-            ${ sigSpace }
+        const sigSpace = sigLines > 0 ? `<div class="empty-lines-space" style="height:${(sigLines * 1.4).toFixed(2)}em"></div>` : "";
+        h += `<div class="sign-row${signaturePinned ? " signature-pinned" : ""}">
+      ${sigSpace}
       <div><span class="inline-edit" contenteditable="true" data-edit-field="preparedBy" data-placeholder="Prepared by">${esc(prep)}</span><br><small>Prepared by</small></div>
       <div><span class="inline-edit" contenteditable="true" data-edit-field="chief" data-placeholder="Medical Officer">${esc(chf)}</span><br><small>Medical Officer (Name &amp; Seal)</small>${(val("signDateTime") || includeEmpty.signatures) ? `<br><small class="inline-edit" contenteditable="true" data-edit-field="signDateTime" data-placeholder="Date & Time">${esc(val("signDateTime"))}</small>` : ""}</div>
-    </div > `;
-  }
-  document.getElementById("paper").innerHTML = h;
-  updateFormSectionStates();
-  updateActivePatientBar();
-  if (shouldSave && !suppressSave) scheduleSave();
-  clearTimeout(pageCheckTimer);
-  pageCheckTimer = setTimeout(autoOptimizeSpacing, 100);
-}
+    </div>`;
       }
       document.getElementById("paper").innerHTML = h;
       updateFormSectionStates();
@@ -1404,58 +758,23 @@ function onThemeColorPickerChange() {
       pageCheckTimer = setTimeout(autoOptimizeSpacing, 100);
     }
 
-function section(title, content, key) {
-  const isEmpty = !content || content === `< div class="empty" >—</div > ` || content.includes('data-edit-empty="');
-  const linesCount = includeEmptyLines[key] || 0;
-  if (isEmpty && !includeEmpty[key] && linesCount <= 0) return "";
-  let bodyHTML = "";
-  if (linesCount > 0) {
-    const spaceHeight = (linesCount * 1.4).toFixed(2);
-    const spaceHTML = `< div class="empty-lines-space" style = "height:${spaceHeight}em;" aria - hidden="true" ></div > `;
-    bodyHTML = isEmpty ? `< div class="empty" contenteditable = "true" data - edit - empty="${esc(key)}" data - placeholder="" ></div > ${ spaceHTML } ` : `${ content }${ spaceHTML } `;
-  } else if (isEmpty) {
-    bodyHTML = empty(key);
-  } else {
-    bodyHTML = content;
-  }
-  return `< div class="sec" data - sec - key="${esc(key)}" > <h3>${title}</h3>${ bodyHTML }</div > `;
-}
     function section(title, content, key) {
-      const isEmpty = !content || content === `< div class="empty" >—</div > ` || content.includes('data-edit-empty="');
+      const isEmpty = !content || content === `<div class="empty">—</div>` || content.includes('data-edit-empty="');
       const linesCount = includeEmptyLines[key] || 0;
       if (isEmpty && !includeEmpty[key] && linesCount <= 0) return "";
       let bodyHTML = "";
       if (linesCount > 0) {
         const spaceHeight = (linesCount * 1.4).toFixed(2);
-        const spaceHTML = `< div class="empty-lines-space" style = "height:${spaceHeight}em;" aria - hidden="true" ></div > `;
-        bodyHTML = isEmpty ? `< div class="empty" contenteditable = "true" data - edit - empty="${esc(key)}" data - placeholder="" ></div > ${ spaceHTML } ` : `${ content }${ spaceHTML } `;
+        const spaceHTML = `<div class="empty-lines-space" style="height:${spaceHeight}em;" aria-hidden="true"></div>`;
+        bodyHTML = isEmpty ? `<div class="empty" contenteditable="true" data-edit-empty="${esc(key)}" data-placeholder=""></div>${spaceHTML}` : `${content}${spaceHTML}`;
       } else if (isEmpty) {
         bodyHTML = empty(key);
       } else {
         bodyHTML = content;
       }
-      return `< div class="sec" data - sec - key="${esc(key)}" > <h3>${title}</h3>${ bodyHTML }</div > `;
+      return `<div class="sec" data-sec-key="${esc(key)}"><h3>${title}</h3>${bodyHTML}</div>`;
     }
 
-function summarySectionHasContent(key) {
-  const values = {
-    institution: val("college") || val("address") || val("dept") || logoData,
-    patient: true,
-    diagnosis: val("diagnosis"),
-    complaints: complaints.length,
-    history: val("hopi") || pastHistory.length || rxHistory.length,
-    examination: examinationHTML(),
-    investigations: invDates.length && invParams.some(p => p.name.trim()) || val("invOther"),
-    opinions: val("opinions"),
-    course: val("course"),
-    treatment: treatment.length,
-    condition: val("condition") || val("condExtra"),
-    advice: val("diet") || val("physicalActivity") || ynState.physio || ynState.equip || ynState.dress ||
-      val("otherNeeds") || rxMeds.length || val("advice") || val("emergencyContact") || val("review") || val("warning"),
-    signatures: val("preparedBy") || val("chief") || val("signDateTime")
-  };
-  return Boolean(values[key]);
-}
     function summarySectionHasContent(key) {
       const values = {
         institution: val("college") || val("address") || val("dept") || logoData,
@@ -1476,18 +795,6 @@ function summarySectionHasContent(key) {
       return Boolean(values[key]);
     }
 
-function updateFormSectionStates() {
-  document.querySelectorAll("#formTab details[data-clear]").forEach(card => {
-    const key = card.dataset.clear;
-    const emptySection = key === "setup" || !summarySectionHasContent(key);
-    const linesCount = includeEmptyLines[key] || 0;
-    const isIncluded = Boolean(includeEmpty[key] || linesCount > 0);
-    card.classList.toggle("not-in-summary", emptySection && !isIncluded);
-    const checkbox = card.querySelector(".include-toggle input[type='checkbox']");
-    if (checkbox) checkbox.checked = isIncluded;
-    const linesInput = card.querySelector(".empty-lines-input");
-    if (linesInput) {
-      linesInput.value = linesCount > 0 ? linesCount : "";
     function updateFormSectionStates() {
       document.querySelectorAll("#formTab details[data-clear]").forEach(card => {
         const key = card.dataset.clear;
@@ -1507,9 +814,6 @@ function updateFormSectionStates() {
         }
       });
     }
-    if (key === "signatures") {
-      const pin = card.querySelector(".signature-pin input");
-      if (pin && pin.checked !== signaturePinned) pin.checked = signaturePinned;
 
     function toggleIncludeEmpty(key, checked) {
       includeEmpty[key] = Boolean(checked);
@@ -1517,8 +821,6 @@ function updateFormSectionStates() {
       updateFormSectionStates();
       render();
     }
-  });
-}
     function setEmptyLines(key, count) {
       const n = parseInt(count, 10);
       const countVal = isNaN(n) || n < 0 ? 0 : Math.min(40, n);
@@ -1538,149 +840,64 @@ function updateFormSectionStates() {
     }
     function empty(sectionKey = "") {
       if (sectionKey) {
-        return `< div class="empty" contenteditable = "true" data - edit - empty="${esc(sectionKey)}" data - placeholder="Click to type..." >—</div > `;
+        return `<div class="empty" contenteditable="true" data-edit-empty="${esc(sectionKey)}" data-placeholder="Click to type...">—</div>`;
       }
-      return `< div class="empty" >—</div > `;
+      return `<div class="empty">—</div>`;
     }
     function ul(arr, listKey = "") {
-      const attr = listKey ? ` contenteditable = "true" data - edit - list="${esc(listKey)}"` : "";
-      return `< ul${ attr }> ${ arr.map(x => `<li>${esc(x)}</li>`).join("") }</ul > `;
+      const attr = listKey ? ` contenteditable="true" data-edit-list="${esc(listKey)}"` : "";
+      return `<ul${attr}>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
     }
     function contentColumns(arr, className = "", listKey = "") {
-      const attr = listKey ? ` contenteditable = "true" data - edit - list="${esc(listKey)}"` : "";
-      return `< ul class="content-columns ${className}"${ attr }> ${ arr.map(x => `<li>${esc(x)}</li>`).join("") }</ul > `;
+      const attr = listKey ? ` contenteditable="true" data-edit-list="${esc(listKey)}"` : "";
+      return `<ul class="content-columns ${className}"${attr}>${arr.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`;
     }
     function listOrText(t, fieldKey = "", listKey = "") {
       const l = lines(t);
       if (!l.length) return empty(fieldKey);
       if (l.length > 1) return ul(l, listKey || fieldKey);
-      const attr = fieldKey ? ` contenteditable = "true" data - edit - field="${esc(fieldKey)}" data - placeholder="Enter diagnosis..."` : "";
-      return `< div class="content"${ attr }> ${ esc(l[0]) }</div > `;
+      const attr = fieldKey ? ` contenteditable="true" data-edit-field="${esc(fieldKey)}" data-placeholder="Enter diagnosis..."` : "";
+      return `<div class="content"${attr}>${esc(l[0])}</div>`;
     }
     function listOrTextRaw(t) { const l = lines(t); return l.join(", "); }
 
-function toggleIncludeEmpty(key, checked) {
-  includeEmpty[key] = Boolean(checked);
-  if (!checked) delete includeEmptyLines[key];
-  updateFormSectionStates();
-  render();
-}
-function setEmptyLines(key, count) {
-  const n = parseInt(count, 10);
-  const countVal = isNaN(n) || n < 0 ? 0 : Math.min(40, n);
-  if (countVal > 0) {
-    includeEmptyLines[key] = countVal;
-    includeEmpty[key] = true;
-  } else {
-    delete includeEmptyLines[key];
-  }
-  updateFormSectionStates();
-  render();
-}
-function toggleSignaturePin(checked) {
-  signaturePinned = Boolean(checked);
-  updateFormSectionStates();
-  render();
-}
-function empty(sectionKey = "") {
-  if (sectionKey) {
-    return `< div class="empty" contenteditable = "true" data - edit - empty="${esc(sectionKey)}" data - placeholder="Click to type..." >—</div > `;
-  }
-  return `< div class="empty" >—</div > `;
-}
-function ul(arr, listKey = "") {
-  const attr = listKey ? ` contenteditable = "true" data - edit - list="${esc(listKey)}"` : "";
-  return `< ul${ attr }> ${ arr.map(x => `<li>${esc(x)}</li>`).join("") }</ul > `;
-}
-function contentColumns(arr, className = "", listKey = "") {
-  const attr = listKey ? ` contenteditable = "true" data - edit - list="${esc(listKey)}"` : "";
-  return `< ul class="content-columns ${className}"${ attr }> ${ arr.map(x => `<li>${esc(x)}</li>`).join("") }</ul > `;
-}
-function listOrText(t, fieldKey = "", listKey = "") {
-  const l = lines(t);
-  if (!l.length) return empty(fieldKey);
-  if (l.length > 1) return ul(l, listKey || fieldKey);
-  const attr = fieldKey ? ` contenteditable = "true" data - edit - field="${esc(fieldKey)}" data - placeholder="Enter diagnosis..."` : "";
-  return `< div class="content"${ attr }> ${ esc(l[0]) }</div > `;
-}
-function listOrTextRaw(t) { const l = lines(t); return l.join(", "); }
     function examinationHTML() {
       let parts = [];
-      if (val("generalExam")) parts.push(`< div class="content" contenteditable = "true" data - edit - field="generalExam" data - placeholder="General examination findings" > ${ esc(val("generalExam")) }</div > `);
+      if (val("generalExam")) parts.push(`<div class="content" contenteditable="true" data-edit-field="generalExam" data-placeholder="General examination findings">${esc(val("generalExam"))}</div>`);
       const vit = [["BP", "vBP", val("vBP")], ["PR", "vPR", val("vPR")], ["RR", "vRR", val("vRR")], ["SpO2", "vSpO2", val("vSpO2")], ["Temp", "vTemp", val("vTemp")], ["GRBS", "vGRBS", val("vGRBS")]]
         .filter(([, , v]) => v);
-      if (vit.length) parts.push(`< div class="content" style = "margin-top:4px" > <b>Vitals:</b> ${ vit.map(([k, id, v]) => `${k} - <span class="inline-edit" contenteditable="true" data-edit-field="${id}" data-placeholder="—">${esc(v)}</span>`).join(", ") }</div > `);
+      if (vit.length) parts.push(`<div class="content" style="margin-top:4px"><b>Vitals:</b> ${vit.map(([k, id, v]) => `${k} - <span class="inline-edit" contenteditable="true" data-edit-field="${id}" data-placeholder="—">${esc(v)}</span>`).join(", ")}</div>`);
       const se = [["CVS", "seCVS", val("seCVS")], ["RS", "seRS", val("seRS")], ["P/A", "sePA", val("sePA")], ["CNS", "seCNS", val("seCNS")]].filter(([, , v]) => v);
-      if (se.length) parts.push(`< div class="content" style = "margin-top:4px" > <b>Systemic Examination:</b> ${ se.map(([k, id, v]) => `${k} - <span class="inline-edit" contenteditable="true" data-edit-field="${id}" data-placeholder="—">${esc(v)}</span>`).join("; ") }</div > `);
+      if (se.length) parts.push(`<div class="content" style="margin-top:4px"><b>Systemic Examination:</b> ${se.map(([k, id, v]) => `${k} - <span class="inline-edit" contenteditable="true" data-edit-field="${id}" data-placeholder="—">${esc(v)}</span>`).join("; ")}</div>`);
       return parts.join("");
     }
 
-function examinationHTML() {
-  let parts = [];
-  if (val("generalExam")) parts.push(`< div class="content" contenteditable = "true" data - edit - field="generalExam" data - placeholder="General examination findings" > ${ esc(val("generalExam")) }</div > `);
-  const vit = [["BP", "vBP", val("vBP")], ["PR", "vPR", val("vPR")], ["RR", "vRR", val("vRR")], ["SpO2", "vSpO2", val("vSpO2")], ["Temp", "vTemp", val("vTemp")], ["GRBS", "vGRBS", val("vGRBS")]]
-    .filter(([, , v]) => v);
-  if (vit.length) parts.push(`< div class="content" style = "margin-top:4px" > <b>Vitals:</b> ${ vit.map(([k, id, v]) => `${k} - <span class="inline-edit" contenteditable="true" data-edit-field="${id}" data-placeholder="—">${esc(v)}</span>`).join(", ") }</div > `);
-  const se = [["CVS", "seCVS", val("seCVS")], ["RS", "seRS", val("seRS")], ["P/A", "sePA", val("sePA")], ["CNS", "seCNS", val("seCNS")]].filter(([, , v]) => v);
-  if (se.length) parts.push(`< div class="content" style = "margin-top:4px" > <b>Systemic Examination:</b> ${ se.map(([k, id, v]) => `${k} - <span class="inline-edit" contenteditable="true" data-edit-field="${id}" data-placeholder="—">${esc(v)}</span>`).join("; ") }</div > `);
-  return parts.join("");
-}
     function investigationsHTML() {
       let out = "";
       const hasTable = invDates.length && invParams.some(p => p.name.trim());
       if (hasTable) {
-        let h = `< div class="inv-table-wrap" > <table class="prev-table"><thead><tr><th>Investigation</th>`;
-        invDates.forEach(d => {h += `<th contenteditable="true" data-edit-inv-date="${d.id}" data-placeholder="DD.MM.YYYY">${d.date ? esc(fmtDateShort(d.date)) : "—"}</th>`; });
-            h += `</tr></thead><tbody>`;
+        let h = `<div class="inv-table-wrap"><table class="prev-table"><thead><tr><th>Investigation</th>`;
+        invDates.forEach(d => { h += `<th contenteditable="true" data-edit-inv-date="${d.id}" data-placeholder="DD.MM.YYYY">${d.date ? esc(fmtDateShort(d.date)) : "—"}</th>`; });
+        h += `</tr></thead><tbody>`;
         invParams.forEach(p => {
           if (!p.name.trim()) return;
-              h += `<tr><td class="pn" contenteditable="true" data-edit-inv-param="${p.id}" data-placeholder="Parameter">${esc(p.name)}</td>`;
-          invDates.forEach(d => {h += `<td contenteditable="true" data-edit-inv-val="${p.id}:${d.id}">${esc(p.values[d.id] || "")}</td>`; });
-                h += `</tr>`;
+          h += `<tr><td class="pn" contenteditable="true" data-edit-inv-param="${p.id}" data-placeholder="Parameter">${esc(p.name)}</td>`;
+          invDates.forEach(d => { h += `<td contenteditable="true" data-edit-inv-val="${p.id}:${d.id}">${esc(p.values[d.id] || "")}</td>`; });
+          h += `</tr>`;
         });
-              h += `</tbody></table></div > `; out += h;
+        h += `</tbody></table></div>`; out += h;
       }
-      if (val("invOther")) out += `< div class="content" style = "margin-top:6px" contenteditable = "true" data - edit - field="invOther" data - placeholder="Imaging, ECG & other reports" > ${ esc(val("invOther")) }</div > `;
+      if (val("invOther")) out += `<div class="content" style="margin-top:6px" contenteditable="true" data-edit-field="invOther" data-placeholder="Imaging, ECG & other reports">${esc(val("invOther"))}</div>`;
       return out || empty("investigations");
     }
 
-function investigationsHTML() {
-  let out = "";
-  const hasTable = invDates.length && invParams.some(p => p.name.trim());
-  if (hasTable) {
-    let h = `< div class="inv-table-wrap" > <table class="prev-table"><thead><tr><th>Investigation</th>`;
-    invDates.forEach(d => {h += `<th contenteditable="true" data-edit-inv-date="${d.id}" data-placeholder="DD.MM.YYYY">${d.date ? esc(fmtDateShort(d.date)) : "—"}</th>`; });
-            h += `</tr></thead><tbody>`;
-    invParams.forEach(p => {
-      if (!p.name.trim()) return;
-              h += `<tr><td class="pn" contenteditable="true" data-edit-inv-param="${p.id}" data-placeholder="Parameter">${esc(p.name)}</td>`;
-      invDates.forEach(d => {h += `<td contenteditable="true" data-edit-inv-val="${p.id}:${d.id}">${esc(p.values[d.id] || "")}</td>`; });
-                h += `</tr>`;
-    });
-              h += `</tbody></table></div > `; out += h;
-  }
-  if (val("invOther")) out += `< div class="content" style = "margin-top:6px" contenteditable = "true" data - edit - field="invOther" data - placeholder="Imaging, ECG & other reports" > ${ esc(val("invOther")) }</div > `;
-  return out || empty("investigations");
-}
     /* ---------- tabs / copy / navigation ---------- */
     let splitPreviewEnabled = false;
 
-/* ---------- tabs / copy / navigation ---------- */
-function showTab(t) {
-  if ((activeTab === "form" || activeTab === "summary") && t === "dashboard") {
-    saveCurrentRecordNow(false);
-  }
-  activeTab = t;
-  const isDash = t === "dashboard";
-  const isForm = t === "form";
-  const isSummary = t === "summary";
     function isSplitPreviewActive() {
       return Boolean(splitPreviewEnabled && activeTab === "form" && window.innerWidth > 768);
     }
 
-  document.getElementById("dashboardTab").style.display = isDash ? "block" : "none";
-  document.getElementById("formTab").style.display = isForm ? "block" : "none";
-  document.getElementById("summaryTab").style.display = isSummary ? "block" : "none";
     function syncSplitPreviewUI() {
       const ws = document.getElementById("editorWorkspace");
       const btn = document.getElementById("formPreviewToggleBtn");
@@ -1688,11 +905,8 @@ function showTab(t) {
       const topbar = document.querySelector(".topbar");
       const active = isSplitPreviewActive();
 
-  document.getElementById("tabDashboard").classList.toggle("active", isDash);
-  document.getElementById("tabForm").classList.toggle("active", isForm);
-  document.getElementById("tabSummary").classList.toggle("active", isSummary);
       if (ws) {
-        if (topbar) ws.style.setProperty("--topbar-h", `${ topbar.offsetHeight } px`);
+        if (topbar) ws.style.setProperty("--topbar-h", `${topbar.offsetHeight}px`);
         ws.classList.toggle("split-active", active);
       }
       if (btn) {
@@ -1705,20 +919,6 @@ function showTab(t) {
       }
     }
 
-  if (isDash) {
-    renderDashboard();
-    window.scrollTo(0, 0);
-  } else if (isForm) {
-    updateActivePatientBar();
-    window.scrollTo(0, 0);
-  } else if (isSummary) {
-    setPreviewScale();
-    render(false);
-    document.getElementById("summaryTab").scrollTop = 0;
-    window.scrollTo(0, 0);
-    setTimeout(autoOptimizeSpacing, 60);
-  }
-}
     function toggleFormSplitPreview() {
       if (window.innerWidth <= 768) return;
       splitPreviewEnabled = !splitPreviewEnabled;
@@ -1731,35 +931,6 @@ function showTab(t) {
       }
     }
 
-function setPreviewScale() {
-  const paper = document.getElementById("paper");
-  if (!paper) return;
-  const availableWidth = Math.max(280, window.innerWidth - 20);
-  const scale = Math.min(1, availableWidth / 793.7);
-  paper.style.setProperty("--paper-scale", scale.toFixed(4));
-  paper.style.zoom = scale.toFixed(4);
-}
-window.addEventListener("resize", () => {
-  if (document.getElementById("summaryTab").style.display !== "none") {
-    setPreviewScale();
-    clearTimeout(pageCheckTimer);
-    pageCheckTimer = setTimeout(autoOptimizeSpacing, 100);
-  }
-});
-function copyText() {
-  render(false);
-  const t = document.getElementById("paper").innerText.replace(/\n{3,}/g, "\n\n");
-  navigator.clipboard.writeText(t).then(
-    () => toast("Summary copied to clipboard"),
-    () => toast("Copy failed — long-press to select in View summary")
-  );
-}
-function toast(msg) {
-  let el = document.createElement("div");
-  el.textContent = msg;
-  el.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#14425f;color:#fff;padding:10px 18px;border-radius:8px;font-size:14px;z-index:999;box-shadow:0 3px 10px rgba(0,0,0,.25);max-width:90vw;text-align:center";
-  document.body.appendChild(el); setTimeout(() => el.remove(), 2400);
-}
     function showTab(t) {
       if ((activeTab === "form" || activeTab === "summary") && t === "dashboard") {
         saveCurrentRecordNow(false);
@@ -1770,44 +941,15 @@ function toast(msg) {
       const isSummary = t === "summary";
       if (!isForm) splitPreviewEnabled = false;
 
-/* ---------- A4 page-count measurement, auto-fit algorithms & print ---------- */
-const A4_HEIGHT_PX = 1122.5;
-const FIT_ALGORITHMS = [
-  { id: "default", label: "Default Auto-Density" },
-  { id: "binary", label: "Binary Search Auto-Scale" },
-  { id: "flex", label: "Flex Spacing Redistribution" },
-  { id: "knuth", label: "Knuth-Plass Balanced Breaks" }
-];
-let currentFitAlgoIndex = 0;
-let currentFitAlgoNote = "";
-const CUSTOM_FIT_VAR_NAMES = [
-  "--fit-font-scale",
-  "--fit-line-height",
-  "--fit-sec-margin",
-  "--fit-h3-margin",
-  "--fit-cell-pad",
-  "--fit-sign-margin"
-];
       document.getElementById("dashboardTab").style.display = isDash ? "block" : "none";
       document.getElementById("formTab").style.display = isForm ? "block" : "none";
       document.getElementById("summaryTab").style.display = isSummary ? "block" : "none";
 
-function clearCustomFitVars(el) {
-  if (!el) return;
-  CUSTOM_FIT_VAR_NAMES.forEach(name => el.style.removeProperty(name));
-}
       document.getElementById("tabDashboard").classList.toggle("active", isDash);
       document.getElementById("tabForm").classList.toggle("active", isForm);
       document.getElementById("tabSummary").classList.toggle("active", isSummary);
       syncSplitPreviewUI();
 
-function applyCustomFitVars(el, vars = {}) {
-  clearCustomFitVars(el);
-  if (!el || !vars) return;
-  Object.entries(vars).forEach(([k, v]) => {
-    if (v !== undefined && v !== null && v !== "") el.style.setProperty(k, String(v));
-  });
-}
       if (isDash) {
         renderDashboard();
         window.scrollTo(0, 0);
@@ -1828,19 +970,6 @@ function applyCustomFitVars(el, vars = {}) {
       }
     }
 
-function buildScaleVars(scale) {
-  const s = Math.max(0.76, Math.min(1.06, Number(scale) || 1));
-  const t = (s - 0.78) / (1.04 - 0.78); // 0..1 normalized feel
-  const clampedT = Math.max(0, Math.min(1.1, t));
-  return {
-    "--fit-font-scale": s.toFixed(3),
-    "--fit-line-height": (1.20 + clampedT * 0.25).toFixed(2),
-    "--fit-sec-margin": `${ Math.round(4 + clampedT * 8) } px`,
-    "--fit-h3-margin": `${ Math.max(1, Math.round(2 + clampedT * 3)) } px`,
-    "--fit-cell-pad": `${ (1.5 + clampedT * 2.0).toFixed(1) }px ${ (3.5 + clampedT * 2.0).toFixed(1) } px`,
-    "--fit-sign-margin": `${ Math.round(14 + clampedT * 22) } px`
-  };
-}
     function setPreviewScale() {
       const paper = document.getElementById("paper");
       if (!paper) return;
@@ -1876,23 +1005,6 @@ function buildScaleVars(scale) {
       document.body.appendChild(el); setTimeout(() => el.remove(), 2400);
     }
 
-function measureLastPageMetrics(paper) {
-  const pages = Array.from(paper.querySelectorAll(".paper-page"));
-  if (!pages.length) return { count: 0, fillRatio: 0, contentBottom: 0, availHeight: A4_HEIGHT_PX - 60 };
-  const last = pages[pages.length - 1];
-  const top = last.getBoundingClientRect().top;
-  const padB = parseFloat(getComputedStyle(last).paddingBottom) || 30;
-  const availHeight = A4_HEIGHT_PX - padB;
-  const bottom = Math.max(0, ...Array.from(last.children)
-    .filter(c => getComputedStyle(c).position !== "absolute")
-    .map(c => c.getBoundingClientRect().bottom - top));
-  return {
-    count: pages.length,
-    fillRatio: availHeight > 0 ? bottom / availHeight : 0,
-    contentBottom: bottom,
-    availHeight
-  };
-}
     /* ---------- A4 page-count measurement, auto-fit algorithms & print ---------- */
     const A4_HEIGHT_PX = 1122.5;
     const FIT_ALGORITHMS = [
@@ -1912,21 +1024,11 @@ function measureLastPageMetrics(paper) {
       "--fit-sign-margin"
     ];
 
-function runDefaultDensityAlgo(paper, runPaginationFor) {
-  let count = runPaginationFor("");
-  let note = "Default Auto-Density";
     function clearCustomFitVars(el) {
       if (!el) return;
       CUSTOM_FIT_VAR_NAMES.forEach(name => el.style.removeProperty(name));
     }
 
-  if (count === 1) {
-    const relCount = runPaginationFor("relaxed");
-    if (relCount === 1) {
-      count = 1;
-      note = "Default Auto-Density (Relaxed spacing)";
-    } else {
-      count = runPaginationFor("");
     function applyCustomFitVars(el, vars = {}) {
       clearCustomFitVars(el);
       if (!el || !vars) return;
@@ -1934,12 +1036,6 @@ function runDefaultDensityAlgo(paper, runPaginationFor) {
         if (v !== undefined && v !== null && v !== "") el.style.setProperty(k, String(v));
       });
     }
-  } else if (count > 2) {
-    count = runPaginationFor("compact");
-    note = "Default Auto-Density (Compact fit)";
-    if (count > 2) {
-      count = runPaginationFor("compact2");
-      note = "Default Auto-Density (Level 2 compact)";
 
     function buildScaleVars(scale) {
       const s = Math.max(0.76, Math.min(1.06, Number(scale) || 1));
@@ -1948,24 +1044,13 @@ function runDefaultDensityAlgo(paper, runPaginationFor) {
       return {
         "--fit-font-scale": s.toFixed(3),
         "--fit-line-height": (1.20 + clampedT * 0.25).toFixed(2),
-        "--fit-sec-margin": `${ Math.round(4 + clampedT * 8) } px`,
-        "--fit-h3-margin": `${ Math.max(1, Math.round(2 + clampedT * 3)) } px`,
-        "--fit-cell-pad": `${ (1.5 + clampedT * 2.0).toFixed(1) }px ${ (3.5 + clampedT * 2.0).toFixed(1) } px`,
-        "--fit-sign-margin": `${ Math.round(14 + clampedT * 22) } px`
+        "--fit-sec-margin": `${Math.round(4 + clampedT * 8)}px`,
+        "--fit-h3-margin": `${Math.max(1, Math.round(2 + clampedT * 3))}px`,
+        "--fit-cell-pad": `${(1.5 + clampedT * 2.0).toFixed(1)}px ${(3.5 + clampedT * 2.0).toFixed(1)}px`,
+        "--fit-sign-margin": `${Math.round(14 + clampedT * 22)}px`
       };
     }
-  }
-  return { count, note };
-}
 
-function runBinarySearchScaleAlgo(paper, runPaginationFor) {
-  // Probe floor (0.78) and default (1.0) to pick realistic page target
-  const minVars = buildScaleVars(0.78);
-  const minCount = runPaginationFor("algo-custom", minVars);
-  const midProbeCount = runPaginationFor("algo-custom", buildScaleVars(0.86));
-  let targetPages = 2;
-  if (midProbeCount <= 1 || minCount <= 1) targetPages = 1;
-  else if (minCount > 2) targetPages = minCount;
     function measureLastPageMetrics(paper) {
       const pages = Array.from(paper.querySelectorAll(".paper-page"));
       if (!pages.length) return { count: 0, fillRatio: 0, contentBottom: 0, availHeight: A4_HEIGHT_PX - 60 };
@@ -1984,24 +1069,10 @@ function runBinarySearchScaleAlgo(paper, runPaginationFor) {
       };
     }
 
-  let lo = 0.78;
-  let hi = 1.04;
-  let bestScale = 0.78;
-  let bestVars = minVars;
     function runDefaultDensityAlgo(paper, runPaginationFor) {
       let count = runPaginationFor("");
       let note = "Default Auto-Density";
 
-  for (let iter = 0; iter < 6; iter++) {
-    const mid = (lo + hi) / 2;
-    const vars = buildScaleVars(mid);
-    const count = runPaginationFor("algo-custom", vars);
-    if (count <= targetPages) {
-      bestScale = mid;
-      bestVars = vars;
-      lo = mid;
-    } else {
-      hi = mid;
       if (count === 1) {
         const relCount = runPaginationFor("relaxed");
         if (relCount === 1) {
@@ -2020,12 +1091,7 @@ function runBinarySearchScaleAlgo(paper, runPaginationFor) {
       }
       return { count, note };
     }
-  }
 
-  const finalCount = runPaginationFor("algo-custom", bestVars);
-  const pct = Math.round(bestScale * 100);
-  return { count: finalCount, note: `Binary Search Auto - Scale(${ pct } %)` };
-}
     function runBinarySearchScaleAlgo(paper, runPaginationFor) {
       // Probe floor (0.78) and default (1.0) to pick realistic page target
       const minVars = buildScaleVars(0.78);
@@ -2035,34 +1101,11 @@ function runBinarySearchScaleAlgo(paper, runPaginationFor) {
       if (midProbeCount <= 1 || minCount <= 1) targetPages = 1;
       else if (minCount > 2) targetPages = minCount;
 
-function runFlexSpacingAlgo(paper, runPaginationFor) {
-  const stdVars = {
-    "--fit-font-scale": "1",
-    "--fit-line-height": "1.42",
-    "--fit-sec-margin": "10px",
-    "--fit-h3-margin": "4px",
-    "--fit-cell-pad": "3px 5px",
-    "--fit-sign-margin": "32px"
-  };
-  const baseCount = runPaginationFor("algo-custom", stdVars);
-  const metrics = measureLastPageMetrics(paper);
       let lo = 0.78;
       let hi = 1.04;
       let bestScale = 0.78;
       let bestVars = minVars;
 
-  if (baseCount === 1 && metrics.fillRatio < 0.84) {
-    const slackVars = {
-      "--fit-font-scale": "1",
-      "--fit-line-height": "1.52",
-      "--fit-sec-margin": "16px",
-      "--fit-h3-margin": "6px",
-      "--fit-cell-pad": "4px 6px",
-      "--fit-sign-margin": "48px"
-    };
-    const slackCount = runPaginationFor("algo-custom", slackVars);
-    if (slackCount === 1) {
-      return { count: 1, note: "Flex Spacing Redistribution (Expanded)" };
       for (let iter = 0; iter < 6; iter++) {
         const mid = (lo + hi) / 2;
         const vars = buildScaleVars(mid);
@@ -2078,20 +1121,9 @@ function runFlexSpacingAlgo(paper, runPaginationFor) {
 
       const finalCount = runPaginationFor("algo-custom", bestVars);
       const pct = Math.round(bestScale * 100);
-      return { count: finalCount, note: `Binary Search Auto - Scale(${ pct } %)` };
+      return { count: finalCount, note: `Binary Search Auto-Scale (${pct}%)` };
     }
-    runPaginationFor("algo-custom", stdVars);
-    return { count: 1, note: "Flex Spacing Redistribution" };
-  }
 
-  const targetPages = baseCount > 2 ? 2 : 1;
-  const steps = [
-    { lh: "1.34", sm: "8px", hm: "3px", cp: "2.5px 5px", sg: "24px", fs: "1" },
-    { lh: "1.28", sm: "6px", hm: "2px", cp: "2px 4px", sg: "18px", fs: "1" },
-    { lh: "1.22", sm: "4px", hm: "1.5px", cp: "1.5px 4px", sg: "14px", fs: "1" },
-    { lh: "1.18", sm: "3px", hm: "1px", cp: "1px 3.5px", sg: "12px", fs: "0.96" },
-    { lh: "1.16", sm: "2.5px", hm: "1px", cp: "1px 3px", sg: "10px", fs: "0.92" }
-  ];
     function runFlexSpacingAlgo(paper, runPaginationFor) {
       const stdVars = {
         "--fit-font-scale": "1",
@@ -2104,24 +1136,6 @@ function runFlexSpacingAlgo(paper, runPaginationFor) {
       const baseCount = runPaginationFor("algo-custom", stdVars);
       const metrics = measureLastPageMetrics(paper);
 
-  let chosenCount = baseCount;
-  let chosenNote = "Flex Spacing Redistribution";
-  for (const st of steps) {
-    const vars = {
-      "--fit-font-scale": st.fs,
-      "--fit-line-height": st.lh,
-      "--fit-sec-margin": st.sm,
-      "--fit-h3-margin": st.hm,
-      "--fit-cell-pad": st.cp,
-      "--fit-sign-margin": st.sg
-    };
-    const c = runPaginationFor("algo-custom", vars);
-    chosenCount = c;
-    if (c <= targetPages || (baseCount <= 2 && c <= 2 && metrics.fillRatio < 0.25 && c === 1)) {
-      chosenNote = st.fs === "1"
-        ? `Flex Spacing Redistribution(LH ${ st.lh })`
-        : `Flex Spacing Redistribution(LH ${ st.lh }, ${ Math.round(Number(st.fs) * 100) } %)`;
-      return { count: c, note: chosenNote };
       if (baseCount === 1 && metrics.fillRatio < 0.84) {
         const slackVars = {
           "--fit-font-scale": "1",
@@ -2163,8 +1177,8 @@ function runFlexSpacingAlgo(paper, runPaginationFor) {
         chosenCount = c;
         if (c <= targetPages || (baseCount <= 2 && c <= 2 && metrics.fillRatio < 0.25 && c === 1)) {
           chosenNote = st.fs === "1"
-            ? `Flex Spacing Redistribution(LH ${ st.lh })`
-            : `Flex Spacing Redistribution(LH ${ st.lh }, ${ Math.round(Number(st.fs) * 100) } %)`;
+            ? `Flex Spacing Redistribution (LH ${st.lh})`
+            : `Flex Spacing Redistribution (LH ${st.lh}, ${Math.round(Number(st.fs) * 100)}%)`;
           return { count: c, note: chosenNote };
         }
       }
@@ -2183,48 +1197,7 @@ function runFlexSpacingAlgo(paper, runPaginationFor) {
       }
       return { count: chosenCount, note: chosenNote };
     }
-  }
-  if (baseCount <= 2) {
-    // Revert to clean standard-2-page spacing if targetPages=1 wasn't cleanly reachable
-    const balancedTwoVars = {
-      "--fit-font-scale": "1",
-      "--fit-line-height": "1.38",
-      "--fit-sec-margin": "9px",
-      "--fit-h3-margin": "3px",
-      "--fit-cell-pad": "2.5px 5px",
-      "--fit-sign-margin": "26px"
-    };
-    const c2 = runPaginationFor("algo-custom", balancedTwoVars);
-    if (c2 <= 2) return { count: c2, note: "Flex Spacing Redistribution (Balanced 2-page)" };
-  }
-  return { count: chosenCount, note: chosenNote };
-}
 
-function runBalancedPenaltyAlgo(paper, runPaginationFor) {
-  const normalBalancedVars = {
-    "--fit-font-scale": "0.97",
-    "--fit-line-height": "1.36",
-    "--fit-sec-margin": "8px",
-    "--fit-h3-margin": "3px",
-    "--fit-cell-pad": "2.5px 5px",
-    "--fit-sign-margin": "24px"
-  };
-  let count = runPaginationFor("algo-custom", normalBalancedVars, { balancedMode: true });
-  let note = "Knuth-Plass Balanced Breaks";
-  if (count > 2) {
-    const denseBalancedVars = {
-      "--fit-font-scale": "0.88",
-      "--fit-line-height": "1.24",
-      "--fit-sec-margin": "5px",
-      "--fit-h3-margin": "2px",
-      "--fit-cell-pad": "1.5px 4px",
-      "--fit-sign-margin": "16px"
-    };
-    count = runPaginationFor("algo-custom", denseBalancedVars, { balancedMode: true });
-    note = "Knuth-Plass Balanced Breaks (Dense 88%)";
-  }
-  return { count, note };
-}
     function runBalancedPenaltyAlgo(paper, runPaginationFor) {
       const normalBalancedVars = {
         "--fit-font-scale": "0.97",
@@ -2251,12 +1224,6 @@ function runBalancedPenaltyAlgo(paper, runPaginationFor) {
       return { count, note };
     }
 
-function autoOptimizeSpacing(algoIndexOverride = null) {
-  const paper = document.getElementById("paper");
-  if (!paper) return;
-  if (algoIndexOverride !== null && algoIndexOverride !== undefined) {
-    currentFitAlgoIndex = ((Number(algoIndexOverride) % FIT_ALGORITHMS.length) + FIT_ALGORITHMS.length) % FIT_ALGORITHMS.length;
-  }
     function autoOptimizeSpacing(algoIndexOverride = null) {
       const paper = document.getElementById("paper");
       if (!paper) return;
@@ -2264,15 +1231,6 @@ function autoOptimizeSpacing(algoIndexOverride = null) {
         currentFitAlgoIndex = ((Number(algoIndexOverride) % FIT_ALGORITHMS.length) + FIT_ALGORITHMS.length) % FIT_ALGORITHMS.length;
       }
 
-  const summaryTab = document.getElementById("summaryTab");
-  const wasHidden = summaryTab && summaryTab.style.display === "none";
-  if (wasHidden) {
-    summaryTab.style.visibility = "hidden";
-    summaryTab.style.position = "absolute";
-    summaryTab.style.left = "-9999px";
-    summaryTab.style.display = "block";
-    summaryTab.style.width = "850px";
-  }
       const summaryTab = document.getElementById("summaryTab");
       const wasHidden = summaryTab && summaryTab.style.display === "none";
       if (wasHidden) {
@@ -2283,28 +1241,11 @@ function autoOptimizeSpacing(algoIndexOverride = null) {
         summaryTab.style.width = "850px";
       }
 
-  paper.style.zoom = "1";
-  paper.style.transform = "none";
-  paper.style.width = "210mm";
-  paper.style.maxWidth = "none";
       paper.style.zoom = "1";
       paper.style.transform = "none";
       paper.style.width = "210mm";
       paper.style.maxWidth = "none";
 
-  function runPaginationFor(cls, customVars = null, paginateOpts = {}) {
-    unpaginatePreview();
-    clearCustomFitVars(paper);
-    paper.className = "paper" + (cls ? " " + cls : "");
-    if (customVars) applyCustomFitVars(paper, customVars);
-    paper.style.zoom = "1";
-    paper.style.transform = "none";
-    paper.style.width = "210mm";
-    paper.style.maxWidth = "none";
-    paginatePreview(paginateOpts);
-    const pages = paper.querySelectorAll(".paper-page");
-    return pages.length;
-  }
       function runPaginationFor(cls, customVars = null, paginateOpts = {}) {
         unpaginatePreview();
         clearCustomFitVars(paper);
@@ -2319,17 +1260,6 @@ function autoOptimizeSpacing(algoIndexOverride = null) {
         return pages.length;
       }
 
-  const activeAlgo = FIT_ALGORITHMS[currentFitAlgoIndex] || FIT_ALGORITHMS[0];
-  let result;
-  if (activeAlgo.id === "binary") {
-    result = runBinarySearchScaleAlgo(paper, runPaginationFor);
-  } else if (activeAlgo.id === "flex") {
-    result = runFlexSpacingAlgo(paper, runPaginationFor);
-  } else if (activeAlgo.id === "knuth") {
-    result = runBalancedPenaltyAlgo(paper, runPaginationFor);
-  } else {
-    result = runDefaultDensityAlgo(paper, runPaginationFor);
-  }
       const activeAlgo = FIT_ALGORITHMS[currentFitAlgoIndex] || FIT_ALGORITHMS[0];
       let result;
       if (activeAlgo.id === "binary") {
@@ -2342,18 +1272,9 @@ function autoOptimizeSpacing(algoIndexOverride = null) {
         result = runDefaultDensityAlgo(paper, runPaginationFor);
       }
 
-  currentFitAlgoNote = result.note || activeAlgo.label;
-  paper.dataset.fitAlgo = activeAlgo.id;
       currentFitAlgoNote = result.note || activeAlgo.label;
       paper.dataset.fitAlgo = activeAlgo.id;
 
-  if (wasHidden) {
-    summaryTab.style.display = "none";
-    summaryTab.style.position = "";
-    summaryTab.style.left = "";
-    summaryTab.style.width = "";
-    summaryTab.style.visibility = "";
-  }
       if (wasHidden) {
         summaryTab.style.display = "none";
         summaryTab.style.position = "";
@@ -2362,14 +1283,6 @@ function autoOptimizeSpacing(algoIndexOverride = null) {
         summaryTab.style.visibility = "";
       }
 
-  setPreviewScale();
-  updatePageBanner();
-  return {
-    algo: activeAlgo,
-    count: result.count,
-    note: currentFitAlgoNote
-  };
-}
       setPreviewScale();
       updatePageBanner();
       return {
@@ -2379,18 +1292,6 @@ function autoOptimizeSpacing(algoIndexOverride = null) {
       };
     }
 
-function unpaginatePreview() {
-  const paper = document.getElementById("paper");
-  if (!paper) return;
-  const pages = Array.from(paper.querySelectorAll(".paper-page"));
-  if (!pages.length) return;
-  const content = pages.flatMap(page => Array.from(page.children));
-  content.forEach(block => {
-    block.classList.remove("signature-footer");
-    if (block.parentElement) block.parentElement.classList.remove("signature-footer-page");
-  });
-  paper.replaceChildren(...content);
-}
     function unpaginatePreview() {
       const paper = document.getElementById("paper");
       if (!paper) return;
@@ -2404,15 +1305,6 @@ function unpaginatePreview() {
       paper.replaceChildren(...content);
     }
 
-function paginatePreview(options = {}) {
-  const paper = document.getElementById("paper");
-  if (!paper || paper.querySelector(".paper-page")) return;
-  const blocks = Array.from(paper.children);
-  if (!blocks.length) return;
-  const pages = [];
-  let page = null;
-  const pageHeight = A4_HEIGHT_PX;
-  const balancedMode = Boolean(options && options.balancedMode);
     function paginatePreview(options = {}) {
       const paper = document.getElementById("paper");
       if (!paper || paper.querySelector(".paper-page")) return;
@@ -2423,35 +1315,16 @@ function paginatePreview(options = {}) {
       const pageHeight = A4_HEIGHT_PX;
       const balancedMode = Boolean(options && options.balancedMode);
 
-  const newPage = () => {
-    page = document.createElement("div");
-    page.className = "paper-page";
-    page.style.width = "210mm";
-    page.style.minHeight = "0";
-    page.style.height = `${ pageHeight } px`;
-    paper.appendChild(page);
-    pages.push(page);
-  };
       const newPage = () => {
         page = document.createElement("div");
         page.className = "paper-page";
         page.style.width = "210mm";
         page.style.minHeight = "0";
-        page.style.height = `${ pageHeight } px`;
+        page.style.height = `${pageHeight}px`;
         paper.appendChild(page);
         pages.push(page);
       };
 
-  const fitsTarget = (targetPage) => {
-    if (!targetPage) return true;
-    const pageTop = targetPage.getBoundingClientRect().top;
-    const paddingBottom = parseFloat(getComputedStyle(targetPage).paddingBottom) || 60;
-    const contentBottom = Math.max(0, ...Array.from(targetPage.children)
-      .filter(child => getComputedStyle(child).position !== "absolute")
-      .map(child => child.getBoundingClientRect().bottom - pageTop));
-    return contentBottom <= pageHeight - paddingBottom + 1;
-  };
-  const fits = () => fitsTarget(page);
       const fitsTarget = (targetPage) => {
         if (!targetPage) return true;
         const pageTop = targetPage.getBoundingClientRect().top;
@@ -2463,26 +1336,9 @@ function paginatePreview(options = {}) {
       };
       const fits = () => fitsTarget(page);
 
-  const continuationTitle = title =>
-    `${ (title || "Section").replace(/\s+\(continued\)(?:\s+\(continued\))*$/i, "") } (continued)`;
       const continuationTitle = title =>
-        `${ (title || "Section").replace(/\s+\(continued\)(?:\s+\(continued\))*$/i, "") } (continued)`;
+        `${(title || "Section").replace(/\s+\(continued\)(?:\s+\(continued\))*$/i, "")} (continued)`;
 
-  const addSection = sectionBlock => {
-    paper.removeChild(sectionBlock);
-    const makeSecFragment = headingEl => {
-      const frag = document.createElement("div");
-      frag.className = "sec";
-      if (sectionBlock.dataset && sectionBlock.dataset.secKey) {
-        frag.dataset.secKey = sectionBlock.dataset.secKey;
-      }
-      if (headingEl) frag.appendChild(headingEl);
-      return frag;
-    };
-    const heading = sectionBlock.querySelector(":scope > h3");
-    const children = Array.from(sectionBlock.children).filter(child => child !== heading);
-    let fragment = makeSecFragment(heading);
-    page.appendChild(fragment);
       const addSection = sectionBlock => {
         paper.removeChild(sectionBlock);
         const makeSecFragment = headingEl => {
@@ -2499,12 +1355,6 @@ function paginatePreview(options = {}) {
         let fragment = makeSecFragment(heading);
         page.appendChild(fragment);
 
-    if (!fits() && page.children.length > 1) {
-      page.removeChild(fragment);
-      newPage();
-      fragment = makeSecFragment(heading);
-      page.appendChild(fragment);
-    }
         if (!fits() && page.children.length > 1) {
           page.removeChild(fragment);
           newPage();
@@ -2512,27 +1362,6 @@ function paginatePreview(options = {}) {
           page.appendChild(fragment);
         }
 
-    children.forEach((child, idx) => {
-      if (child.matches(".inv-table-wrap")) {
-        const table = child.querySelector("table");
-        const rows = table ? Array.from(table.querySelectorAll("tbody tr")) : [];
-        if (table && rows.length) {
-          const addTablePage = () => {
-            const wrapper = document.createElement("div");
-            wrapper.className = "inv-table-wrap";
-            const tablePart = table.cloneNode(false);
-            const head = table.querySelector("thead");
-            if (head) tablePart.appendChild(head.cloneNode(true));
-            tablePart.appendChild(document.createElement("tbody"));
-            wrapper.appendChild(tablePart);
-            fragment.appendChild(wrapper);
-            return tablePart.querySelector("tbody");
-          };
-          let tableBody = addTablePage();
-          rows.forEach(row => {
-            tableBody.appendChild(row);
-            if (!fits() && tableBody.children.length > 1) {
-              tableBody.removeChild(row);
         children.forEach((child, idx) => {
           if (child.matches(".inv-table-wrap")) {
             const table = child.querySelector("table");
@@ -2580,11 +1409,8 @@ function paginatePreview(options = {}) {
               continuedHeading.textContent = continuationTitle(heading && heading.textContent);
               fragment = makeSecFragment(continuedHeading);
               page.appendChild(fragment);
-              tableBody = addTablePage();
-              tableBody.appendChild(row);
               fragment.appendChild(child);
             }
-          });
           }
         });
       };
@@ -2604,12 +1430,6 @@ function paginatePreview(options = {}) {
           }
           return;
         }
-      }
-      fragment.appendChild(child);
-      if (!fits()) {
-        // In balanced mode, never orphan just the heading on the previous page when first child doesn't fit
-        if (balancedMode && idx === 0 && heading && fragment.contains(heading) && page.children.length > 1) {
-          page.removeChild(fragment);
 
         const pageBounds = page.getBoundingClientRect();
         const signatureRect = signature.getBoundingClientRect();
@@ -2624,15 +1444,6 @@ function paginatePreview(options = {}) {
           signature.classList.remove("signature-footer");
           const previousBlock = page.children.length > 1 ? page.lastElementChild : null;
           newPage();
-          page.appendChild(fragment);
-        } else if (fragment.children.length > 1) {
-          fragment.removeChild(child);
-          newPage();
-          const continuedHeading = document.createElement("h3");
-          continuedHeading.textContent = continuationTitle(heading && heading.textContent);
-          fragment = makeSecFragment(continuedHeading);
-          page.appendChild(fragment);
-          fragment.appendChild(child);
           if (previousBlock) {
             page.appendChild(previousBlock);
             if (pinned) {
@@ -2643,21 +1454,7 @@ function paginatePreview(options = {}) {
           page.appendChild(signature);
         }
       }
-    });
-  };
 
-  function placeSignature(signature) {
-    const pinned = signature.classList.contains("signature-pinned");
-    if (pinned) {
-      page.classList.add("signature-footer-page");
-      signature.classList.add("signature-footer");
-    }
-    page.appendChild(signature);
-    if (!pinned) {
-      if (!fits() && page.children.length > 1) {
-        page.removeChild(signature);
-        newPage();
-        page.appendChild(signature);
       blocks.forEach(block => {
         if (!page) newPage();
         if (block.classList.contains("sec")) {
@@ -2720,27 +1517,7 @@ function paginatePreview(options = {}) {
           }
         }
       }
-      return;
-    }
 
-    const pageBounds = page.getBoundingClientRect();
-    const signatureRect = signature.getBoundingClientRect();
-    const flowBottom = Math.max(pageBounds.top, ...Array.from(page.children)
-      .filter(child => child !== signature)
-      .map(child => child.getBoundingClientRect().bottom));
-    const signatureTop = signatureRect.top;
-
-    if (flowBottom > signatureTop - 6) {
-      page.removeChild(signature);
-      page.classList.remove("signature-footer-page");
-      signature.classList.remove("signature-footer");
-      const previousBlock = page.children.length > 1 ? page.lastElementChild : null;
-      newPage();
-      if (previousBlock) {
-        page.appendChild(previousBlock);
-        if (pinned) {
-          page.classList.add("signature-footer-page");
-          signature.classList.add("signature-footer");
       for (let i = pages.length - 1; i >= 0; i--) {
         if (!pages[i].children.length) {
           pages[i].remove();
@@ -2750,87 +1527,28 @@ function paginatePreview(options = {}) {
           pages[i].style.height = "";
         }
       }
-      page.appendChild(signature);
       paper.dataset.pageCount = String(pages.length);
     }
-  }
 
-  blocks.forEach(block => {
-    if (!page) newPage();
-    if (block.classList.contains("sec")) {
-      addSection(block);
-    } else if (block.classList.contains("sign-row")) {
-      placeSignature(block);
-    } else {
-      page.appendChild(block);
-      if (!fits() && page.children.length > 1) {
-        page.removeChild(block);
-        newPage();
-        page.appendChild(block);
     function updatePageBanner() {
       const banner = document.getElementById("pageBanner");
       if (!banner) return;
       const paper = document.getElementById("paper");
       const pages = Math.max(1, Number(paper.dataset.pageCount) || paper.querySelectorAll(".paper-page").length);
-      const note = currentFitAlgoNote ? ` · ${ currentFitAlgoNote } ` : "";
+      const note = currentFitAlgoNote ? ` · ${currentFitAlgoNote}` : "";
 
-      const editHint = `< span style = "opacity:.82;font-weight:500" > · ✎ Click any text on the A4 page to edit directly</span > `;
+      const editHint = `<span style="opacity:.82;font-weight:500"> · ✎ Click any text on the A4 page to edit directly</span>`;
       if (pages <= 2) {
         banner.style.display = "flex";
         banner.className = "pagebanner no-print ok";
-        banner.innerHTML = `< span >📄 <b>A4 print preview</b>: ${ pages } A4 page${ pages > 1 ? "s" : "" }${ esc(note) }.${ editHint }</span > `;
+        banner.innerHTML = `<span>📄 <b>A4 print preview</b>: ${pages} A4 page${pages > 1 ? "s" : ""}${esc(note)}.${editHint}</span>`;
       } else {
         banner.style.display = "flex";
         banner.className = "pagebanner no-print warn";
-        banner.innerHTML = `< span >📄 <b>A4 print preview</b>: ${ pages } pages${ esc(note) }.${ editHint }</span > `;
+        banner.innerHTML = `<span>📄 <b>A4 print preview</b>: ${pages} pages${esc(note)}.${editHint}</span>`;
       }
     }
-  });
 
-  // Knuth-Plass inspired trailing page balance optimization
-  if (balancedMode && pages.length >= 2) {
-    for (let i = pages.length - 2; i >= 0; i--) {
-      const prevP = pages[i];
-      const nextP = pages[i + 1];
-      if (prevP.classList.contains("signature-footer-page")) continue;
-      const nextPad = parseFloat(getComputedStyle(nextP).paddingBottom) || 60;
-      const prevPad = parseFloat(getComputedStyle(prevP).paddingBottom) || 60;
-      const nextTop = nextP.getBoundingClientRect().top;
-      const prevTop = prevP.getBoundingClientRect().top;
-      const nextBottom = Math.max(0, ...Array.from(nextP.children)
-        .filter(c => getComputedStyle(c).position !== "absolute")
-        .map(c => c.getBoundingClientRect().bottom - nextTop));
-      const prevBottom = Math.max(0, ...Array.from(prevP.children)
-        .filter(c => getComputedStyle(c).position !== "absolute")
-        .map(c => c.getBoundingClientRect().bottom - prevTop));
-      const nextFill = nextBottom / (pageHeight - nextPad);
-      const prevSecs = Array.from(prevP.children).filter(c => c.classList.contains("sec"));
-      if (nextFill < 0.28 && prevSecs.length >= 3) {
-        const candidate = prevSecs[prevSecs.length - 1];
-        const prevAnchor = candidate.nextSibling;
-        nextP.insertBefore(candidate, nextP.firstChild);
-        const sigEl = nextP.querySelector(".sign-row.signature-footer");
-        let sigCollide = false;
-        if (sigEl) {
-          const nb = nextP.getBoundingClientRect();
-          const sr = sigEl.getBoundingClientRect();
-          const fb = Math.max(nb.top, ...Array.from(nextP.children)
-            .filter(c => c !== sigEl)
-            .map(c => c.getBoundingClientRect().bottom));
-          if (fb > sr.top - 6) sigCollide = true;
-        }
-        const newNextBottom = Math.max(0, ...Array.from(nextP.children)
-          .filter(c => getComputedStyle(c).position !== "absolute")
-          .map(c => c.getBoundingClientRect().bottom - nextTop));
-        const newPrevBottom = Math.max(0, ...Array.from(prevP.children)
-          .filter(c => getComputedStyle(c).position !== "absolute")
-          .map(c => c.getBoundingClientRect().bottom - prevTop));
-        const oldDiff = Math.abs(prevBottom - nextBottom);
-        const newDiff = Math.abs(newPrevBottom - newNextBottom);
-        if (!fitsTarget(nextP) || sigCollide || newDiff >= oldDiff) {
-          prevP.insertBefore(candidate, prevAnchor);
-        }
-      }
     function checkAndPrint() {
       render(false);
       clearTimeout(pageCheckTimer);
@@ -2840,34 +1558,17 @@ function paginatePreview(options = {}) {
       const paper = document.getElementById("paper");
       const pages = Math.max(1, Number(paper.dataset.pageCount) || paper.querySelectorAll(".paper-page").length);
       if (pages <= 2) { printWithFileName(pdfName); return; }
-      const proceed = confirm(`⚠ Content spans ${ pages } A4 pages.\n\nThe recommended maximum is 2 pages.Tap OK to print anyway, or Cancel to return and shorten the summary.`);
+      const proceed = confirm(`⚠ Content spans ${pages} A4 pages.\n\nThe recommended maximum is 2 pages. Tap OK to print anyway, or Cancel to return and shorten the summary.`);
       if (proceed) printWithFileName(pdfName);
     }
-  }
 
-  for (let i = pages.length - 1; i >= 0; i--) {
-    if (!pages[i].children.length) {
-      pages[i].remove();
-      pages.splice(i, 1);
-    } else {
-      pages[i].style.minHeight = "";
-      pages[i].style.height = "";
     function getPdfName() {
       const enteredName = val("name") || prompt("Enter a name for the PDF filename (this will not be added to the summary):");
       if (!enteredName || !enteredName.trim()) return null;
       const cleanName = enteredName.trim().replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
-      return cleanName ? `DS_${ cleanName }.pdf` : null;
+      return cleanName ? `DS_${cleanName}.pdf` : null;
     }
-  }
-  paper.dataset.pageCount = String(pages.length);
-}
 
-function updatePageBanner() {
-  const banner = document.getElementById("pageBanner");
-  if (!banner) return;
-  const paper = document.getElementById("paper");
-  const pages = Math.max(1, Number(paper.dataset.pageCount) || paper.querySelectorAll(".paper-page").length);
-  const note = currentFitAlgoNote ? ` · ${ currentFitAlgoNote } ` : "";
     function printWithFileName(fileName) {
       showTab("summary");
       const previousTitle = document.title;
@@ -2886,17 +1587,6 @@ function updatePageBanner() {
       }, printDelay);
     }
 
-  const editHint = `< span style = "opacity:.82;font-weight:500" > · ✎ Click any text on the A4 page to edit directly</span > `;
-  if (pages <= 2) {
-    banner.style.display = "flex";
-    banner.className = "pagebanner no-print ok";
-    banner.innerHTML = `< span >📄 <b>A4 print preview</b>: ${ pages } A4 page${ pages > 1 ? "s" : "" }${ esc(note) }.${ editHint }</span > `;
-  } else {
-    banner.style.display = "flex";
-    banner.className = "pagebanner no-print warn";
-    banner.innerHTML = `< span >📄 <b>A4 print preview</b>: ${ pages } pages${ esc(note) }.${ editHint }</span > `;
-  }
-}
     async function generatePdf(share, requestedName = "") {
       render(false);
       clearTimeout(pageCheckTimer);
@@ -2906,69 +1596,24 @@ function updatePageBanner() {
       if (!name || !name.trim()) return;
       const cleanName = name.trim().replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
       if (!cleanName) return;
-      const fileName = `DS_${ cleanName }.pdf`;
+      const fileName = `DS_${cleanName}.pdf`;
 
-function checkAndPrint() {
-  render(false);
-  clearTimeout(pageCheckTimer);
-  autoOptimizeSpacing();
-  const pdfName = getPdfName();
-  if (!pdfName) return;
-  const paper = document.getElementById("paper");
-  const pages = Math.max(1, Number(paper.dataset.pageCount) || paper.querySelectorAll(".paper-page").length);
-  if (pages <= 2) { printWithFileName(pdfName); return; }
-  const proceed = confirm(`⚠ Content spans ${ pages } A4 pages.\n\nThe recommended maximum is 2 pages.Tap OK to print anyway, or Cancel to return and shorten the summary.`);
-  if (proceed) printWithFileName(pdfName);
-}
       if (typeof html2pdf !== "function") {
         toast("PDF generator is unavailable — using browser print.");
         printWithFileName(fileName);
         return;
       }
 
-function getPdfName() {
-  const enteredName = val("name") || prompt("Enter a name for the PDF filename (this will not be added to the summary):");
-  if (!enteredName || !enteredName.trim()) return null;
-  const cleanName = enteredName.trim().replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
-  return cleanName ? `DS_${ cleanName }.pdf` : null;
-}
       const exportPaper = paper.cloneNode(true);
       exportPaper.querySelectorAll(".a4-page-guide").forEach(el => el.remove());
       exportPaper.querySelectorAll("[contenteditable]").forEach(el => el.removeAttribute("contenteditable"));
       exportPaper.classList.add("pdf-export-paper");
 
-function printWithFileName(fileName) {
-  showTab("summary");
-  const previousTitle = document.title;
-  document.title = fileName.replace(/\.pdf$/i, "");
-  const restoreTitle = () => {
-    document.title = previousTitle;
-    window.removeEventListener("afterprint", restoreTitle);
-    document.body.classList.remove("printing");
-  };
-  window.addEventListener("afterprint", restoreTitle);
-  document.body.classList.add("printing");
-  const printDelay = isSafariBrowser() || isIOSDevice() ? 180 : 80;
-  setTimeout(() => {
-    window.print();
-    setTimeout(restoreTitle, 2000);
-  }, printDelay);
-}
       CUSTOM_FIT_VAR_NAMES.forEach(name => {
         const v = paper.style.getPropertyValue(name);
         if (v) exportPaper.style.setProperty(name, v);
       });
 
-async function generatePdf(share, requestedName = "") {
-  render(false);
-  clearTimeout(pageCheckTimer);
-  autoOptimizeSpacing();
-  const paper = document.getElementById("paper");
-  const name = val("name") || requestedName || prompt("Enter a name for the PDF filename (this will not be added to the summary):");
-  if (!name || !name.trim()) return;
-  const cleanName = name.trim().replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "");
-  if (!cleanName) return;
-  const fileName = `DS_${ cleanName }.pdf`;
       let exportPages = Array.from(exportPaper.querySelectorAll(".paper-page"));
       if (exportPages.length === 0) {
         const page = document.createElement("div");
@@ -2978,13 +1623,8 @@ async function generatePdf(share, requestedName = "") {
         exportPages = [page];
       }
 
-  if (typeof html2pdf !== "function") {
-    toast("PDF generator is unavailable — using browser print.");
-    printWithFileName(fileName);
-    return;
-  }
       exportPages.forEach(p => {
-        p.className = `paper - page ${ paper.className } `;
+        p.className = `paper-page ${paper.className}`;
         p.style.cssText = "box-sizing:border-box !important; width:210mm !important; height:1120px !important; min-height:0 !important; max-height:1120px !important; padding:7mm 7mm 8mm !important; margin:0 !important; overflow:hidden !important; position:relative !important; box-shadow:none !important; border:0 !important; border-radius:0 !important; background:#ffffff !important; page-break-after:auto !important; break-after:auto !important;";
         CUSTOM_FIT_VAR_NAMES.forEach(name => {
           const v = paper.style.getPropertyValue(name);
@@ -2992,18 +1632,10 @@ async function generatePdf(share, requestedName = "") {
         });
       });
 
-  const exportPaper = paper.cloneNode(true);
-  exportPaper.querySelectorAll(".a4-page-guide").forEach(el => el.remove());
-  exportPaper.querySelectorAll("[contenteditable]").forEach(el => el.removeAttribute("contenteditable"));
-  exportPaper.classList.add("pdf-export-paper");
       const isIOS = isIOSDevice();
       const isSafari = isSafariBrowser();
       const canvasScale = (isIOS || isSafari) ? 1.5 : 2;
 
-  CUSTOM_FIT_VAR_NAMES.forEach(name => {
-    const v = paper.style.getPropertyValue(name);
-    if (v) exportPaper.style.setProperty(name, v);
-  });
       try {
         toast(share ? "Generating PDF to share..." : "Generating PDF...");
         const opt = {
@@ -3023,33 +1655,14 @@ async function generatePdf(share, requestedName = "") {
           jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
         };
 
-  let exportPages = Array.from(exportPaper.querySelectorAll(".paper-page"));
-  if (exportPages.length === 0) {
-    const page = document.createElement("div");
-    page.className = "paper-page";
-    while (exportPaper.firstChild) page.appendChild(exportPaper.firstChild);
-    exportPaper.appendChild(page);
-    exportPages = [page];
-  }
         const worker1 = html2pdf().set(opt).from(exportPages[0]);
         await worker1.toCanvas();
         const pdf = await worker1.toPdf().get("pdf");
 
-  exportPages.forEach(p => {
-    p.className = `paper - page ${ paper.className } `;
-    p.style.cssText = "box-sizing:border-box !important; width:210mm !important; height:1120px !important; min-height:0 !important; max-height:1120px !important; padding:7mm 7mm 8mm !important; margin:0 !important; overflow:hidden !important; position:relative !important; box-shadow:none !important; border:0 !important; border-radius:0 !important; background:#ffffff !important; page-break-after:auto !important; break-after:auto !important;";
-    CUSTOM_FIT_VAR_NAMES.forEach(name => {
-      const v = paper.style.getPropertyValue(name);
-      if (v) p.style.setProperty(name, v);
-    });
-  });
         while (pdf.internal.getNumberOfPages() > 1) {
           pdf.deletePage(pdf.internal.getNumberOfPages());
         }
 
-  const isIOS = isIOSDevice();
-  const isSafari = isSafariBrowser();
-  const canvasScale = (isIOS || isSafari) ? 1.5 : 2;
         for (let i = 1; i < exportPages.length; i++) {
           const workerNext = html2pdf().set(opt).from(exportPages[i]);
           const canvasNext = await workerNext.toCanvas().get("canvas");
@@ -3058,24 +1671,6 @@ async function generatePdf(share, requestedName = "") {
           pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
         }
 
-  try {
-    toast(share ? "Generating PDF to share..." : "Generating PDF...");
-    const opt = {
-      margin: 0,
-      filename: fileName,
-      image: { type: "jpeg", quality: 0.98 },
-      html2canvas: {
-        scale: canvasScale,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: 1200,
-        backgroundColor: "#ffffff"
-      },
-      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-    };
         const pdfBlob = pdf.output("blob");
         let pdfFile = null;
         try {
@@ -3085,14 +1680,11 @@ async function generatePdf(share, requestedName = "") {
           pdfFile.name = fileName;
         }
 
-    const worker1 = html2pdf().set(opt).from(exportPages[0]);
-    await worker1.toCanvas();
-    const pdf = await worker1.toPdf().get("pdf");
         if (share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
           try {
             await navigator.share({
-              title: `Discharge Summary — ${ name } `,
-              text: `Discharge Summary for ${ name }`,
+              title: `Discharge Summary — ${name}`,
+              text: `Discharge Summary for ${name}`,
               files: [pdfFile]
             });
             toast("PDF shared successfully ✓");
@@ -3103,17 +1695,8 @@ async function generatePdf(share, requestedName = "") {
           }
         }
 
-    while (pdf.internal.getNumberOfPages() > 1) {
-      pdf.deletePage(pdf.internal.getNumberOfPages());
-    }
         const blobUrl = URL.createObjectURL(pdfBlob);
 
-    for (let i = 1; i < exportPages.length; i++) {
-      const workerNext = html2pdf().set(opt).from(exportPages[i]);
-      const canvasNext = await workerNext.toCanvas().get("canvas");
-      pdf.addPage();
-      const imgData = canvasNext.toDataURL("image/jpeg", 0.98);
-      pdf.addImage(imgData, "JPEG", 0, 0, 210, 297);
         if (isIOS) {
           const win = window.open(blobUrl, "_blank");
           if (!win) window.location.href = blobUrl;
@@ -3142,23 +1725,6 @@ async function generatePdf(share, requestedName = "") {
       }
     }
 
-    const pdfBlob = pdf.output("blob");
-    let pdfFile = null;
-    try {
-      pdfFile = new File([pdfBlob], fileName, { type: "application/pdf" });
-    } catch (e) {
-      pdfFile = pdfBlob;
-      pdfFile.name = fileName;
-    }
-
-    if (share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
-      try {
-        await navigator.share({
-          title: `Discharge Summary — ${ name } `,
-          text: `Discharge Summary for ${ name }`,
-          files: [pdfFile]
-        });
-        toast("PDF shared successfully ✓");
     /* ---------- PWA install & scoped v2 service worker ---------- */
     let deferredPrompt = null;
     window.addEventListener("beforeinstallprompt", (e) => {
@@ -3175,9 +1741,6 @@ async function generatePdf(share, requestedName = "") {
         const btn = document.getElementById("installBtn");
         if (btn) btn.style.display = "none";
         return;
-      } catch (shareErr) {
-        if (shareErr.name === "AbortError") return;
-        console.warn("navigator.share failed, falling back to download:", shareErr);
       }
       if (isIOSDevice()) {
         alert("To install DS Builder v2 on iPhone / iPad:\n\n1. Tap the Share button ⎋ in Safari's toolbar.\n2. Scroll down and tap 'Add to Home Screen' ➕.\n3. Tap 'Add' in the top right.\n\nThe app works offline and syncs when connected!");
@@ -3212,91 +1775,18 @@ async function generatePdf(share, requestedName = "") {
       });
     }
 
-    const blobUrl = URL.createObjectURL(pdfBlob);
-
-    if (isIOS) {
-      const win = window.open(blobUrl, "_blank");
-      if (!win) window.location.href = blobUrl;
-      toast("PDF opened in Safari viewer — tap Share to save or send ✓");
-    } else {
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = fileName;
-      link.style.display = "none";
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => {
-        link.remove();
-        URL.revokeObjectURL(blobUrl);
-      }, 60000);
-      toast("PDF downloaded ✓");
     /* ---------- Menu ---------- */
     function toggleMenu() {
       document.getElementById("menuDropdown").classList.toggle("open");
     }
-  } catch (e) {
-    console.error("PDF generation error:", e);
-    if (e.name !== "AbortError") {
-      toast("Direct PDF failed — opening Print");
-      printWithFileName(fileName);
     function closeMenu() {
       document.getElementById("menuDropdown").classList.remove("open");
     }
-  } finally {
-    exportPaper.remove();
-  }
-}
     document.addEventListener("click", e => {
       if (!e.target.closest(".menu-wrap")) closeMenu();
       if (!e.target.closest(".summary-add-sec-wrap")) closeAddSectionMenu();
     });
 
-/* ---------- PWA install & scoped v2 service worker ---------- */
-let deferredPrompt = null;
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById("installBtn");
-  if (btn) btn.style.display = "flex";
-});
-async function doInstall() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    const btn = document.getElementById("installBtn");
-    if (btn) btn.style.display = "none";
-    return;
-  }
-  if (isIOSDevice()) {
-    alert("To install DS Builder v2 on iPhone / iPad:\n\n1. Tap the Share button ⎋ in Safari's toolbar.\n2. Scroll down and tap 'Add to Home Screen' ➕.\n3. Tap 'Add' in the top right.\n\nThe app works offline and syncs when connected!");
-    return;
-  }
-  toast("Use your browser menu → 'Add to Home screen' to install");
-}
-if ("serviceWorker" in navigator) {
-  const prevSwUrl = navigator.serviceWorker.controller ? (navigator.serviceWorker.controller.scriptURL || "") : "";
-  const v2SwUrl = new URL("./sw.js", window.location.href).href;
-  const hadV2Controller = prevSwUrl === v2SwUrl;
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if (!hadV2Controller || window.__dsV2UpdateReloading || !navigator.serviceWorker.controller) return;
-    window.__dsV2UpdateReloading = true;
-    setTimeout(async () => {
-      await saveCurrentRecordNow(false);
-      window.location.reload();
-    }, 700);
-  });
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" })
-      .then(registration => registration.update())
-      .catch(error => console.error("v2 Service worker registration failed:", error));
-  });
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible") {
-      navigator.serviceWorker.ready.then(registration => registration.update()).catch(() => { });
-      if (currentUser && sbClient && navigator.onLine) {
-        syncNow(false);
-      }
     /* ---------- Export & Import JSON ---------- */
     function exportDraft() {
       const d = collectDraft();
@@ -3305,26 +1795,13 @@ if ("serviceWorker" in navigator) {
       const a = document.createElement("a");
       const url = URL.createObjectURL(blob);
       a.href = url;
-      a.download = `DS_${ patientName } _draft.json`;
+      a.download = `DS_${patientName}_draft.json`;
       document.body.appendChild(a);
       a.click();
       setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 60000);
       toast("Patient draft exported as JSON ✓");
     }
-  });
-}
 
-/* ---------- Menu ---------- */
-function toggleMenu() {
-  document.getElementById("menuDropdown").classList.toggle("open");
-}
-function closeMenu() {
-  document.getElementById("menuDropdown").classList.remove("open");
-}
-document.addEventListener("click", e => {
-  if (!e.target.closest(".menu-wrap")) closeMenu();
-  if (!e.target.closest(".summary-add-sec-wrap")) closeAddSectionMenu();
-});
     function importDraft() {
       const inp = document.createElement("input");
       inp.type = "file"; inp.accept = ".json,application/json";
@@ -3340,20 +1817,6 @@ document.addEventListener("click", e => {
       inp.click();
     }
 
-/* ---------- Export & Import JSON ---------- */
-function exportDraft() {
-  const d = collectDraft();
-  const patientName = (val("name") || "patient").trim().replace(/[^a-zA-Z0-9]+/g, "_");
-  const blob = new Blob([JSON.stringify(d, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  a.href = url;
-  a.download = `DS_${ patientName } _draft.json`;
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 60000);
-  toast("Patient draft exported as JSON ✓");
-}
     async function exportTemplate() {
       const d = safeParse(await store.get(getDefaultsKey())) || {};
       const blob = new Blob([JSON.stringify(d, null, 2)], { type: "application/json" });
@@ -3364,20 +1827,6 @@ function exportDraft() {
       toast("Defaults exported as ds-defaults.json");
     }
 
-function importDraft() {
-  const inp = document.createElement("input");
-  inp.type = "file"; inp.accept = ".json,application/json";
-  inp.onchange = async () => {
-    const f = inp.files[0]; if (!f) return;
-    const text = await f.text();
-    const ok = await loadJsonTemplate(text, true);
-    if (ok) {
-      toast("Draft loaded into editor & Dashboard ✓");
-      showTab("form");
-    } else toast("Invalid draft file");
-  };
-  inp.click();
-}
     function importTemplate() {
       const inp = document.createElement("input");
       inp.type = "file"; inp.accept = ".json,application/json";
@@ -3391,15 +1840,6 @@ function importDraft() {
       inp.click();
     }
 
-async function exportTemplate() {
-  const d = safeParse(await store.get(getDefaultsKey())) || {};
-  const blob = new Blob([JSON.stringify(d, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "ds-defaults.json";
-  a.click();
-  toast("Defaults exported as ds-defaults.json");
-}
     async function doLocalTemplate() {
       if (document.getElementById("college").value || document.getElementById("preparedBy").value) {
         if (!confirm("Load default template? Existing entries will be overwritten.")) return;
@@ -3425,66 +1865,20 @@ async function exportTemplate() {
       }
     }
 
-function importTemplate() {
-  const inp = document.createElement("input");
-  inp.type = "file"; inp.accept = ".json,application/json";
-  inp.onchange = async () => {
-    const f = inp.files[0]; if (!f) return;
-    const text = await f.text();
-    const ok = await loadJsonTemplate(text, false);
-    if (ok) toast("Template imported and applied ✓");
-    else toast("Invalid template file");
-  };
-  inp.click();
-}
     async function loadJsonTemplate(data, startNewRecord = false) {
       if (!data) return false;
       const raw = typeof data === "string" ? data.trim().replace(/^\ufeff/, "") : data;
       const parsed = typeof raw === "string" ? safeParse(raw) : raw;
       if (!parsed || typeof parsed !== "object") return false;
 
-async function doLocalTemplate() {
-  if (document.getElementById("college").value || document.getElementById("preparedBy").value) {
-    if (!confirm("Load default template? Existing entries will be overwritten.")) return;
-  }
-  try {
-    const res = await fetch("templates/default-template.json");
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const d = await res.json();
-    const ok = await loadJsonTemplate(d, false);
-    if (ok) toast("Default template loaded ✓");
-    else throw new Error("Template parsing failed");
-  } catch (e) {
-    const inp = document.createElement("input");
-    inp.type = "file"; inp.accept = ".json,application/json";
-    inp.onchange = async () => {
-      const f = inp.files[0]; if (!f) return;
-      const text = await f.text();
-      const ok = await loadJsonTemplate(text, false);
-      if (ok) toast("Template loaded ✓");
-      else toast("Invalid file");
-    };
-    inp.click();
-  }
-}
       let payload = parsed;
       if (payload.draft && typeof payload.draft === "object") payload = payload.draft;
       else if (payload.template && typeof payload.template === "object") payload = payload.template;
       else if (payload.defaults && typeof payload.defaults === "object") payload = payload.defaults;
       else if (Array.isArray(payload) && payload[0]) payload = payload[0];
 
-async function loadJsonTemplate(data, startNewRecord = false) {
-  if (!data) return false;
-  const raw = typeof data === "string" ? data.trim().replace(/^\ufeff/, "") : data;
-  const parsed = typeof raw === "string" ? safeParse(raw) : raw;
-  if (!parsed || typeof parsed !== "object") return false;
       let fields = (payload.f && typeof payload.f === "object") ? payload.f : payload;
 
-  let payload = parsed;
-  if (payload.draft && typeof payload.draft === "object") payload = payload.draft;
-  else if (payload.template && typeof payload.template === "object") payload = payload.template;
-  else if (payload.defaults && typeof payload.defaults === "object") payload = payload.defaults;
-  else if (Array.isArray(payload) && payload[0]) payload = payload[0];
       if (startNewRecord) {
         currentRecordId = generateUUID();
         currentRecordStatus = "incomplete";
@@ -3492,7 +1886,6 @@ async function loadJsonTemplate(data, startNewRecord = false) {
         hasRecordPersisted = true;
       }
 
-  let fields = (payload.f && typeof payload.f === "object") ? payload.f : payload;
       const defaults = {};
       DEFAULT_FIELDS.forEach(id => {
         if (fields[id] != null && String(fields[id]).trim()) defaults[id] = fields[id];
@@ -3502,12 +1895,6 @@ async function loadJsonTemplate(data, startNewRecord = false) {
         try { await store.set(getDefaultsKey(), JSON.stringify(defaults)); } catch (e) { }
       }
 
-  if (startNewRecord) {
-    currentRecordId = generateUUID();
-    currentRecordStatus = "incomplete";
-    currentRecordCreatedAt = new Date().toISOString();
-    hasRecordPersisted = true;
-  }
       suppressSave = true;
       try {
         FIELDS.forEach(id => {
@@ -3517,14 +1904,6 @@ async function loadJsonTemplate(data, startNewRecord = false) {
           if (fields[id] != null) setVal_(id, fields[id]);
         });
 
-  const defaults = {};
-  DEFAULT_FIELDS.forEach(id => {
-    if (fields[id] != null && String(fields[id]).trim()) defaults[id] = fields[id];
-  });
-  if (Object.keys(defaults).length > 0) {
-    applyDefaults(defaults);
-    try { await store.set(getDefaultsKey(), JSON.stringify(defaults)); } catch (e) { }
-  }
         if (Array.isArray(payload.complaints)) complaints = [...payload.complaints];
         if (Array.isArray(payload.treatment)) treatment = [...payload.treatment];
         if (Array.isArray(payload.rxMeds)) rxMeds = [...payload.rxMeds];
@@ -3549,14 +1928,6 @@ async function loadJsonTemplate(data, startNewRecord = false) {
           Object.assign(includeEmptyLines, payload.includeEmptyLines);
         }
 
-  suppressSave = true;
-  try {
-    FIELDS.forEach(id => {
-      if (fields[id] != null) setVal_(id, fields[id]);
-    });
-    SELECT_FIELDS.forEach(id => {
-      if (fields[id] != null) setVal_(id, fields[id]);
-    });
         renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
         if (!val("dod") && !("dod" in fields)) setVal_("dod", todayISO());
         render(false);
@@ -3565,42 +1936,14 @@ async function loadJsonTemplate(data, startNewRecord = false) {
         suppressSave = false;
       }
 
-    if (Array.isArray(payload.complaints)) complaints = [...payload.complaints];
-    if (Array.isArray(payload.treatment)) treatment = [...payload.treatment];
-    if (Array.isArray(payload.rxMeds)) rxMeds = [...payload.rxMeds];
-    if (Array.isArray(payload.pastHistory)) pastHistory = [...payload.pastHistory];
-    if (Array.isArray(payload.rxHistory)) rxHistory = [...payload.rxHistory];
-    if (Array.isArray(payload.invDates)) invDates = [...payload.invDates];
-    if (Array.isArray(payload.invParams)) invParams = [...payload.invParams];
-    if (payload.invSeq != null) invSeq = payload.invSeq;
-    if (payload.ynState && typeof payload.ynState === "object") {
-      ynState = { physio: "", equip: "", dress: "", ...payload.ynState };
       await saveCurrentRecordNow(Boolean(startNewRecord));
       return true;
     }
-    ["physio", "equip", "dress"].forEach(k => setYNui(k, ynState[k] || ""));
-    if (payload.signaturePinned != null) {
-      signaturePinned = payload.signaturePinned !== false;
 
     async function shareDoc() {
       await generatePdf(true);
     }
-    if (payload.includeEmpty && typeof payload.includeEmpty === "object") {
-      Object.keys(includeEmpty).forEach(k => delete includeEmpty[k]);
-      Object.assign(includeEmpty, payload.includeEmpty);
-    }
-    if (payload.includeEmptyLines && typeof payload.includeEmptyLines === "object") {
-      Object.keys(includeEmptyLines).forEach(k => delete includeEmptyLines[k]);
-      Object.assign(includeEmptyLines, payload.includeEmptyLines);
-    }
 
-    renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
-    if (!val("dod") && !("dod" in fields)) setVal_("dod", todayISO());
-    render(false);
-    updateFormSectionStates();
-  } finally {
-    suppressSave = false;
-  }
     /* ---------- Direct Interactive A4 Preview Editing (Bi-Directional Sync) ---------- */
     const MULTILINE_PAPER_FIELDS = new Set([
       "address", "diagnosis", "hopi", "generalExam", "invOther", "opinions", "course", "advice"
@@ -3619,16 +1962,10 @@ async function loadJsonTemplate(data, startNewRecord = false) {
       { key: "signatures", label: "Signatures" }
     ];
 
-  await saveCurrentRecordNow(Boolean(startNewRecord));
-  return true;
-}
     function cleanPaperSingleLine(str) {
       return String(str || "").replace(/\u00a0/g, " ").replace(/\r?\n/g, " ").trim();
     }
 
-async function shareDoc() {
-  await generatePdf(true);
-}
     function cleanPaperMultiLine(str) {
       return String(str || "")
         .replace(/\u00a0/g, " ")
@@ -3637,23 +1974,6 @@ async function shareDoc() {
         .trim();
     }
 
-/* ---------- Direct Interactive A4 Preview Editing (Bi-Directional Sync) ---------- */
-const MULTILINE_PAPER_FIELDS = new Set([
-  "address", "diagnosis", "hopi", "generalExam", "invOther", "opinions", "course", "advice"
-]);
-const SUMMARY_ADDABLE_SECTIONS = [
-  { key: "diagnosis", label: "Diagnosis" },
-  { key: "complaints", label: "Chief Complaints" },
-  { key: "history", label: "History (HOPI)" },
-  { key: "examination", label: "Examination" },
-  { key: "investigations", label: "Investigations" },
-  { key: "opinions", label: "Opinions" },
-  { key: "course", label: "Course in Hospital" },
-  { key: "treatment", label: "Treatment Given" },
-  { key: "condition", label: "Condition at Discharge" },
-  { key: "advice", label: "Advice on Discharge (Rx)" },
-  { key: "signatures", label: "Signatures" }
-];
     function setRawFieldFromPaper(fieldId, value) {
       const el = document.getElementById(fieldId);
       if (!el) return;
@@ -3664,39 +1984,8 @@ const SUMMARY_ADDABLE_SECTIONS = [
       }
     }
 
-function cleanPaperSingleLine(str) {
-  return String(str || "").replace(/\u00a0/g, " ").replace(/\r?\n/g, " ").trim();
-}
-
-function cleanPaperMultiLine(str) {
-  return String(str || "")
-    .replace(/\u00a0/g, " ")
-    .replace(/\r\n/g, "\n")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
-
-function setRawFieldFromPaper(fieldId, value) {
-  const el = document.getElementById(fieldId);
-  if (!el) return;
-  if (el.tagName === "SELECT") {
-    setVal_(fieldId, value);
-  } else {
-    el.value = value;
-  }
-}
-
-function collectPaperListItems(listKey) {
-  const listEls = Array.from(document.querySelectorAll(`#paper[data - edit - list= "${listKey}"]`));
-  const items = [];
-  listEls.forEach(ulEl => {
-    const lis = Array.from(ulEl.querySelectorAll("li"));
-    if (lis.length) {
-      lis.forEach(li => {
-        const txt = cleanPaperSingleLine(li.innerText);
-        if (txt) items.push(txt);
     function collectPaperListItems(listKey) {
-      const listEls = Array.from(document.querySelectorAll(`#paper[data - edit - list= "${listKey}"]`));
+      const listEls = Array.from(document.querySelectorAll(`#paper [data-edit-list="${listKey}"]`));
       const items = [];
       listEls.forEach(ulEl => {
         const lis = Array.from(ulEl.querySelectorAll("li"));
@@ -3713,38 +2002,9 @@ function collectPaperListItems(listKey) {
             .forEach(s => items.push(s));
         }
       });
-    } else {
-      cleanPaperMultiLine(ulEl.innerText)
-        .split("\n")
-        .map(s => s.trim())
-        .filter(Boolean)
-        .forEach(s => items.push(s));
       return items;
     }
-  });
-  return items;
-}
 
-function applyPaperListSync(listKey, items) {
-  if (listKey === "diagnosis") {
-    setRawFieldFromPaper("diagnosis", items.join("\n"));
-  } else if (listKey === "complaints") {
-    complaints = items;
-    renderComplaints();
-  } else if (listKey === "pastHistory") {
-    pastHistory = items;
-    renderPast();
-  } else if (listKey === "rxHistory") {
-    rxHistory = items;
-    renderRxHistory();
-  } else if (listKey === "treatment") {
-    treatment = items;
-    renderTx();
-  } else if (listKey === "rxMeds") {
-    rxMeds = items;
-    renderRx();
-  }
-}
     function applyPaperListSync(listKey, items) {
       if (listKey === "diagnosis") {
         setRawFieldFromPaper("diagnosis", items.join("\n"));
@@ -3766,40 +2026,11 @@ function applyPaperListSync(listKey, items) {
       }
     }
 
-function handlePaperInlineEdit(e) {
-  const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-  const editable = target && target.closest('#paper [contenteditable="true"]');
-  if (!editable) return;
     function handlePaperInlineEdit(e) {
       const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
       const editable = target && target.closest('#paper [contenteditable="true"]');
       if (!editable) return;
 
-  if (editable.hasAttribute("data-edit-field")) {
-    const fieldId = editable.getAttribute("data-edit-field");
-    const isMulti = MULTILINE_PAPER_FIELDS.has(fieldId);
-    const text = isMulti ? cleanPaperMultiLine(editable.innerText) : cleanPaperSingleLine(editable.innerText);
-    if (DISPLAY_DATE_FIELDS.has(fieldId)) {
-      const iso = normalizeDateValue(text);
-      const inp = document.getElementById(fieldId);
-      if (inp) inp.value = iso ? fmtDate(iso) : text;
-    } else {
-      setRawFieldFromPaper(fieldId, text);
-    }
-  } else if (editable.hasAttribute("data-edit-custom")) {
-    const customKey = editable.getAttribute("data-edit-custom");
-    const text = cleanPaperSingleLine(editable.innerText);
-    if (customKey === "ageSex") {
-      const slashIdx = text.indexOf("/");
-      if (slashIdx >= 0) {
-        setRawFieldFromPaper("age", text.slice(0, slashIdx).trim());
-        setRawFieldFromPaper("sex", text.slice(slashIdx + 1).trim());
-      } else if (/^(M|F|Male|Female|Other|O)$/i.test(text)) {
-        setRawFieldFromPaper("age", "");
-        setRawFieldFromPaper("sex", text);
-      } else {
-        setRawFieldFromPaper("age", text);
-        setRawFieldFromPaper("sex", "");
       if (editable.hasAttribute("data-edit-field")) {
         const fieldId = editable.getAttribute("data-edit-field");
         const isMulti = MULTILINE_PAPER_FIELDS.has(fieldId);
@@ -3858,7 +2089,7 @@ function handlePaperInlineEdit(e) {
           dObj.date = iso;
           renderInvEditor();
         }
-        document.querySelectorAll(`#paper[data - edit - inv - date= "${dateId}"]`).forEach(el => {
+        document.querySelectorAll(`#paper [data-edit-inv-date="${dateId}"]`).forEach(el => {
           if (el !== editable) el.textContent = raw;
         });
       } else if (editable.hasAttribute("data-edit-inv-param")) {
@@ -3907,1699 +2138,860 @@ function handlePaperInlineEdit(e) {
           setRawFieldFromPaper("condExtra", "");
         } else if (secKey === "advice") setRawFieldFromPaper("advice", cleanVal);
       }
-    } else if (customKey === "unit") {
-      const m = text.match(/^(.+-)([A-Za-z0-9]+)$/);
-      if (m) {
-        setRawFieldFromPaper("unitPrefix", m[1]);
-        setVal_("unitRoman", m[2]);
-      } else {
-        setRawFieldFromPaper("unitPrefix", text);
-        setVal_("unitRoman", "");
-      }
-    } else if (customKey === "conditionFull") {
-      const sepMatch = text.match(/^(.*?)\s*(?:—|--|\s-\s)\s*(.+)$/);
-      if (sepMatch) {
-        setRawFieldFromPaper("condition", sepMatch[1].trim());
-        setRawFieldFromPaper("condExtra", sepMatch[2].trim());
-      } else {
-        setRawFieldFromPaper("condition", text);
-        setRawFieldFromPaper("condExtra", "");
-      }
 
       updateFormSectionStates();
       updateActivePatientBar();
       if (!suppressSave) scheduleSave();
     }
-  } else if (editable.hasAttribute("data-edit-list")) {
-    const listKey = editable.getAttribute("data-edit-list");
-    const items = collectPaperListItems(listKey);
-    applyPaperListSync(listKey, items);
-  } else if (editable.hasAttribute("data-edit-inv-date")) {
-    const dateId = Number(editable.getAttribute("data-edit-inv-date"));
-    const raw = cleanPaperSingleLine(editable.innerText);
-    const iso = normalizeDateValue(raw === "—" ? "" : raw);
-    const dObj = invDates.find(x => x.id === dateId);
-    if (dObj) {
-      dObj.date = iso;
-      renderInvEditor();
 
     function closeAddSectionMenu() {
       const menu = document.getElementById("summaryAddSecMenu");
       if (menu) menu.classList.remove("open");
     }
-    document.querySelectorAll(`#paper[data - edit - inv - date= "${dateId}"]`).forEach(el => {
-      if (el !== editable) el.textContent = raw;
-    });
-  } else if (editable.hasAttribute("data-edit-inv-param")) {
-    const paramId = Number(editable.getAttribute("data-edit-inv-param"));
-    const name = cleanPaperSingleLine(editable.innerText);
-    const pObj = invParams.find(x => x.id === paramId);
-    if (pObj) {
-      pObj.name = name;
-      renderInvEditor();
-    }
-  } else if (editable.hasAttribute("data-edit-inv-val")) {
-    const parts = (editable.getAttribute("data-edit-inv-val") || "").split(":");
-    const paramId = Number(parts[0]);
-    const dateId = Number(parts[1]);
-    const v = cleanPaperSingleLine(editable.innerText);
-    const pObj = invParams.find(x => x.id === paramId);
-    if (pObj) {
-      pObj.values[dateId] = v;
-      renderInvEditor();
-    }
-  } else if (editable.hasAttribute("data-edit-yn")) {
-    const ynKey = editable.getAttribute("data-edit-yn");
-    const v = cleanPaperSingleLine(editable.innerText);
-    ynState[ynKey] = v;
-    setYNui(ynKey, v);
-  } else if (editable.hasAttribute("data-edit-empty")) {
-    const secKey = editable.getAttribute("data-edit-empty");
-    const raw = cleanPaperMultiLine(editable.innerText);
-    const cleanVal = raw === "—" ? "" : raw;
-    includeEmpty[secKey] = true;
-    editable.classList.toggle("empty", !cleanVal);
-    if (secKey === "diagnosis") setRawFieldFromPaper("diagnosis", cleanVal);
-    else if (secKey === "complaints") {
-      complaints = cleanVal ? cleanVal.split("\n").map(s => s.trim()).filter(Boolean) : [];
-      renderComplaints();
-    } else if (secKey === "history") setRawFieldFromPaper("hopi", cleanVal);
-    else if (secKey === "examination") setRawFieldFromPaper("generalExam", cleanVal);
-    else if (secKey === "investigations") setRawFieldFromPaper("invOther", cleanVal);
-    else if (secKey === "opinions") setRawFieldFromPaper("opinions", cleanVal);
-    else if (secKey === "course") setRawFieldFromPaper("course", cleanVal);
-    else if (secKey === "treatment") {
-      treatment = cleanVal ? cleanVal.split("\n").map(s => s.trim()).filter(Boolean) : [];
-      renderTx();
-    } else if (secKey === "condition") {
-      setRawFieldFromPaper("condition", cleanVal);
-      setRawFieldFromPaper("condExtra", "");
-    } else if (secKey === "advice") setRawFieldFromPaper("advice", cleanVal);
-  }
 
-  updateFormSectionStates();
-  updateActivePatientBar();
-  if (!suppressSave) scheduleSave();
-}
-
-function closeAddSectionMenu() {
-  const menu = document.getElementById("summaryAddSecMenu");
-  if (menu) menu.classList.remove("open");
-}
-
-function toggleAddSectionMenu(event) {
-  if (event) event.stopPropagation();
-  const menu = document.getElementById("summaryAddSecMenu");
-  if (!menu) return;
-  const willOpen = !menu.classList.contains("open");
-  if (!willOpen) {
-    menu.classList.remove("open");
-    return;
-  }
-  menu.innerHTML = SUMMARY_ADDABLE_SECTIONS.map(sec => {
-    const isActive = summarySectionHasContent(sec.key) || Boolean(includeEmpty[sec.key]) || (includeEmptyLines[sec.key] > 0);
-    return `
-          function toggleAddSectionMenu(event) {
-            if (event) event.stopPropagation();
-            const menu = document.getElementById("summaryAddSecMenu");
-            if (!menu) return;
-            const willOpen = !menu.classList.contains("open");
-            if (!willOpen) {
-              menu.classList.remove("open");
-              return;
-            }
-            menu.innerHTML = SUMMARY_ADDABLE_SECTIONS.map(sec => {
-              const isActive = summarySectionHasContent(sec.key) || Boolean(includeEmpty[sec.key]) || (includeEmptyLines[sec.key] > 0);
-              return `
+    function toggleAddSectionMenu(event) {
+      if (event) event.stopPropagation();
+      const menu = document.getElementById("summaryAddSecMenu");
+      if (!menu) return;
+      const willOpen = !menu.classList.contains("open");
+      if (!willOpen) {
+        menu.classList.remove("open");
+        return;
+      }
+      menu.innerHTML = SUMMARY_ADDABLE_SECTIONS.map(sec => {
+        const isActive = summarySectionHasContent(sec.key) || Boolean(includeEmpty[sec.key]) || (includeEmptyLines[sec.key] > 0);
+        return `
           <button type="button" class="summary-add-sec-item" role="menuitem" onclick="addSectionInSummary('${sec.key}')">
             <span>${esc(sec.label)}</span>
             <span class="summary-add-sec-badge${isActive ? " on" : ""}">${isActive ? "Visible" : "+ Add"}</span>
           </button>
         `;
-            }).join("");
-            menu.classList.add("open");
+      }).join("");
+      menu.classList.add("open");
+    }
+
+    function addSectionInSummary(sectionKey) {
+      closeAddSectionMenu();
+      includeEmpty[sectionKey] = true;
+      updateFormSectionStates();
+      render();
+      clearTimeout(pageCheckTimer);
+      autoOptimizeSpacing();
+
+      const secEl = document.querySelector(`#paper [data-sec-key="${sectionKey}"]`) ||
+        (sectionKey === "signatures" ? document.querySelector("#paper .sign-row") : null);
+      if (!secEl) return;
+      secEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      const target = secEl.querySelector('[data-edit-empty], [contenteditable="true"]');
+      if (target) {
+        if (cleanPaperSingleLine(target.innerText) === "—") {
+          target.textContent = "";
+          target.classList.remove("empty");
+        }
+        target.focus();
+      }
+    }
+
+    function refitSummaryPages() {
+      currentFitAlgoIndex = (currentFitAlgoIndex + 1) % FIT_ALGORITHMS.length;
+      render(false);
+      clearTimeout(pageCheckTimer);
+      const res = autoOptimizeSpacing(currentFitAlgoIndex);
+      const label = (res && res.note) || FIT_ALGORITHMS[currentFitAlgoIndex].label;
+      const pageCount = (res && res.count) || 1;
+      toast(`A4: ${label} · ${pageCount} page${pageCount > 1 ? "s" : ""} ✓`);
+    }
+
+    const paperEl = document.getElementById("paper");
+    if (paperEl) {
+      paperEl.addEventListener("focusin", e => {
+        const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+        const el = target && target.closest('[contenteditable="true"][data-edit-empty]');
+        if (el && cleanPaperSingleLine(el.innerText) === "—") {
+          el.textContent = "";
+          el.classList.remove("empty");
+        }
+      });
+
+      paperEl.addEventListener("focusout", e => {
+        const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+        const editable = target && target.closest('[contenteditable="true"]');
+        if (!editable) return;
+        if (editable.hasAttribute("data-edit-empty") && !cleanPaperMultiLine(editable.innerText)) {
+          editable.textContent = "—";
+          editable.classList.add("empty");
+        } else if (editable.hasAttribute("data-edit-field")) {
+          const fieldId = editable.getAttribute("data-edit-field");
+          if (DISPLAY_DATE_FIELDS.has(fieldId)) {
+            const iso = normalizeDateValue(cleanPaperSingleLine(editable.innerText));
+            if (iso) {
+              const fmt = fmtDate(iso);
+              editable.textContent = fmt;
+              setVal_(fieldId, iso);
+            }
           }
-        }).join("");
-        menu.classList.add("open");
+        } else if (editable.hasAttribute("data-edit-inv-date")) {
+          const dateId = Number(editable.getAttribute("data-edit-inv-date"));
+          const raw = cleanPaperSingleLine(editable.innerText);
+          const iso = normalizeDateValue(raw === "—" ? "" : raw);
+          const display = iso ? fmtDateShort(iso) : "—";
+          editable.textContent = display;
+          document.querySelectorAll(`#paper [data-edit-inv-date="${dateId}"]`).forEach(el => {
+            if (el !== editable) el.textContent = display;
+          });
+        }
+      });
+
+      paperEl.addEventListener("keydown", e => {
+        if (e.key !== "Enter") return;
+        const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+        const editable = target && target.closest('[contenteditable="true"]');
+        if (!editable) return;
+        if (editable.hasAttribute("data-edit-list") || editable.hasAttribute("data-edit-empty")) return;
+        const fieldId = editable.getAttribute("data-edit-field");
+        if (fieldId && MULTILINE_PAPER_FIELDS.has(fieldId)) return;
+        e.preventDefault();
+        editable.blur();
+      });
+
+      paperEl.addEventListener("paste", e => {
+        const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+        const editable = target && target.closest('[contenteditable="true"]');
+        if (!editable) return;
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData("text/plain") || "";
+        if (!text) return;
+        let inserted = false;
+        try {
+          inserted = document.execCommand("insertText", false, text);
+        } catch (err) {
+          inserted = false;
+        }
+        if (!inserted && window.getSelection) {
+          const sel = window.getSelection();
+          if (sel && sel.rangeCount) {
+            const range = sel.getRangeAt(0);
+            range.deleteContents();
+            const textNode = document.createTextNode(text);
+            range.insertNode(textNode);
+            range.setStartAfter(textNode);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          }
+          editable.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      });
+    }
+
+    /* live update on any form input or direct A4 preview edit */
+    document.addEventListener("input", e => {
+      if (e.target && e.target.closest && e.target.closest("#paper")) {
+        handlePaperInlineEdit(e);
+        return;
+      }
+      if (e.target.closest("#dashboardTab") || e.target.closest(".modal-backdrop")) return;
+      if (e.target.closest("#invEditor") || e.target.closest(".include-toggle") || e.target.closest(".signature-pin")) return;
+      render();
+    });
+
+    /* ---------- isolated v2 persistence ---------- */
+    const FIELDS = ["college", "address", "dept", "summaryType", "name", "age", "sex", "ipno",
+      "doa", "dod", "unitPrefix", "modeOfDischarge",
+      "diagnosis", "hopi",
+      "generalExam", "vBP", "vPR", "vRR", "vSpO2", "vTemp", "vGRBS", "seCVS", "seRS", "sePA", "seCNS",
+      "invOther", "opinions", "course", "condition", "condExtra",
+      "diet", "physicalActivity", "otherNeeds", "advice", "emergencyContact", "review", "warning",
+      "preparedBy", "chief", "signDateTime"];
+    const SELECT_FIELDS = ["unitRoman"];
+    const DEFAULT_FIELDS = ["college", "address", "dept", "summaryType", "unitPrefix", "unitRoman", "chief", "preparedBy", "advice", "review", "warning"];
+    const PATIENT_FIELDS = FIELDS.filter(f => !DEFAULT_FIELDS.includes(f));
+    const SEED = {
+      advice: "Take medications as advised.\nAdequate rest and oral fluids.\nTake diet as advised.",
+      review: "Review in Medicine OPD after 1 week with reports (or earlier if needed).",
+      warning: "Fever not subsiding, breathlessness, chest pain, giddiness, reduced urine output, bleeding, or drowsiness — report to casualty immediately."
+    };
+
+    const store = (() => {
+      let dbPromise;
+      function openDb() {
+        if (dbPromise) return dbPromise;
+        dbPromise = new Promise((resolve, reject) => {
+          if (!("indexedDB" in window)) { reject(new Error("IndexedDB unavailable")); return; }
+          const timer = setTimeout(() => reject(new Error("IndexedDB open timeout")), 400);
+          try {
+            const request = indexedDB.open("ds-builder-v2", 1);
+            request.onupgradeneeded = () => request.result.createObjectStore("values");
+            request.onsuccess = () => { clearTimeout(timer); resolve(request.result); };
+            request.onerror = () => { clearTimeout(timer); reject(request.error || new Error("IndexedDB open failed")); };
+            request.onblocked = () => { clearTimeout(timer); reject(new Error("IndexedDB blocked")); };
+          } catch (err) {
+            clearTimeout(timer);
+            reject(err);
+          }
+        });
+        return dbPromise;
+      }
+      function fallbackGet(k) {
+        try { return localStorage.getItem(k); } catch (e) { return null; }
+      }
+      function fallbackSet(k, v) {
+        try { localStorage.setItem(k, v); } catch (e) { }
+      }
+      return {
+        async get(k) {
+          try {
+            const db = await openDb();
+            return await new Promise((resolve, reject) => {
+              const timer = setTimeout(() => resolve(fallbackGet(k)), 300);
+              const request = db.transaction("values", "readonly").objectStore("values").get(k);
+              request.onsuccess = () => { clearTimeout(timer); resolve(request.result === undefined ? fallbackGet(k) : request.result); };
+              request.onerror = () => { clearTimeout(timer); reject(request.error); };
+            });
+          } catch (e) { return fallbackGet(k); }
+        },
+        async set(k, v) {
+          fallbackSet(k, v);
+          try {
+            const db = await openDb();
+            await new Promise((resolve, reject) => {
+              const timer = setTimeout(resolve, 300);
+              const request = db.transaction("values", "readwrite").objectStore("values").put(v, k);
+              request.onsuccess = () => { clearTimeout(timer); resolve(); };
+              request.onerror = () => { clearTimeout(timer); reject(request.error); };
+            });
+          } catch (e) { }
+        },
+        async remove(k) {
+          try { localStorage.removeItem(k); } catch (e) { }
+          try {
+            const db = await openDb();
+            await new Promise((resolve, reject) => {
+              const timer = setTimeout(resolve, 300);
+              const request = db.transaction("values", "readwrite").objectStore("values").delete(k);
+              request.onsuccess = () => { clearTimeout(timer); resolve(); };
+              request.onerror = () => { clearTimeout(timer); reject(request.error); };
+            });
+          } catch (e) { }
+        }
+      };
+    })();
+
+    async function requestPersistentStorage() {
+      if (!navigator.storage || !navigator.storage.persist) {
+        toast("Persistent storage is not supported by this browser.");
+        return;
+      }
+      try {
+        if (!confirm("Allow DS Builder v2 to request persistent browser storage so saved drafts and templates are less likely to be removed?")) return;
+        if (navigator.storage.persisted && await navigator.storage.persisted()) {
+          toast("Persistent storage is already enabled ✓");
+          return;
+        }
+        const granted = await navigator.storage.persist();
+        toast(granted ? "Persistent storage enabled ✓" : "Browser did not grant persistent storage");
+      } catch (e) {
+        toast("Could not request persistent storage.");
+      }
+    }
+
+    function ensureSelectOption(selectEl, valStr) {
+      if (!selectEl || selectEl.tagName !== "SELECT") return;
+      if (valStr == null || valStr === "" || valStr === "__custom__") return;
+      const exists = Array.from(selectEl.options).some(opt => opt.value === valStr);
+      if (exists) return;
+      const opt = document.createElement("option");
+      opt.value = valStr;
+      opt.textContent = valStr;
+      opt.dataset.custom = "1";
+      const customTrigger = Array.from(selectEl.options).find(o => o.value === "__custom__");
+      if (customTrigger) selectEl.insertBefore(opt, customTrigger);
+      else selectEl.appendChild(opt);
+    }
+
+    function syncEditableSelectUI(selectEl, forceSelectMode = false) {
+      if (!selectEl || !selectEl._comboUI) return;
+      const { selectBox, inputWrap, customInp } = selectEl._comboUI;
+      customInp.value = selectEl.value === "__custom__" ? "" : (selectEl.value || "");
+      if (forceSelectMode) {
+        selectBox.style.display = "flex";
+        inputWrap.style.display = "none";
+      }
+    }
+
+    function initEditableSelects() {
+      document.querySelectorAll("select.editable-select").forEach(selectEl => {
+        if (selectEl.dataset.comboInit) return;
+        selectEl.dataset.comboInit = "1";
+        selectEl.dataset.prevVal = selectEl.value || "";
+
+        const wrap = document.createElement("div");
+        wrap.className = "combo-select-wrap";
+        selectEl.parentNode.insertBefore(wrap, selectEl);
+
+        const selectBox = document.createElement("div");
+        selectBox.className = "combo-select-box";
+        wrap.appendChild(selectBox);
+        selectBox.appendChild(selectEl);
+
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.className = "combo-edit-btn";
+        editBtn.title = "Type a custom value";
+        editBtn.setAttribute("aria-label", "Type a custom value");
+        editBtn.textContent = "✎";
+        selectBox.appendChild(editBtn);
+
+        const inputWrap = document.createElement("div");
+        inputWrap.className = "combo-input-wrap";
+        inputWrap.style.display = "none";
+        const customInp = document.createElement("input");
+        customInp.type = "text";
+        customInp.className = "combo-custom-input";
+        customInp.placeholder = "Type custom...";
+        const backBtn = document.createElement("button");
+        backBtn.type = "button";
+        backBtn.className = "combo-back-btn";
+        backBtn.title = "Back to list";
+        backBtn.setAttribute("aria-label", "Back to dropdown list");
+        backBtn.textContent = "▾";
+        inputWrap.appendChild(customInp);
+        inputWrap.appendChild(backBtn);
+        wrap.appendChild(inputWrap);
+
+        selectEl._comboUI = { wrap, selectBox, inputWrap, customInp, editBtn, backBtn };
+
+        const openCustomMode = (seedVal = "") => {
+          customInp.value = seedVal;
+          selectBox.style.display = "none";
+          inputWrap.style.display = "flex";
+          customInp.focus();
+          customInp.select();
+        };
+
+        const closeCustomMode = () => {
+          inputWrap.style.display = "none";
+          selectBox.style.display = "flex";
+        };
+
+        selectEl.addEventListener("change", () => {
+          if (selectEl.value === "__custom__") {
+            const prev = selectEl.dataset.prevVal || "";
+            selectEl.value = prev;
+            openCustomMode(prev);
+          } else {
+            selectEl.dataset.prevVal = selectEl.value;
+          }
+        });
+
+        editBtn.addEventListener("click", () => {
+          openCustomMode(selectEl.value || "");
+        });
+
+        backBtn.addEventListener("click", () => {
+          closeCustomMode();
+        });
+
+        customInp.addEventListener("input", () => {
+          const v = customInp.value;
+          if (v.trim()) ensureSelectOption(selectEl, v);
+          selectEl.value = v.trim() ? v : "";
+          selectEl.dataset.prevVal = selectEl.value;
+          selectEl.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+
+        customInp.addEventListener("keydown", e => {
+          if (e.key === "Escape") closeCustomMode();
+        });
+      });
+    }
+
+    function safeParse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
+    function setVal_(id, v) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const normalized = DISPLAY_DATE_FIELDS.has(id) ? displayDateValue(v) : (v == null ? "" : String(v));
+      if (el.tagName === "SELECT") {
+        ensureSelectOption(el, normalized);
+        el.value = normalized;
+        el.dataset.prevVal = normalized;
+        syncEditableSelectUI(el, normalized === "");
+      } else {
+        el.value = normalized;
+      }
+    }
+    function onLogo(e) {
+      const f = e.target.files && e.target.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = () => { logoData = r.result; render(false); store.set("ds-v2:logo", logoData); };
+      r.readAsDataURL(f);
+    }
+
+    /* ---------- Scope keys (unified by normalized email for Google & Email login) ---------- */
+    function normalizeEmail(email) {
+      return String(email || "").trim().toLowerCase();
+    }
+    function getOwnerScope() {
+      if (!currentUser) return "guest";
+      const emailKey = normalizeEmail(currentUser.email);
+      if (emailKey) return `email:${emailKey}`;
+      return currentUser.id ? `user:${currentUser.id}` : "guest";
+    }
+    function getLegacyUserScope() {
+      if (!currentUser || !currentUser.id || !normalizeEmail(currentUser.email)) return null;
+      return `user:${currentUser.id}`;
+    }
+    function getRecordsKey(scope = getOwnerScope()) { return `ds-v2:records:${scope}`; }
+    function getDeletesKey(scope = getOwnerScope()) { return `ds-v2:deletes:${scope}`; }
+    function getActiveIdKey(scope = getOwnerScope()) { return `ds-v2:active:${scope}`; }
+    function getDefaultsKey(scope = getOwnerScope()) { return `ds-v2:defaults:${scope}`; }
+    function getContactsKey(scope = getOwnerScope()) { return `ds-v2:contacts:${scope}`; }
+    function getImportedSharesKey(scope = getOwnerScope()) { return `ds-v2:imported-shares:${scope}`; }
+
+    function hasPatientContent(payload) {
+      if (!payload || !payload.f) return false;
+      const f = payload.f;
+      const keysToCheck = PATIENT_FIELDS.filter(k => k !== "dod" && k !== "modeOfDischarge");
+      if (keysToCheck.some(k => String(f[k] || "").trim().length > 0)) return true;
+      if ((payload.complaints || []).length > 0) return true;
+      if ((payload.pastHistory || []).length > 0) return true;
+      if ((payload.rxHistory || []).length > 0) return true;
+      if ((payload.treatment || []).length > 0) return true;
+      if ((payload.rxMeds || []).length > 0) return true;
+      if ((payload.invDates || []).length > 0) return true;
+      if ((payload.invParams || []).length > 0) return true;
+      return false;
+    }
+
+    function collectDraft() {
+      const f = {}; FIELDS.forEach(id => f[id] = document.getElementById(id).value);
+      SELECT_FIELDS.forEach(id => f[id] = document.getElementById(id).value);
+      return {
+        f, complaints, treatment, rxMeds, invDates, invParams, invSeq,
+        pastHistory, rxHistory, ynState, signaturePinned,
+        includeEmpty: { ...includeEmpty },
+        includeEmptyLines: { ...includeEmptyLines }
+      };
+    }
+
+    function resetEditorFieldsOnly() {
+      document.getElementById("college").value = "Government Medical College Hospital";
+      document.getElementById("address").value = "Omandurar Government Estate, Chennai - 02";
+      document.getElementById("dept").value = "Department of General Medicine";
+      setVal_("summaryType", "Discharge Summary");
+      document.getElementById("unitPrefix").value = "M-";
+      setVal_("unitRoman", "IV");
+      setVal_("ccUnit", "days");
+
+      PATIENT_FIELDS.forEach(id => setVal_(id, ""));
+      setVal_("modeOfDischarge", "Discharge");
+      setVal_("advice", SEED.advice);
+      setVal_("review", SEED.review);
+      setVal_("warning", SEED.warning);
+      setVal_("preparedBy", "");
+      setVal_("chief", "");
+
+      complaints = []; treatment = []; rxMeds = [];
+      invDates = []; invParams = []; invSeq = 0;
+      pastHistory = []; rxHistory = [];
+      ynState = { physio: "", equip: "", dress: "" };
+      ["physio", "equip", "dress"].forEach(k => setYNui(k, ""));
+      signaturePinned = true;
+      Object.keys(includeEmpty).forEach(k => delete includeEmpty[k]);
+      Object.keys(includeEmptyLines).forEach(k => delete includeEmptyLines[k]);
+    }
+
+    function restoreDraft(o, opts = {}) {
+      if (!o) return;
+      suppressSave = true;
+      try {
+        resetEditorFieldsOnly();
+        if (o.f) {
+          FIELDS.forEach(id => { if (id in o.f) setVal_(id, o.f[id]); });
+          SELECT_FIELDS.forEach(id => { if (o.f[id] != null) setVal_(id, o.f[id]); });
+        }
+        complaints = Array.isArray(o.complaints) ? [...o.complaints] : [];
+        treatment = Array.isArray(o.treatment) ? [...o.treatment] : [];
+        rxMeds = Array.isArray(o.rxMeds) ? [...o.rxMeds] : [];
+        invDates = Array.isArray(o.invDates) ? JSON.parse(JSON.stringify(o.invDates)) : [];
+        invParams = Array.isArray(o.invParams) ? JSON.parse(JSON.stringify(o.invParams)) : [];
+        invSeq = o.invSeq || 0;
+        pastHistory = Array.isArray(o.pastHistory) ? [...o.pastHistory] : [];
+        rxHistory = Array.isArray(o.rxHistory) ? [...o.rxHistory] : [];
+        ynState = { physio: "", equip: "", dress: "", ...(o.ynState || {}) };
+        signaturePinned = o.signaturePinned !== false;
+
+        if (o.includeEmpty && typeof o.includeEmpty === "object") {
+          Object.assign(includeEmpty, o.includeEmpty);
+        }
+        if (o.includeEmptyLines && typeof o.includeEmptyLines === "object") {
+          Object.assign(includeEmptyLines, o.includeEmptyLines);
+        }
+
+        renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
+        ["physio", "equip", "dress"].forEach(k => setYNui(k, ynState[k] || ""));
+        const hasDodKey = Boolean(o.f && "dod" in o.f);
+        if (!opts.preserveDod && !val("dod") && !hasDodKey) {
+          setVal_("dod", todayISO());
+        }
+        render(false);
+        updateFormSectionStates();
+      } finally {
+        suppressSave = false;
+      }
+    }
+
+    function setYNui(key, v) {
+      const map = { physio: "ynPhysio", equip: "ynEquip", dress: "ynDress" };
+      const box = document.getElementById(map[key]);
+      if (box) [...box.children].forEach(b => b.classList.toggle("sel", Boolean(v) && b.textContent === v));
+    }
+
+    function applyDefaults(d) {
+      if (!d) return;
+      DEFAULT_FIELDS.forEach(id => { if (id in d && d[id] != null) setVal_(id, d[id]); });
+    }
+
+    async function saveDefaults() {
+      const d = {}; DEFAULT_FIELDS.forEach(id => d[id] = document.getElementById(id).value);
+      await store.set(getDefaultsKey(), JSON.stringify(d));
+      if (hasCloudAuthSession() && navigator.onLine) {
+        await pushUserSettingsToCloud(d);
+      }
+      toast("Saved as your defaults" + (hasCloudAuthSession() ? " & synced ✓" : ""));
+    }
+
+    async function getActiveDefaults() {
+      const defTpl = savedTemplates.find(t => t && t.isDefault && t.data);
+      if (defTpl) {
+        const fields = (defTpl.data.f && typeof defTpl.data.f === "object") ? defTpl.data.f : defTpl.data;
+        const d = {};
+        DEFAULT_FIELDS.forEach(id => { if (fields[id] != null) d[id] = fields[id]; });
+        if (Object.keys(d).length > 0) return d;
+      }
+      let def = safeParse(await store.get(getDefaultsKey()));
+      if (!def) {
+        const legacyScope = getLegacyUserScope();
+        if (legacyScope) {
+          def = safeParse(await store.get(getDefaultsKey(legacyScope)));
+          if (def) {
+            await store.set(getDefaultsKey(), JSON.stringify(def));
+            await store.remove(getDefaultsKey(legacyScope));
+          }
+        }
+      }
+      if (!def && currentUser) {
+        def = safeParse(await store.get(getDefaultsKey("guest")));
+      }
+      if (def && typeof def === "object") {
+        const cleaned = { ...def };
+        delete cleaned.__templates;
+        delete cleaned.__theme_config;
+        return cleaned;
+      }
+      return def;
+    }
+
+    /* ---------- Multi-Template Library (Save Many Templates + Cloud Sync) ---------- */
+    function getTemplatesKey(scopeOverride = null) {
+      const scope = scopeOverride || getOwnerScope();
+      return `ds-v2:templates:${scope}`;
+    }
+
+    async function loadSavedTemplates() {
+      const scope = getOwnerScope();
+      let list = safeParse(await store.get(getTemplatesKey(scope)));
+      if (!Array.isArray(list)) list = [];
+
+      const legacyScope = getLegacyUserScope();
+      if (legacyScope && legacyScope !== scope) {
+        const legacyList = safeParse(await store.get(getTemplatesKey(legacyScope)));
+        if (Array.isArray(legacyList) && legacyList.length) {
+          const seenIds = new Set(list.map(t => t && t.id));
+          const seenNames = new Set(list.map(t => (t && t.name || "").toLowerCase()));
+          legacyList.forEach(t => {
+            if (t && !seenIds.has(t.id) && !seenNames.has((t.name || "").toLowerCase())) {
+              list.push(t);
+              seenIds.add(t.id);
+              seenNames.add((t.name || "").toLowerCase());
+            }
+          });
+          await store.set(getTemplatesKey(scope), JSON.stringify(list));
+          await store.remove(getTemplatesKey(legacyScope));
+        }
       }
 
-      function addSectionInSummary(sectionKey) {
-        closeAddSectionMenu();
-        includeEmpty[sectionKey] = true;
-        updateFormSectionStates();
-        render();
-        clearTimeout(pageCheckTimer);
-        autoOptimizeSpacing();
-        function addSectionInSummary(sectionKey) {
-          closeAddSectionMenu();
-          includeEmpty[sectionKey] = true;
-          updateFormSectionStates();
-          render();
-          clearTimeout(pageCheckTimer);
-          autoOptimizeSpacing();
+      if (!list.length && currentUser) {
+        const guestList = safeParse(await store.get(getTemplatesKey("guest")));
+        if (Array.isArray(guestList) && guestList.length) list = guestList;
+      }
 
-          const secEl = document.querySelector(`#paper [data-sec-key="${sectionKey}"]`) ||
-            (sectionKey === "signatures" ? document.querySelector("#paper .sign-row") : null);
-          if (!secEl) return;
-          secEl.scrollIntoView({ behavior: "smooth", block: "center" });
-          const target = secEl.querySelector('[data-edit-empty], [contenteditable="true"]');
-          if (target) {
-            if (cleanPaperSingleLine(target.innerText) === "—") {
-              target.textContent = "";
-              target.classList.remove("empty");
-              const secEl = document.querySelector(`#paper [data-sec-key="${sectionKey}"]`) ||
-                (sectionKey === "signatures" ? document.querySelector("#paper .sign-row") : null);
-              if (!secEl) return;
-              secEl.scrollIntoView({ behavior: "smooth", block: "center" });
-              const target = secEl.querySelector('[data-edit-empty], [contenteditable="true"]');
-              if (target) {
-                if (cleanPaperSingleLine(target.innerText) === "—") {
-                  target.textContent = "";
-                  target.classList.remove("empty");
-                }
-                target.focus();
-              }
+      // Also sync any templates stored in localStorage under ds:tpl:* (from Template Library page)
+      try {
+        const seenNames = new Set(list.map(t => (t && t.name || "").toLowerCase()));
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith("ds:tpl:")) {
+            const name = k.slice("ds:tpl:".length).trim();
+            if (!name || seenNames.has(name.toLowerCase())) continue;
+            const raw = safeParse(localStorage.getItem(k));
+            if (raw && typeof raw === "object") {
+              const payload = raw.draft || raw.template || raw;
+              list.push({
+                id: raw.id || generateUUID(),
+                name,
+                kind: raw.kind || "full",
+                department: (payload.f && payload.f.dept) || payload.dept || "",
+                isDefault: Boolean(raw.isDefault),
+                updated_at: raw.updated_at || new Date().toISOString(),
+                data: payload
+              });
+              seenNames.add(name.toLowerCase());
             }
-            target.focus();
           }
         }
+      } catch (e) { }
 
-        function refitSummaryPages() {
-          currentFitAlgoIndex = (currentFitAlgoIndex + 1) % FIT_ALGORITHMS.length;
-          render(false);
-          clearTimeout(pageCheckTimer);
-          const res = autoOptimizeSpacing(currentFitAlgoIndex);
-          const label = (res && res.note) || FIT_ALGORITHMS[currentFitAlgoIndex].label;
-          const pageCount = (res && res.count) || 1;
-          toast(`A4: ${label} · ${pageCount} page${pageCount > 1 ? "s" : ""} ✓`);
+      // Merge with any in-memory templates added during boot so nothing is overwritten
+      const seenIds = new Set(list.map(t => t && t.id));
+      savedTemplates.forEach(t => {
+        if (t && !seenIds.has(t.id) && !list.some(x => x && x.name.toLowerCase() === t.name.toLowerCase())) {
+          list.unshift(t);
         }
-
-        const paperEl = document.getElementById("paper");
-        if (paperEl) {
-          paperEl.addEventListener("focusin", e => {
-            const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-            const el = target && target.closest('[contenteditable="true"][data-edit-empty]');
-            if (el && cleanPaperSingleLine(el.innerText) === "—") {
-              el.textContent = "";
-              el.classList.remove("empty");
-              function refitSummaryPages() {
-                currentFitAlgoIndex = (currentFitAlgoIndex + 1) % FIT_ALGORITHMS.length;
-                render(false);
-                clearTimeout(pageCheckTimer);
-                const res = autoOptimizeSpacing(currentFitAlgoIndex);
-                const label = (res && res.note) || FIT_ALGORITHMS[currentFitAlgoIndex].label;
-                const pageCount = (res && res.count) || 1;
-                toast(`A4: ${label} · ${pageCount} page${pageCount > 1 ? "s" : ""} ✓`);
-              }
-            });
-
-          paperEl.addEventListener("focusout", e => {
-            const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-            const editable = target && target.closest('[contenteditable="true"]');
-            if (!editable) return;
-            if (editable.hasAttribute("data-edit-empty") && !cleanPaperMultiLine(editable.innerText)) {
-              editable.textContent = "—";
-              editable.classList.add("empty");
-            } else if (editable.hasAttribute("data-edit-field")) {
-              const fieldId = editable.getAttribute("data-edit-field");
-              if (DISPLAY_DATE_FIELDS.has(fieldId)) {
-                const iso = normalizeDateValue(cleanPaperSingleLine(editable.innerText));
-                if (iso) {
-                  const fmt = fmtDate(iso);
-                  editable.textContent = fmt;
-                  setVal_(fieldId, iso);
-                  const paperEl = document.getElementById("paper");
-                  if (paperEl) {
-                    paperEl.addEventListener("focusin", e => {
-                      const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-                      const el = target && target.closest('[contenteditable="true"][data-edit-empty]');
-                      if (el && cleanPaperSingleLine(el.innerText) === "—") {
-                        el.textContent = "";
-                        el.classList.remove("empty");
-                      }
-                    }
-    } else if (editable.hasAttribute("data-edit-inv-date")) {
-                    const dateId = Number(editable.getAttribute("data-edit-inv-date"));
-                    const raw = cleanPaperSingleLine(editable.innerText);
-                    const iso = normalizeDateValue(raw === "—" ? "" : raw);
-                    const display = iso ? fmtDateShort(iso) : "—";
-                    editable.textContent = display;
-                    document.querySelectorAll(`#paper [data-edit-inv-date="${dateId}"]`).forEach(el => {
-                      if (el !== editable) el.textContent = display;
-                    });
-                  }
-                });
-
-          paperEl.addEventListener("keydown", e => {
-            if (e.key !== "Enter") return;
-            const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-            const editable = target && target.closest('[contenteditable="true"]');
-            if (!editable) return;
-            if (editable.hasAttribute("data-edit-list") || editable.hasAttribute("data-edit-empty")) return;
-            const fieldId = editable.getAttribute("data-edit-field");
-            if (fieldId && MULTILINE_PAPER_FIELDS.has(fieldId)) return;
-            e.preventDefault();
-            editable.blur();
-          });
-          paperEl.addEventListener("focusout", e => {
-            const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-            const editable = target && target.closest('[contenteditable="true"]');
-            if (!editable) return;
-            if (editable.hasAttribute("data-edit-empty") && !cleanPaperMultiLine(editable.innerText)) {
-              editable.textContent = "—";
-              editable.classList.add("empty");
-            } else if (editable.hasAttribute("data-edit-field")) {
-              const fieldId = editable.getAttribute("data-edit-field");
-              if (DISPLAY_DATE_FIELDS.has(fieldId)) {
-                const iso = normalizeDateValue(cleanPaperSingleLine(editable.innerText));
-                if (iso) {
-                  const fmt = fmtDate(iso);
-                  editable.textContent = fmt;
-                  setVal_(fieldId, iso);
-                }
-              }
-            } else if (editable.hasAttribute("data-edit-inv-date")) {
-              const dateId = Number(editable.getAttribute("data-edit-inv-date"));
-              const raw = cleanPaperSingleLine(editable.innerText);
-              const iso = normalizeDateValue(raw === "—" ? "" : raw);
-              const display = iso ? fmtDateShort(iso) : "—";
-              editable.textContent = display;
-              document.querySelectorAll(`#paper [data-edit-inv-date="${dateId}"]`).forEach(el => {
-                if (el !== editable) el.textContent = display;
-              });
-            }
-          });
-
-          paperEl.addEventListener("paste", e => {
-            const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-            const editable = target && target.closest('[contenteditable="true"]');
-            if (!editable) return;
-            e.preventDefault();
-            const text = (e.clipboardData || window.clipboardData).getData("text/plain") || "";
-            if (!text) return;
-            let inserted = false;
-            try {
-              inserted = document.execCommand("insertText", false, text);
-            } catch (err) {
-              inserted = false;
-              paperEl.addEventListener("keydown", e => {
-                if (e.key !== "Enter") return;
-                const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-                const editable = target && target.closest('[contenteditable="true"]');
-                if (!editable) return;
-                if (editable.hasAttribute("data-edit-list") || editable.hasAttribute("data-edit-empty")) return;
-                const fieldId = editable.getAttribute("data-edit-field");
-                if (fieldId && MULTILINE_PAPER_FIELDS.has(fieldId)) return;
-                e.preventDefault();
-                editable.blur();
-              });
-
-              paperEl.addEventListener("paste", e => {
-                const target = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
-                const editable = target && target.closest('[contenteditable="true"]');
-                if (!editable) return;
-                e.preventDefault();
-                const text = (e.clipboardData || window.clipboardData).getData("text/plain") || "";
-                if (!text) return;
-                let inserted = false;
-                try {
-                  inserted = document.execCommand("insertText", false, text);
-                } catch (err) {
-                  inserted = false;
-                }
-                if (!inserted && window.getSelection) {
-                  const sel = window.getSelection();
-                  if (sel && sel.rangeCount) {
-                    const range = sel.getRangeAt(0);
-                    range.deleteContents();
-                    const textNode = document.createTextNode(text);
-                    range.insertNode(textNode);
-                    range.setStartAfter(textNode);
-                    range.collapse(true);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                  }
-                  editable.dispatchEvent(new Event("input", { bubbles: true }));
-                }
-              });
-            }
-            if (!inserted && window.getSelection) {
-              const sel = window.getSelection();
-              if (sel && sel.rangeCount) {
-                const range = sel.getRangeAt(0);
-                range.deleteContents();
-                const textNode = document.createTextNode(text);
-                range.insertNode(textNode);
-                range.setStartAfter(textNode);
-                range.collapse(true);
-                sel.removeAllRanges();
-                sel.addRange(range);
-
-                /* live update on any form input or direct A4 preview edit */
-                document.addEventListener("input", e => {
-                  if (e.target && e.target.closest && e.target.closest("#paper")) {
-                    handlePaperInlineEdit(e);
-                    return;
-                  }
-                  editable.dispatchEvent(new Event("input", { bubbles: true }));
-                }
-  });
-        }
-        if (e.target.closest("#dashboardTab") || e.target.closest(".modal-backdrop")) return;
-        if (e.target.closest("#invEditor") || e.target.closest(".include-toggle") || e.target.closest(".signature-pin")) return;
-        render();
       });
 
-      /* live update on any form input or direct A4 preview edit */
-      document.addEventListener("input", e => {
-        if (e.target && e.target.closest && e.target.closest("#paper")) {
-          handlePaperInlineEdit(e);
-          return;
+      savedTemplates = list;
+      renderSavedTemplatesUI();
+    }
+
+    async function persistSavedTemplates(syncCloud = true) {
+      await store.set(getTemplatesKey(), JSON.stringify(savedTemplates));
+      try {
+        // Mirror to ds:tpl:* in localStorage so /templates/ page stays in sync
+        const existingKeys = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith("ds:tpl:")) existingKeys.push(k);
         }
-        if (e.target.closest("#dashboardTab") || e.target.closest(".modal-backdrop")) return;
-        if (e.target.closest("#invEditor") || e.target.closest(".include-toggle") || e.target.closest(".signature-pin")) return;
+        existingKeys.forEach(k => localStorage.removeItem(k));
+        savedTemplates.forEach(t => {
+          if (t && t.name) {
+            localStorage.setItem(`ds:tpl:${t.name}`, JSON.stringify({
+              id: t.id,
+              name: t.name,
+              kind: t.kind,
+              isDefault: Boolean(t.isDefault),
+              updated_at: t.updated_at,
+              draft: t.data
+            }));
+          }
+        });
+      } catch (e) { }
+
+      renderSavedTemplatesUI();
+      if (syncCloud && hasCloudAuthSession() && navigator.onLine) {
+        pushUserSettingsToCloud().catch(() => {});
+      }
+    }
+
+    async function saveNamedTemplateFromInput(nameInputId, scopeSelectId) {
+      const inp = document.getElementById(nameInputId);
+      const sel = document.getElementById(scopeSelectId);
+      let name = (inp && inp.value || "").trim();
+      if (!name) {
+        name = (prompt("Enter a name for this template (e.g. Unit M-I Defaults, Dengue Protocol, STEMI):") || "").trim();
+      }
+      if (!name) return;
+
+      const kind = (sel && sel.value === "defaults") ? "defaults" : "full";
+      let data;
+      if (kind === "defaults") {
+        const d = {};
+        DEFAULT_FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (el) d[id] = el.value;
+        });
+        data = { f: d };
+      } else {
+        data = collectDraft();
+        // Clear patient-identifying fields so templates are reusable across patients
+        if (data.f) {
+          data.f = { ...data.f, name: "", age: "", sex: "", ipno: "", doa: "", dod: "" };
+        }
+      }
+
+      const nowIso = new Date().toISOString();
+      const existingIdx = savedTemplates.findIndex(t => t && t.name.toLowerCase() === name.toLowerCase());
+      if (existingIdx >= 0) {
+        savedTemplates[existingIdx] = {
+          ...savedTemplates[existingIdx],
+          name,
+          kind,
+          department: val("dept") || "",
+          updated_at: nowIso,
+          data
+        };
+      } else {
+        savedTemplates.unshift({
+          id: generateUUID(),
+          name,
+          kind,
+          department: val("dept") || "",
+          isDefault: savedTemplates.length === 0,
+          updated_at: nowIso,
+          data
+        });
+      }
+
+      if (inp) inp.value = "";
+      await persistSavedTemplates(true);
+      toast(`Template "${name}" saved (${savedTemplates.length} total) ✓`);
+    }
+
+    async function applySavedTemplate(id) {
+      const tpl = savedTemplates.find(t => t && t.id === id);
+      if (!tpl || !tpl.data) return;
+      if (tpl.kind === "defaults") {
+        const fields = (tpl.data.f && typeof tpl.data.f === "object") ? tpl.data.f : tpl.data;
+        applyDefaults(fields);
         render();
-      });
-      /* ---------- isolated v2 persistence ---------- */
-      const FIELDS = ["college", "address", "dept", "summaryType", "name", "age", "sex", "ipno",
-        "doa", "dod", "unitPrefix", "modeOfDischarge",
-        "diagnosis", "hopi",
-        "generalExam", "vBP", "vPR", "vRR", "vSpO2", "vTemp", "vGRBS", "seCVS", "seRS", "sePA", "seCNS",
-        "invOther", "opinions", "course", "condition", "condExtra",
-        "diet", "physicalActivity", "otherNeeds", "advice", "emergencyContact", "review", "warning",
-        "preparedBy", "chief", "signDateTime"];
-      const SELECT_FIELDS = ["unitRoman"];
-      const DEFAULT_FIELDS = ["college", "address", "dept", "summaryType", "unitPrefix", "unitRoman", "chief", "preparedBy", "advice", "review", "warning"];
-      const PATIENT_FIELDS = FIELDS.filter(f => !DEFAULT_FIELDS.includes(f));
-      const SEED = {
-        advice: "Take medications as advised.\nAdequate rest and oral fluids.\nTake diet as advised.",
-        review: "Review in Medicine OPD after 1 week with reports (or earlier if needed).",
-        warning: "Fever not subsiding, breathlessness, chest pain, giddiness, reduced urine output, bleeding, or drowsiness — report to casualty immediately."
-      };
+        scheduleSave();
+      } else {
+        await loadJsonTemplate(tpl.data, false);
+      }
+      closeTemplatesModal();
+      toast(`Applied template "${tpl.name}" ✓`);
+    }
 
-      /* ---------- isolated v2 persistence ---------- */
-      const FIELDS = ["college", "address", "dept", "summaryType", "name", "age", "sex", "ipno",
-        "doa", "dod", "unitPrefix", "modeOfDischarge",
-        "diagnosis", "hopi",
-        "generalExam", "vBP", "vPR", "vRR", "vSpO2", "vTemp", "vGRBS", "seCVS", "seRS", "sePA", "seCNS",
-        "invOther", "opinions", "course", "condition", "condExtra",
-        "diet", "physicalActivity", "otherNeeds", "advice", "emergencyContact", "review", "warning",
-        "preparedBy", "chief", "signDateTime"];
-      const SELECT_FIELDS = ["unitRoman"];
-      const DEFAULT_FIELDS = ["college", "address", "dept", "summaryType", "unitPrefix", "unitRoman", "chief", "preparedBy", "advice", "review", "warning"];
-      const PATIENT_FIELDS = FIELDS.filter(f => !DEFAULT_FIELDS.includes(f));
-      const SEED = {
-        advice: "Take medications as advised.\nAdequate rest and oral fluids.\nTake diet as advised.",
-        review: "Review in Medicine OPD after 1 week with reports (or earlier if needed).",
-        warning: "Fever not subsiding, breathlessness, chest pain, giddiness, reduced urine output, bleeding, or drowsiness — report to casualty immediately."
-      };
-      const store = (() => {
-        let dbPromise;
-        function openDb() {
-          if (dbPromise) return dbPromise;
-          dbPromise = new Promise((resolve, reject) => {
-            if (!("indexedDB" in window)) { reject(new Error("IndexedDB unavailable")); return; }
-            const timer = setTimeout(() => reject(new Error("IndexedDB open timeout")), 400);
-            try {
-              const request = indexedDB.open("ds-builder-v2", 1);
-              request.onupgradeneeded = () => request.result.createObjectStore("values");
-              request.onsuccess = () => { clearTimeout(timer); resolve(request.result); };
-              request.onerror = () => { clearTimeout(timer); reject(request.error || new Error("IndexedDB open failed")); };
-              request.onblocked = () => { clearTimeout(timer); reject(new Error("IndexedDB blocked")); };
-            } catch (err) {
-              clearTimeout(timer);
-              reject(err);
-            }
-          });
-          return dbPromise;
-        }
-        function fallbackGet(k) {
-          try { return localStorage.getItem(k); } catch (e) { return null; }
-        }
-        function fallbackSet(k, v) {
-          try { localStorage.setItem(k, v); } catch (e) { }
-        }
-        return {
-          async get(k) {
-            try {
-              const db = await openDb();
-              return await new Promise((resolve, reject) => {
-                const timer = setTimeout(() => resolve(fallbackGet(k)), 300);
-                const request = db.transaction("values", "readonly").objectStore("values").get(k);
-                request.onsuccess = () => { clearTimeout(timer); resolve(request.result === undefined ? fallbackGet(k) : request.result); };
-                request.onerror = () => { clearTimeout(timer); reject(request.error); };
-              });
-            } catch (e) { return fallbackGet(k); }
-          },
-          async set(k, v) {
-            fallbackSet(k, v);
-            try {
-              const db = await openDb();
-              await new Promise((resolve, reject) => {
-                const timer = setTimeout(resolve, 300);
-                const request = db.transaction("values", "readwrite").objectStore("values").put(v, k);
-                request.onsuccess = () => { clearTimeout(timer); resolve(); };
-                request.onerror = () => { clearTimeout(timer); reject(request.error); };
-              });
-            } catch (e) { }
-          },
-          async remove(k) {
-            try { localStorage.removeItem(k); } catch (e) { }
-            try {
-              const db = await openDb();
-              await new Promise((resolve, reject) => {
-                const timer = setTimeout(resolve, 300);
-                const request = db.transaction("values", "readwrite").objectStore("values").delete(k);
-                request.onsuccess = () => { clearTimeout(timer); resolve(); };
-                request.onerror = () => { clearTimeout(timer); reject(request.error); };
-              });
-            } catch (e) { }
-          }
-        };
-      })();
+    async function setDefaultSavedTemplate(id) {
+      const target = savedTemplates.find(t => t && t.id === id);
+      if (!target) return;
+      savedTemplates.forEach(t => { if (t) t.isDefault = (t.id === id); });
+      const fields = (target.data && target.data.f && typeof target.data.f === "object") ? target.data.f : (target.data || {});
+      const d = {};
+      DEFAULT_FIELDS.forEach(fid => { if (fields[fid] != null) d[fid] = fields[fid]; });
+      if (Object.keys(d).length > 0) {
+        await store.set(getDefaultsKey(), JSON.stringify(d));
+        applyDefaults(d);
+      }
+      await persistSavedTemplates(true);
+      toast(`"${target.name}" set as default template ★`);
+    }
 
-      const store = (() => {
-        let dbPromise;
-        function openDb() {
-          if (dbPromise) return dbPromise;
-          dbPromise = new Promise((resolve, reject) => {
-            if (!("indexedDB" in window)) { reject(new Error("IndexedDB unavailable")); return; }
-            const timer = setTimeout(() => reject(new Error("IndexedDB open timeout")), 400);
-            async function requestPersistentStorage() {
-              if (!navigator.storage || !navigator.storage.persist) {
-                toast("Persistent storage is not supported by this browser.");
-                return;
-              }
-              try {
-                const request = indexedDB.open("ds-builder-v2", 1);
-                request.onupgradeneeded = () => request.result.createObjectStore("values");
-                request.onsuccess = () => { clearTimeout(timer); resolve(request.result); };
-                request.onerror = () => { clearTimeout(timer); reject(request.error || new Error("IndexedDB open failed")); };
-                request.onblocked = () => { clearTimeout(timer); reject(new Error("IndexedDB blocked")); };
-              } catch (err) {
-                clearTimeout(timer);
-                reject(err);
-                if (!confirm("Allow DS Builder v2 to request persistent browser storage so saved drafts and templates are less likely to be removed?")) return;
-                if (navigator.storage.persisted && await navigator.storage.persisted()) {
-                  toast("Persistent storage is already enabled ✓");
-                  return;
-                }
-                const granted = await navigator.storage.persist();
-                toast(granted ? "Persistent storage enabled ✓" : "Browser did not grant persistent storage");
-              } catch (e) {
-                toast("Could not request persistent storage.");
+    async function deleteSavedTemplate(id) {
+      const idx = savedTemplates.findIndex(t => t && t.id === id);
+      if (idx < 0) return;
+      const name = savedTemplates[idx].name;
+      if (!confirm(`Delete saved template "${name}"?`)) return;
+      savedTemplates.splice(idx, 1);
+      await persistSavedTemplates(true);
+      toast(`Deleted template "${name}"`);
+    }
+
+    function exportSingleTemplate(id) {
+      const tpl = savedTemplates.find(t => t && t.id === id);
+      if (!tpl) return;
+      const clean = tpl.name.replace(/[^a-zA-Z0-9_-]+/g, "_") || "template";
+      const blob = new Blob([JSON.stringify(tpl, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `ds-template-${clean}.json`;
+      a.click();
+      toast(`Exported "${tpl.name}"`);
+    }
+
+    function exportAllTemplates() {
+      if (!savedTemplates.length) {
+        toast("No saved templates to export yet");
+        return;
+      }
+      const blob = new Blob([JSON.stringify({ version: 2, templates: savedTemplates }, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `ds-templates-bundle-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      toast(`Exported ${savedTemplates.length} template(s) ✓`);
+    }
+
+    function importTemplateIntoLibrary() {
+      const inp = document.createElement("input");
+      inp.type = "file";
+      inp.accept = ".json,application/json";
+      inp.multiple = true;
+      inp.onchange = async () => {
+        const files = Array.from(inp.files || []);
+        if (!files.length) return;
+        let added = 0;
+        for (const f of files) {
+          const parsed = safeParse(await f.text());
+          if (!parsed || typeof parsed !== "object") continue;
+          if (Array.isArray(parsed.templates)) {
+            parsed.templates.forEach(t => {
+              if (t && t.name && t.data) {
+                savedTemplates.unshift({
+                  id: t.id || generateUUID(),
+                  name: t.name,
+                  kind: t.kind || "full",
+                  department: t.department || "",
+                  isDefault: false,
+                  updated_at: t.updated_at || new Date().toISOString(),
+                  data: t.data
+                });
+                added++;
               }
             });
-          return dbPromise;
-        }
-        function fallbackGet(k) {
-          try { return localStorage.getItem(k); } catch (e) { return null; }
-        }
-        function fallbackSet(k, v) {
-          try { localStorage.setItem(k, v); } catch (e) { }
-        }
-        return {
-          async get(k) {
-            try {
-              const db = await openDb();
-              return await new Promise((resolve, reject) => {
-                const timer = setTimeout(() => resolve(fallbackGet(k)), 300);
-                const request = db.transaction("values", "readonly").objectStore("values").get(k);
-                request.onsuccess = () => { clearTimeout(timer); resolve(request.result === undefined ? fallbackGet(k) : request.result); };
-                request.onerror = () => { clearTimeout(timer); reject(request.error); };
-              });
-            } catch (e) { return fallbackGet(k); }
-          },
-          async set(k, v) {
-            fallbackSet(k, v);
-            try {
-              const db = await openDb();
-              await new Promise((resolve, reject) => {
-                const timer = setTimeout(resolve, 300);
-                const request = db.transaction("values", "readwrite").objectStore("values").put(v, k);
-                request.onsuccess = () => { clearTimeout(timer); resolve(); };
-                request.onerror = () => { clearTimeout(timer); reject(request.error); };
-              });
-            } catch (e) { }
-          },
-          async remove(k) {
-            try { localStorage.removeItem(k); } catch (e) { }
-            try {
-              const db = await openDb();
-              await new Promise((resolve, reject) => {
-                const timer = setTimeout(resolve, 300);
-                const request = db.transaction("values", "readwrite").objectStore("values").delete(k);
-                request.onsuccess = () => { clearTimeout(timer); resolve(); };
-                request.onerror = () => { clearTimeout(timer); reject(request.error); };
-              });
-            } catch (e) { }
-          }
-        };
-      })();
-
-      async function requestPersistentStorage() {
-        if (!navigator.storage || !navigator.storage.persist) {
-          toast("Persistent storage is not supported by this browser.");
-          return;
-        }
-        try {
-          if (!confirm("Allow DS Builder v2 to request persistent browser storage so saved drafts and templates are less likely to be removed?")) return;
-          if (navigator.storage.persisted && await navigator.storage.persisted()) {
-            toast("Persistent storage is already enabled ✓");
-            return;
-            function ensureSelectOption(selectEl, valStr) {
-              if (!selectEl || selectEl.tagName !== "SELECT") return;
-              if (valStr == null || valStr === "" || valStr === "__custom__") return;
-              const exists = Array.from(selectEl.options).some(opt => opt.value === valStr);
-              if (exists) return;
-              const opt = document.createElement("option");
-              opt.value = valStr;
-              opt.textContent = valStr;
-              opt.dataset.custom = "1";
-              const customTrigger = Array.from(selectEl.options).find(o => o.value === "__custom__");
-              if (customTrigger) selectEl.insertBefore(opt, customTrigger);
-              else selectEl.appendChild(opt);
-            }
-            const granted = await navigator.storage.persist();
-            toast(granted ? "Persistent storage enabled ✓" : "Browser did not grant persistent storage");
-          } catch (e) {
-            toast("Could not request persistent storage.");
-          }
-        }
-
-function ensureSelectOption(selectEl, valStr) {
-          if (!selectEl || selectEl.tagName !== "SELECT") return;
-          if (valStr == null || valStr === "" || valStr === "__custom__") return;
-          const exists = Array.from(selectEl.options).some(opt => opt.value === valStr);
-          if (exists) return;
-          const opt = document.createElement("option");
-          opt.value = valStr;
-          opt.textContent = valStr;
-          opt.dataset.custom = "1";
-          const customTrigger = Array.from(selectEl.options).find(o => o.value === "__custom__");
-          if (customTrigger) selectEl.insertBefore(opt, customTrigger);
-          else selectEl.appendChild(opt);
-        }
-        function syncEditableSelectUI(selectEl, forceSelectMode = false) {
-          if (!selectEl || !selectEl._comboUI) return;
-          const { selectBox, inputWrap, customInp } = selectEl._comboUI;
-          customInp.value = selectEl.value === "__custom__" ? "" : (selectEl.value || "");
-          if (forceSelectMode) {
-            selectBox.style.display = "flex";
-            inputWrap.style.display = "none";
-          }
-        }
-
-        function syncEditableSelectUI(selectEl, forceSelectMode = false) {
-          if (!selectEl || !selectEl._comboUI) return;
-          const { selectBox, inputWrap, customInp } = selectEl._comboUI;
-          customInp.value = selectEl.value === "__custom__" ? "" : (selectEl.value || "");
-          if (forceSelectMode) {
-            selectBox.style.display = "flex";
-            inputWrap.style.display = "none";
-          }
-        }
-        function initEditableSelects() {
-          document.querySelectorAll("select.editable-select").forEach(selectEl => {
-            if (selectEl.dataset.comboInit) return;
-            selectEl.dataset.comboInit = "1";
-            selectEl.dataset.prevVal = selectEl.value || "";
-
-            function initEditableSelects() {
-              document.querySelectorAll("select.editable-select").forEach(selectEl => {
-                if (selectEl.dataset.comboInit) return;
-                selectEl.dataset.comboInit = "1";
-                selectEl.dataset.prevVal = selectEl.value || "";
-                const wrap = document.createElement("div");
-                wrap.className = "combo-select-wrap";
-                selectEl.parentNode.insertBefore(wrap, selectEl);
-
-                const wrap = document.createElement("div");
-                wrap.className = "combo-select-wrap";
-                selectEl.parentNode.insertBefore(wrap, selectEl);
-                const selectBox = document.createElement("div");
-                selectBox.className = "combo-select-box";
-                wrap.appendChild(selectBox);
-                selectBox.appendChild(selectEl);
-
-                const selectBox = document.createElement("div");
-                selectBox.className = "combo-select-box";
-                wrap.appendChild(selectBox);
-                selectBox.appendChild(selectEl);
-                const editBtn = document.createElement("button");
-                editBtn.type = "button";
-                editBtn.className = "combo-edit-btn";
-                editBtn.title = "Type a custom value";
-                editBtn.setAttribute("aria-label", "Type a custom value");
-                editBtn.textContent = "✎";
-                selectBox.appendChild(editBtn);
-
-                const editBtn = document.createElement("button");
-                editBtn.type = "button";
-                editBtn.className = "combo-edit-btn";
-                editBtn.title = "Type a custom value";
-                editBtn.setAttribute("aria-label", "Type a custom value");
-                editBtn.textContent = "✎";
-                selectBox.appendChild(editBtn);
-                const inputWrap = document.createElement("div");
-                inputWrap.className = "combo-input-wrap";
-                inputWrap.style.display = "none";
-                const customInp = document.createElement("input");
-                customInp.type = "text";
-                customInp.className = "combo-custom-input";
-                customInp.placeholder = "Type custom...";
-                const backBtn = document.createElement("button");
-                backBtn.type = "button";
-                backBtn.className = "combo-back-btn";
-                backBtn.title = "Back to list";
-                backBtn.setAttribute("aria-label", "Back to dropdown list");
-                backBtn.textContent = "▾";
-                inputWrap.appendChild(customInp);
-                inputWrap.appendChild(backBtn);
-                wrap.appendChild(inputWrap);
-
-                const inputWrap = document.createElement("div");
-                inputWrap.className = "combo-input-wrap";
-                inputWrap.style.display = "none";
-                const customInp = document.createElement("input");
-                customInp.type = "text";
-                customInp.className = "combo-custom-input";
-                customInp.placeholder = "Type custom...";
-                const backBtn = document.createElement("button");
-                backBtn.type = "button";
-                backBtn.className = "combo-back-btn";
-                backBtn.title = "Back to list";
-                backBtn.setAttribute("aria-label", "Back to dropdown list");
-                backBtn.textContent = "▾";
-                inputWrap.appendChild(customInp);
-                inputWrap.appendChild(backBtn);
-                wrap.appendChild(inputWrap);
-                selectEl._comboUI = { wrap, selectBox, inputWrap, customInp, editBtn, backBtn };
-
-                selectEl._comboUI = { wrap, selectBox, inputWrap, customInp, editBtn, backBtn };
-                const openCustomMode = (seedVal = "") => {
-                  customInp.value = seedVal;
-                  selectBox.style.display = "none";
-                  inputWrap.style.display = "flex";
-                  customInp.focus();
-                  customInp.select();
-                };
-
-                const openCustomMode = (seedVal = "") => {
-                  customInp.value = seedVal;
-                  selectBox.style.display = "none";
-                  inputWrap.style.display = "flex";
-                  customInp.focus();
-                  customInp.select();
-                };
-                const closeCustomMode = () => {
-                  inputWrap.style.display = "none";
-                  selectBox.style.display = "flex";
-                };
-
-                const closeCustomMode = () => {
-                  inputWrap.style.display = "none";
-                  selectBox.style.display = "flex";
-                };
-                selectEl.addEventListener("change", () => {
-                  if (selectEl.value === "__custom__") {
-                    const prev = selectEl.dataset.prevVal || "";
-                    selectEl.value = prev;
-                    openCustomMode(prev);
-                  } else {
-                    selectEl.dataset.prevVal = selectEl.value;
-                  }
-                });
-
-                selectEl.addEventListener("change", () => {
-                  if (selectEl.value === "__custom__") {
-                    const prev = selectEl.dataset.prevVal || "";
-                    selectEl.value = prev;
-                    openCustomMode(prev);
-                  } else {
-                    selectEl.dataset.prevVal = selectEl.value;
-                  }
-                });
-                editBtn.addEventListener("click", () => {
-                  openCustomMode(selectEl.value || "");
-                });
-
-                editBtn.addEventListener("click", () => {
-                  openCustomMode(selectEl.value || "");
-                });
-                backBtn.addEventListener("click", () => {
-                  closeCustomMode();
-                });
-
-                backBtn.addEventListener("click", () => {
-                  closeCustomMode();
-                });
-                customInp.addEventListener("input", () => {
-                  const v = customInp.value;
-                  if (v.trim()) ensureSelectOption(selectEl, v);
-                  selectEl.value = v.trim() ? v : "";
-                  selectEl.dataset.prevVal = selectEl.value;
-                  selectEl.dispatchEvent(new Event("input", { bubbles: true }));
-                });
-
-                customInp.addEventListener("input", () => {
-                  const v = customInp.value;
-                  if (v.trim()) ensureSelectOption(selectEl, v);
-                  selectEl.value = v.trim() ? v : "";
-                  selectEl.dataset.prevVal = selectEl.value;
-                  selectEl.dispatchEvent(new Event("input", { bubbles: true }));
-                });
-                customInp.addEventListener("keydown", e => {
-                  if (e.key === "Escape") closeCustomMode();
-                });
-              });
-            }
-
-            customInp.addEventListener("keydown", e => {
-              if (e.key === "Escape") closeCustomMode();
-            });
-          });
-        }
-        function safeParse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
-        function setVal_(id, v) {
-          const el = document.getElementById(id);
-          if (!el) return;
-          const normalized = DISPLAY_DATE_FIELDS.has(id) ? displayDateValue(v) : (v == null ? "" : String(v));
-          if (el.tagName === "SELECT") {
-            ensureSelectOption(el, normalized);
-            el.value = normalized;
-            el.dataset.prevVal = normalized;
-            syncEditableSelectUI(el, normalized === "");
           } else {
-            el.value = normalized;
-          }
-        }
-        function onLogo(e) {
-          const f = e.target.files && e.target.files[0]; if (!f) return;
-          const r = new FileReader();
-          r.onload = () => { logoData = r.result; render(false); store.set("ds-v2:logo", logoData); };
-          r.readAsDataURL(f);
-        }
-
-        function safeParse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
-        function setVal_(id, v) {
-          const el = document.getElementById(id);
-          if (!el) return;
-          const normalized = DISPLAY_DATE_FIELDS.has(id) ? displayDateValue(v) : (v == null ? "" : String(v));
-          if (el.tagName === "SELECT") {
-            ensureSelectOption(el, normalized);
-            el.value = normalized;
-            el.dataset.prevVal = normalized;
-            syncEditableSelectUI(el, normalized === "");
-          } else {
-            el.value = normalized;
-          }
-        }
-        function onLogo(e) {
-          const f = e.target.files && e.target.files[0]; if (!f) return;
-          const r = new FileReader();
-          r.onload = () => { logoData = r.result; render(false); store.set("ds-v2:logo", logoData); };
-          r.readAsDataURL(f);
-        }
-        /* ---------- Scope keys (unified by normalized email for Google & Email login) ---------- */
-        function normalizeEmail(email) {
-          return String(email || "").trim().toLowerCase();
-        }
-        function getOwnerScope() {
-          if (!currentUser) return "guest";
-          const emailKey = normalizeEmail(currentUser.email);
-          if (emailKey) return `email:${emailKey}`;
-          return currentUser.id ? `user:${currentUser.id}` : "guest";
-        }
-        function getLegacyUserScope() {
-          if (!currentUser || !currentUser.id || !normalizeEmail(currentUser.email)) return null;
-          return `user:${currentUser.id}`;
-        }
-        function getRecordsKey(scope = getOwnerScope()) { return `ds-v2:records:${scope}`; }
-        function getDeletesKey(scope = getOwnerScope()) { return `ds-v2:deletes:${scope}`; }
-        function getActiveIdKey(scope = getOwnerScope()) { return `ds-v2:active:${scope}`; }
-        function getDefaultsKey(scope = getOwnerScope()) { return `ds-v2:defaults:${scope}`; }
-        function getContactsKey(scope = getOwnerScope()) { return `ds-v2:contacts:${scope}`; }
-        function getImportedSharesKey(scope = getOwnerScope()) { return `ds-v2:imported-shares:${scope}`; }
-
-        /* ---------- Scope keys (unified by normalized email for Google & Email login) ---------- */
-        function normalizeEmail(email) {
-          return String(email || "").trim().toLowerCase();
-        }
-        function getOwnerScope() {
-          if (!currentUser) return "guest";
-          const emailKey = normalizeEmail(currentUser.email);
-          if (emailKey) return `email:${emailKey}`;
-          return currentUser.id ? `user:${currentUser.id}` : "guest";
-        }
-        function getLegacyUserScope() {
-          if (!currentUser || !currentUser.id || !normalizeEmail(currentUser.email)) return null;
-          return `user:${currentUser.id}`;
-        }
-        function getRecordsKey(scope = getOwnerScope()) { return `ds-v2:records:${scope}`; }
-        function getDeletesKey(scope = getOwnerScope()) { return `ds-v2:deletes:${scope}`; }
-        function getActiveIdKey(scope = getOwnerScope()) { return `ds-v2:active:${scope}`; }
-        function getDefaultsKey(scope = getOwnerScope()) { return `ds-v2:defaults:${scope}`; }
-        function getContactsKey(scope = getOwnerScope()) { return `ds-v2:contacts:${scope}`; }
-        function getImportedSharesKey(scope = getOwnerScope()) { return `ds-v2:imported-shares:${scope}`; }
-        function hasPatientContent(payload) {
-          if (!payload || !payload.f) return false;
-          const f = payload.f;
-          const keysToCheck = PATIENT_FIELDS.filter(k => k !== "dod" && k !== "modeOfDischarge");
-          if (keysToCheck.some(k => String(f[k] || "").trim().length > 0)) return true;
-          if ((payload.complaints || []).length > 0) return true;
-          if ((payload.pastHistory || []).length > 0) return true;
-          if ((payload.rxHistory || []).length > 0) return true;
-          if ((payload.treatment || []).length > 0) return true;
-          if ((payload.rxMeds || []).length > 0) return true;
-          if ((payload.invDates || []).length > 0) return true;
-          if ((payload.invParams || []).length > 0) return true;
-          return false;
-        }
-
-        function hasPatientContent(payload) {
-          if (!payload || !payload.f) return false;
-          const f = payload.f;
-          const keysToCheck = PATIENT_FIELDS.filter(k => k !== "dod" && k !== "modeOfDischarge");
-          if (keysToCheck.some(k => String(f[k] || "").trim().length > 0)) return true;
-          if ((payload.complaints || []).length > 0) return true;
-          if ((payload.pastHistory || []).length > 0) return true;
-          if ((payload.rxHistory || []).length > 0) return true;
-          if ((payload.treatment || []).length > 0) return true;
-          if ((payload.rxMeds || []).length > 0) return true;
-          if ((payload.invDates || []).length > 0) return true;
-          if ((payload.invParams || []).length > 0) return true;
-          return false;
-        }
-        function collectDraft() {
-          const f = {}; FIELDS.forEach(id => f[id] = document.getElementById(id).value);
-          SELECT_FIELDS.forEach(id => f[id] = document.getElementById(id).value);
-          return {
-            f, complaints, treatment, rxMeds, invDates, invParams, invSeq,
-            pastHistory, rxHistory, ynState, signaturePinned,
-            includeEmpty: { ...includeEmpty },
-            includeEmptyLines: { ...includeEmptyLines }
-          };
-        }
-
-        function collectDraft() {
-          const f = {}; FIELDS.forEach(id => f[id] = document.getElementById(id).value);
-          SELECT_FIELDS.forEach(id => f[id] = document.getElementById(id).value);
-          return {
-            f, complaints, treatment, rxMeds, invDates, invParams, invSeq,
-            pastHistory, rxHistory, ynState, signaturePinned,
-            includeEmpty: { ...includeEmpty },
-            includeEmptyLines: { ...includeEmptyLines }
-          };
-        }
-        function resetEditorFieldsOnly() {
-          document.getElementById("college").value = "Government Medical College Hospital";
-          document.getElementById("address").value = "Omandurar Government Estate, Chennai - 02";
-          document.getElementById("dept").value = "Department of General Medicine";
-          setVal_("summaryType", "Discharge Summary");
-          document.getElementById("unitPrefix").value = "M-";
-          setVal_("unitRoman", "IV");
-          setVal_("ccUnit", "days");
-
-          function resetEditorFieldsOnly() {
-            document.getElementById("college").value = "Government Medical College Hospital";
-            document.getElementById("address").value = "Omandurar Government Estate, Chennai - 02";
-            document.getElementById("dept").value = "Department of General Medicine";
-            setVal_("summaryType", "Discharge Summary");
-            document.getElementById("unitPrefix").value = "M-";
-            setVal_("unitRoman", "IV");
-            setVal_("ccUnit", "days");
-            PATIENT_FIELDS.forEach(id => setVal_(id, ""));
-            setVal_("modeOfDischarge", "Discharge");
-            setVal_("advice", SEED.advice);
-            setVal_("review", SEED.review);
-            setVal_("warning", SEED.warning);
-            setVal_("preparedBy", "");
-            setVal_("chief", "");
-
-            PATIENT_FIELDS.forEach(id => setVal_(id, ""));
-            setVal_("modeOfDischarge", "Discharge");
-            setVal_("advice", SEED.advice);
-            setVal_("review", SEED.review);
-            setVal_("warning", SEED.warning);
-            setVal_("preparedBy", "");
-            setVal_("chief", "");
-            complaints = []; treatment = []; rxMeds = [];
-            invDates = []; invParams = []; invSeq = 0;
-            pastHistory = []; rxHistory = [];
-            ynState = { physio: "", equip: "", dress: "" };
-            ["physio", "equip", "dress"].forEach(k => setYNui(k, ""));
-            signaturePinned = true;
-            Object.keys(includeEmpty).forEach(k => delete includeEmpty[k]);
-            Object.keys(includeEmptyLines).forEach(k => delete includeEmptyLines[k]);
-          }
-
-          complaints = []; treatment = []; rxMeds = [];
-          invDates = []; invParams = []; invSeq = 0;
-          pastHistory = []; rxHistory = [];
-          ynState = { physio: "", equip: "", dress: "" };
-          ["physio", "equip", "dress"].forEach(k => setYNui(k, ""));
-          signaturePinned = true;
-          Object.keys(includeEmpty).forEach(k => delete includeEmpty[k]);
-          Object.keys(includeEmptyLines).forEach(k => delete includeEmptyLines[k]);
-        }
-        function restoreDraft(o, opts = {}) {
-          if (!o) return;
-          suppressSave = true;
-          try {
-            resetEditorFieldsOnly();
-            if (o.f) {
-              FIELDS.forEach(id => { if (id in o.f) setVal_(id, o.f[id]); });
-              SELECT_FIELDS.forEach(id => { if (o.f[id] != null) setVal_(id, o.f[id]); });
-            }
-            complaints = Array.isArray(o.complaints) ? [...o.complaints] : [];
-            treatment = Array.isArray(o.treatment) ? [...o.treatment] : [];
-            rxMeds = Array.isArray(o.rxMeds) ? [...o.rxMeds] : [];
-            invDates = Array.isArray(o.invDates) ? JSON.parse(JSON.stringify(o.invDates)) : [];
-            invParams = Array.isArray(o.invParams) ? JSON.parse(JSON.stringify(o.invParams)) : [];
-            invSeq = o.invSeq || 0;
-            pastHistory = Array.isArray(o.pastHistory) ? [...o.pastHistory] : [];
-            rxHistory = Array.isArray(o.rxHistory) ? [...o.rxHistory] : [];
-            ynState = { physio: "", equip: "", dress: "", ...(o.ynState || {}) };
-            signaturePinned = o.signaturePinned !== false;
-
-            function restoreDraft(o, opts = {}) {
-              if (!o) return;
-              suppressSave = true;
-              try {
-                resetEditorFieldsOnly();
-                if (o.f) {
-                  FIELDS.forEach(id => { if (id in o.f) setVal_(id, o.f[id]); });
-                  SELECT_FIELDS.forEach(id => { if (o.f[id] != null) setVal_(id, o.f[id]); });
-                  if (o.includeEmpty && typeof o.includeEmpty === "object") {
-                    Object.assign(includeEmpty, o.includeEmpty);
-                  }
-                  if (o.includeEmptyLines && typeof o.includeEmptyLines === "object") {
-                    Object.assign(includeEmptyLines, o.includeEmptyLines);
-                  }
-
-                  renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
-                  ["physio", "equip", "dress"].forEach(k => setYNui(k, ynState[k] || ""));
-                  const hasDodKey = Boolean(o.f && "dod" in o.f);
-                  if (!opts.preserveDod && !val("dod") && !hasDodKey) {
-                    setVal_("dod", todayISO());
-                  }
-                  render(false);
-                  updateFormSectionStates();
-                } finally {
-                  suppressSave = false;
-                }
-              }
-    complaints = Array.isArray(o.complaints) ? [...o.complaints] : [];
-              treatment = Array.isArray(o.treatment) ? [...o.treatment] : [];
-              rxMeds = Array.isArray(o.rxMeds) ? [...o.rxMeds] : [];
-              invDates = Array.isArray(o.invDates) ? JSON.parse(JSON.stringify(o.invDates)) : [];
-              invParams = Array.isArray(o.invParams) ? JSON.parse(JSON.stringify(o.invParams)) : [];
-              invSeq = o.invSeq || 0;
-              pastHistory = Array.isArray(o.pastHistory) ? [...o.pastHistory] : [];
-              rxHistory = Array.isArray(o.rxHistory) ? [...o.rxHistory] : [];
-              ynState = { physio: "", equip: "", dress: "", ...(o.ynState || {}) };
-              signaturePinned = o.signaturePinned !== false;
-
-              if (o.includeEmpty && typeof o.includeEmpty === "object") {
-                Object.assign(includeEmpty, o.includeEmpty);
-                function setYNui(key, v) {
-                  const map = { physio: "ynPhysio", equip: "ynEquip", dress: "ynDress" };
-                  const box = document.getElementById(map[key]);
-                  if (box) [...box.children].forEach(b => b.classList.toggle("sel", Boolean(v) && b.textContent === v));
-                }
-                if (o.includeEmptyLines && typeof o.includeEmptyLines === "object") {
-                  Object.assign(includeEmptyLines, o.includeEmptyLines);
-
-                  function applyDefaults(d) {
-                    if (!d) return;
-                    DEFAULT_FIELDS.forEach(id => { if (id in d && d[id] != null) setVal_(id, d[id]); });
-                  }
-
-                  renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
-                  ["physio", "equip", "dress"].forEach(k => setYNui(k, ynState[k] || ""));
-                  const hasDodKey = Boolean(o.f && "dod" in o.f);
-                  if (!opts.preserveDod && !val("dod") && !hasDodKey) {
-                    setVal_("dod", todayISO());
-                    async function saveDefaults() {
-                      const d = {}; DEFAULT_FIELDS.forEach(id => d[id] = document.getElementById(id).value);
-                      await store.set(getDefaultsKey(), JSON.stringify(d));
-                      if (hasCloudAuthSession() && navigator.onLine) {
-                        await pushUserSettingsToCloud(d);
-                      }
-                      toast("Saved as your defaults" + (hasCloudAuthSession() ? " & synced ✓" : ""));
-                    }
-                    render(false);
-                    updateFormSectionStates();
-                  } finally {
-                    suppressSave = false;
-                  }
-                }
-
-                function setYNui(key, v) {
-                  const map = { physio: "ynPhysio", equip: "ynEquip", dress: "ynDress" };
-                  const box = document.getElementById(map[key]);
-                  if (box) [...box.children].forEach(b => b.classList.toggle("sel", Boolean(v) && b.textContent === v));
-                }
-                async function getActiveDefaults() {
-                  const defTpl = savedTemplates.find(t => t && t.isDefault && t.data);
-                  if (defTpl) {
-                    const fields = (defTpl.data.f && typeof defTpl.data.f === "object") ? defTpl.data.f : defTpl.data;
-                    const d = {};
-                    DEFAULT_FIELDS.forEach(id => { if (fields[id] != null) d[id] = fields[id]; });
-                    if (Object.keys(d).length > 0) return d;
-                  }
-                  let def = safeParse(await store.get(getDefaultsKey()));
-                  if (!def) {
-                    const legacyScope = getLegacyUserScope();
-                    if (legacyScope) {
-                      def = safeParse(await store.get(getDefaultsKey(legacyScope)));
-                      if (def) {
-                        await store.set(getDefaultsKey(), JSON.stringify(def));
-                        await store.remove(getDefaultsKey(legacyScope));
-                      }
-                    }
-                  }
-                  if (!def && currentUser) {
-                    def = safeParse(await store.get(getDefaultsKey("guest")));
-                  }
-                  if (def && typeof def === "object") {
-                    const cleaned = { ...def };
-                    delete cleaned.__templates;
-                    delete cleaned.__theme_config;
-                    return cleaned;
-                  }
-                  return def;
-                }
-
-                function applyDefaults(d) {
-                  if (!d) return;
-                  DEFAULT_FIELDS.forEach(id => { if (id in d && d[id] != null) setVal_(id, d[id]); });
-                }
-                /* ---------- Multi-Template Library (Save Many Templates + Cloud Sync) ---------- */
-                function getTemplatesKey(scopeOverride = null) {
-                  const scope = scopeOverride || getOwnerScope();
-                  return `ds-v2:templates:${scope}`;
-                }
-
-                async function saveDefaults() {
-                  const d = {}; DEFAULT_FIELDS.forEach(id => d[id] = document.getElementById(id).value);
-                  await store.set(getDefaultsKey(), JSON.stringify(d));
-                  if (hasCloudAuthSession() && navigator.onLine) {
-                    await pushUserSettingsToCloud(d);
-                  }
-                  toast("Saved as your defaults" + (hasCloudAuthSession() ? " & synced ✓" : ""));
-                }
-                async function loadSavedTemplates() {
-                  const scope = getOwnerScope();
-                  let list = safeParse(await store.get(getTemplatesKey(scope)));
-                  if (!Array.isArray(list)) list = [];
-
-                  async function getActiveDefaults() {
-                    const defTpl = savedTemplates.find(t => t && t.isDefault && t.data);
-                    if (defTpl) {
-                      const fields = (defTpl.data.f && typeof defTpl.data.f === "object") ? defTpl.data.f : defTpl.data;
-                      const d = {};
-                      DEFAULT_FIELDS.forEach(id => { if (fields[id] != null) d[id] = fields[id]; });
-                      if (Object.keys(d).length > 0) return d;
-                    }
-                    let def = safeParse(await store.get(getDefaultsKey()));
-                    if (!def) {
-                      const legacyScope = getLegacyUserScope();
-                      if (legacyScope) {
-                        def = safeParse(await store.get(getDefaultsKey(legacyScope)));
-                        if (def) {
-                          await store.set(getDefaultsKey(), JSON.stringify(def));
-                          await store.remove(getDefaultsKey(legacyScope));
-                          const legacyScope = getLegacyUserScope();
-                          if (legacyScope && legacyScope !== scope) {
-                            const legacyList = safeParse(await store.get(getTemplatesKey(legacyScope)));
-                            if (Array.isArray(legacyList) && legacyList.length) {
-                              const seenIds = new Set(list.map(t => t && t.id));
-                              const seenNames = new Set(list.map(t => (t && t.name || "").toLowerCase()));
-                              legacyList.forEach(t => {
-                                if (t && !seenIds.has(t.id) && !seenNames.has((t.name || "").toLowerCase())) {
-                                  list.push(t);
-                                  seenIds.add(t.id);
-                                  seenNames.add((t.name || "").toLowerCase());
-                                }
-                              });
-                              await store.set(getTemplatesKey(scope), JSON.stringify(list));
-                              await store.remove(getTemplatesKey(legacyScope));
-                            }
-                          }
-                        }
-                      }
-                      if (!def && currentUser) {
-                        def = safeParse(await store.get(getDefaultsKey("guest")));
-                      }
-                      if (def && typeof def === "object") {
-                        const cleaned = { ...def };
-                        delete cleaned.__templates;
-                        delete cleaned.__theme_config;
-                        return cleaned;
-                      }
-                      return def;
-                    }
-
-                    /* ---------- Multi-Template Library (Save Many Templates + Cloud Sync) ---------- */
-                    function getTemplatesKey(scopeOverride = null) {
-                      const scope = scopeOverride || getOwnerScope();
-                      return `ds-v2:templates:${scope}`;
-                    }
-                    if (!list.length && currentUser) {
-                      const guestList = safeParse(await store.get(getTemplatesKey("guest")));
-                      if (Array.isArray(guestList) && guestList.length) list = guestList;
-                    }
-
-                    async function loadSavedTemplates() {
-                      const scope = getOwnerScope();
-                      let list = safeParse(await store.get(getTemplatesKey(scope)));
-                      if (!Array.isArray(list)) list = [];
-                      // Also sync any templates stored in localStorage under ds:tpl:* (from Template Library page)
-                      try {
-                        const seenNames = new Set(list.map(t => (t && t.name || "").toLowerCase()));
-                        for (let i = 0; i < localStorage.length; i++) {
-                          const k = localStorage.key(i);
-                          if (k && k.startsWith("ds:tpl:")) {
-                            const name = k.slice("ds:tpl:".length).trim();
-                            if (!name || seenNames.has(name.toLowerCase())) continue;
-                            const raw = safeParse(localStorage.getItem(k));
-                            if (raw && typeof raw === "object") {
-                              const payload = raw.draft || raw.template || raw;
-                              list.push({
-                                id: raw.id || generateUUID(),
-                                name,
-                                kind: raw.kind || "full",
-                                department: (payload.f && payload.f.dept) || payload.dept || "",
-                                isDefault: Boolean(raw.isDefault),
-                                updated_at: raw.updated_at || new Date().toISOString(),
-                                data: payload
-                              });
-                              seenNames.add(name.toLowerCase());
-                            }
-                          }
-                        }
-                      } catch (e) { }
-
-                      const legacyScope = getLegacyUserScope();
-                      if (legacyScope && legacyScope !== scope) {
-                        const legacyList = safeParse(await store.get(getTemplatesKey(legacyScope)));
-                        if (Array.isArray(legacyList) && legacyList.length) {
-                          // Merge with any in-memory templates added during boot so nothing is overwritten
-                          const seenIds = new Set(list.map(t => t && t.id));
-                          const seenNames = new Set(list.map(t => (t && t.name || "").toLowerCase()));
-                          legacyList.forEach(t => {
-                            if (t && !seenIds.has(t.id) && !seenNames.has((t.name || "").toLowerCase())) {
-                              list.push(t);
-                              seenIds.add(t.id);
-                              seenNames.add((t.name || "").toLowerCase());
-                              savedTemplates.forEach(t => {
-                                if (t && !seenIds.has(t.id) && !list.some(x => x && x.name.toLowerCase() === t.name.toLowerCase())) {
-                                  list.unshift(t);
-                                }
-                              });
-                              await store.set(getTemplatesKey(scope), JSON.stringify(list));
-                              await store.remove(getTemplatesKey(legacyScope));
-
-                              savedTemplates = list;
-                              renderSavedTemplatesUI();
-                            }
-                          }
-
-  if (!list.length && currentUser) {
-                            const guestList = safeParse(await store.get(getTemplatesKey("guest")));
-                            if (Array.isArray(guestList) && guestList.length) list = guestList;
-                          }
-                          async function persistSavedTemplates(syncCloud = true) {
-                            await store.set(getTemplatesKey(), JSON.stringify(savedTemplates));
-                            try {
-                              // Mirror to ds:tpl:* in localStorage so /templates/ page stays in sync
-                              const existingKeys = [];
-                              for (let i = 0; i < localStorage.length; i++) {
-                                const k = localStorage.key(i);
-                                if (k && k.startsWith("ds:tpl:")) existingKeys.push(k);
-                              }
-                              existingKeys.forEach(k => localStorage.removeItem(k));
-                              savedTemplates.forEach(t => {
-                                if (t && t.name) {
-                                  localStorage.setItem(`ds:tpl:${t.name}`, JSON.stringify({
-                                    id: t.id,
-                                    name: t.name,
-                                    kind: t.kind,
-                                    isDefault: Boolean(t.isDefault),
-                                    updated_at: t.updated_at,
-                                    draft: t.data
-                                  }));
-                                }
-                              });
-                            } catch (e) { }
-
-                            // Also sync any templates stored in localStorage under ds:tpl:* (from Template Library page)
-                            try {
-                              const seenNames = new Set(list.map(t => (t && t.name || "").toLowerCase()));
-                              for (let i = 0; i < localStorage.length; i++) {
-                                const k = localStorage.key(i);
-                                if (k && k.startsWith("ds:tpl:")) {
-                                  const name = k.slice("ds:tpl:".length).trim();
-                                  if (!name || seenNames.has(name.toLowerCase())) continue;
-                                  const raw = safeParse(localStorage.getItem(k));
-                                  if (raw && typeof raw === "object") {
-                                    const payload = raw.draft || raw.template || raw;
-                                    list.push({
-                                      id: raw.id || generateUUID(),
-                                      name,
-                                      kind: raw.kind || "full",
-                                      department: (payload.f && payload.f.dept) || payload.dept || "",
-                                      isDefault: Boolean(raw.isDefault),
-                                      updated_at: raw.updated_at || new Date().toISOString(),
-                                      data: payload
-                                    });
-                                    seenNames.add(name.toLowerCase());
-                                  }
-                                  renderSavedTemplatesUI();
-                                  if (syncCloud && hasCloudAuthSession() && navigator.onLine) {
-                                    pushUserSettingsToCloud().catch(() => { });
-                                  }
-                                }
-                              } catch (e) { }
-
-                              // Merge with any in-memory templates added during boot so nothing is overwritten
-                              const seenIds = new Set(list.map(t => t && t.id));
-                              savedTemplates.forEach(t => {
-                                if (t && !seenIds.has(t.id) && !list.some(x => x && x.name.toLowerCase() === t.name.toLowerCase())) {
-                                  list.unshift(t);
-                                }
-                              });
-                              async function saveNamedTemplateFromInput(nameInputId, scopeSelectId) {
-                                const inp = document.getElementById(nameInputId);
-                                const sel = document.getElementById(scopeSelectId);
-                                let name = (inp && inp.value || "").trim();
-                                if (!name) {
-                                  name = (prompt("Enter a name for this template (e.g. Unit M-I Defaults, Dengue Protocol, STEMI):") || "").trim();
-                                }
-                                if (!name) return;
-
-                                savedTemplates = list;
-                                renderSavedTemplatesUI();
-                              }
-                              const kind = (sel && sel.value === "defaults") ? "defaults" : "full";
-                              let data;
-                              if (kind === "defaults") {
-                                const d = {};
-                                DEFAULT_FIELDS.forEach(id => {
-                                  const el = document.getElementById(id);
-                                  if (el) d[id] = el.value;
-                                });
-                                data = { f: d };
-                              } else {
-                                data = collectDraft();
-                                // Clear patient-identifying fields so templates are reusable across patients
-                                if (data.f) {
-                                  data.f = { ...data.f, name: "", age: "", sex: "", ipno: "", doa: "", dod: "" };
-                                }
-                              }
-
-                              async function persistSavedTemplates(syncCloud = true) {
-                                await store.set(getTemplatesKey(), JSON.stringify(savedTemplates));
-                                try {
-                                  // Mirror to ds:tpl:* in localStorage so /templates/ page stays in sync
-                                  const existingKeys = [];
-                                  for (let i = 0; i < localStorage.length; i++) {
-                                    const k = localStorage.key(i);
-                                    if (k && k.startsWith("ds:tpl:")) existingKeys.push(k);
-                                  }
-                                  existingKeys.forEach(k => localStorage.removeItem(k));
-                                  savedTemplates.forEach(t => {
-                                    if (t && t.name) {
-                                      localStorage.setItem(`ds:tpl:${t.name}`, JSON.stringify({
-                                        id: t.id,
-                                        name: t.name,
-                                        kind: t.kind,
-                                        isDefault: Boolean(t.isDefault),
-                                        updated_at: t.updated_at,
-                                        draft: t.data
-                                      }));
-                                      const nowIso = new Date().toISOString();
-                                      const existingIdx = savedTemplates.findIndex(t => t && t.name.toLowerCase() === name.toLowerCase());
-                                      if (existingIdx >= 0) {
-                                        savedTemplates[existingIdx] = {
-                                          ...savedTemplates[existingIdx],
-                                          name,
-                                          kind,
-                                          department: val("dept") || "",
-                                          updated_at: nowIso,
-                                          data
-                                        };
-                                      } else {
-                                        savedTemplates.unshift({
-                                          id: generateUUID(),
-                                          name,
-                                          kind,
-                                          department: val("dept") || "",
-                                          isDefault: savedTemplates.length === 0,
-                                          updated_at: nowIso,
-                                          data
-                                        });
-                                      }
-                                    });
-                                } catch (e) { }
-
-                                renderSavedTemplatesUI();
-                                if (syncCloud && hasCloudAuthSession() && navigator.onLine) {
-                                  pushUserSettingsToCloud().catch(() => { });
-                                }
-                              }
-                              if (inp) inp.value = "";
-                              await persistSavedTemplates(true);
-                              toast(`Template "${name}" saved (${savedTemplates.length} total) ✓`);
-                            }
-
-async function saveNamedTemplateFromInput(nameInputId, scopeSelectId) {
-                              const inp = document.getElementById(nameInputId);
-                              const sel = document.getElementById(scopeSelectId);
-                              let name = (inp && inp.value || "").trim();
-                              if (!name) {
-                                name = (prompt("Enter a name for this template (e.g. Unit M-I Defaults, Dengue Protocol, STEMI):") || "").trim();
-                              }
-                              if (!name) return;
-                              async function applySavedTemplate(id) {
-                                const tpl = savedTemplates.find(t => t && t.id === id);
-                                if (!tpl || !tpl.data) return;
-                                if (tpl.kind === "defaults") {
-                                  const fields = (tpl.data.f && typeof tpl.data.f === "object") ? tpl.data.f : tpl.data;
-                                  applyDefaults(fields);
-                                  render();
-                                  scheduleSave();
-                                } else {
-                                  await loadJsonTemplate(tpl.data, false);
-                                }
-                                closeTemplatesModal();
-                                toast(`Applied template "${tpl.name}" ✓`);
-                              }
-
-                              const kind = (sel && sel.value === "defaults") ? "defaults" : "full";
-                              let data;
-                              if (kind === "defaults") {
-                                const d = {};
-                                DEFAULT_FIELDS.forEach(id => {
-                                  const el = document.getElementById(id);
-                                  if (el) d[id] = el.value;
-                                });
-                                data = { f: d };
-                              } else {
-                                data = collectDraft();
-                                // Clear patient-identifying fields so templates are reusable across patients
-                                if (data.f) {
-                                  data.f = { ...data.f, name: "", age: "", sex: "", ipno: "", doa: "", dod: "" };
-                                  async function setDefaultSavedTemplate(id) {
-                                    const target = savedTemplates.find(t => t && t.id === id);
-                                    if (!target) return;
-                                    savedTemplates.forEach(t => { if (t) t.isDefault = (t.id === id); });
-                                    const fields = (target.data && target.data.f && typeof target.data.f === "object") ? target.data.f : (target.data || {});
-                                    const d = {};
-                                    DEFAULT_FIELDS.forEach(fid => { if (fields[fid] != null) d[fid] = fields[fid]; });
-                                    if (Object.keys(d).length > 0) {
-                                      await store.set(getDefaultsKey(), JSON.stringify(d));
-                                      applyDefaults(d);
-                                    }
-                                    await persistSavedTemplates(true);
-                                    toast(`"${target.name}" set as default template ★`);
-                                  }
-                                }
-
-                                const nowIso = new Date().toISOString();
-                                const existingIdx = savedTemplates.findIndex(t => t && t.name.toLowerCase() === name.toLowerCase());
-                                if (existingIdx >= 0) {
-                                  savedTemplates[existingIdx] = {
-                                    ...savedTemplates[existingIdx],
-                                    name,
-                                    kind,
-                                    department: val("dept") || "",
-                                    updated_at: nowIso,
-                                    data
-                                  };
-                                } else {
-                                  savedTemplates.unshift({
-                                    id: generateUUID(),
-                                    name,
-                                    kind,
-                                    department: val("dept") || "",
-                                    isDefault: savedTemplates.length === 0,
-                                    updated_at: nowIso,
-                                    data
-                                  });
-                                }
-                                async function deleteSavedTemplate(id) {
-                                  const idx = savedTemplates.findIndex(t => t && t.id === id);
-                                  if (idx < 0) return;
-                                  const name = savedTemplates[idx].name;
-                                  if (!confirm(`Delete saved template "${name}"?`)) return;
-                                  savedTemplates.splice(idx, 1);
-                                  await persistSavedTemplates(true);
-                                  toast(`Deleted template "${name}"`);
-                                }
-
-                                if (inp) inp.value = "";
-                                await persistSavedTemplates(true);
-                                toast(`Template "${name}" saved (${savedTemplates.length} total) ✓`);
-                              }
-                              function exportSingleTemplate(id) {
-                                const tpl = savedTemplates.find(t => t && t.id === id);
-                                if (!tpl) return;
-                                const clean = tpl.name.replace(/[^a-zA-Z0-9_-]+/g, "_") || "template";
-                                const blob = new Blob([JSON.stringify(tpl, null, 2)], { type: "application/json" });
-                                const a = document.createElement("a");
-                                a.href = URL.createObjectURL(blob);
-                                a.download = `ds-template-${clean}.json`;
-                                a.click();
-                                toast(`Exported "${tpl.name}"`);
-                              }
-
-                              async function applySavedTemplate(id) {
-                                const tpl = savedTemplates.find(t => t && t.id === id);
-                                if (!tpl || !tpl.data) return;
-                                if (tpl.kind === "defaults") {
-                                  const fields = (tpl.data.f && typeof tpl.data.f === "object") ? tpl.data.f : tpl.data;
-                                  applyDefaults(fields);
-                                  render();
-                                  scheduleSave();
-                                } else {
-                                  await loadJsonTemplate(tpl.data, false);
-                                }
-                                closeTemplatesModal();
-                                toast(`Applied template "${tpl.name}" ✓`);
-                              }
-                              function exportAllTemplates() {
-                                if (!savedTemplates.length) {
-                                  toast("No saved templates to export yet");
-                                  return;
-                                }
-                                const blob = new Blob([JSON.stringify({ version: 2, templates: savedTemplates }, null, 2)], { type: "application/json" });
-                                const a = document.createElement("a");
-                                a.href = URL.createObjectURL(blob);
-                                a.download = `ds-templates-bundle-${new Date().toISOString().slice(0, 10)}.json`;
-                                a.click();
-                                toast(`Exported ${savedTemplates.length} template(s) ✓`);
-                              }
-
-                              async function setDefaultSavedTemplate(id) {
-                                const target = savedTemplates.find(t => t && t.id === id);
-                                if (!target) return;
-                                savedTemplates.forEach(t => { if (t) t.isDefault = (t.id === id); });
-                                const fields = (target.data && target.data.f && typeof target.data.f === "object") ? target.data.f : (target.data || {});
-                                const d = {};
-                                DEFAULT_FIELDS.forEach(fid => { if (fields[fid] != null) d[fid] = fields[fid]; });
-                                if (Object.keys(d).length > 0) {
-                                  await store.set(getDefaultsKey(), JSON.stringify(d));
-                                  applyDefaults(d);
-                                }
-                                await persistSavedTemplates(true);
-                                toast(`"${target.name}" set as default template ★`);
-                              }
-
-                              async function deleteSavedTemplate(id) {
-                                const idx = savedTemplates.findIndex(t => t && t.id === id);
-                                if (idx < 0) return;
-                                const name = savedTemplates[idx].name;
-                                if (!confirm(`Delete saved template "${name}"?`)) return;
-                                savedTemplates.splice(idx, 1);
-                                await persistSavedTemplates(true);
-                                toast(`Deleted template "${name}"`);
-                              }
-
-                              function exportSingleTemplate(id) {
-                                const tpl = savedTemplates.find(t => t && t.id === id);
-                                if (!tpl) return;
-                                const clean = tpl.name.replace(/[^a-zA-Z0-9_-]+/g, "_") || "template";
-                                const blob = new Blob([JSON.stringify(tpl, null, 2)], { type: "application/json" });
-                                const a = document.createElement("a");
-                                a.href = URL.createObjectURL(blob);
-                                a.download = `ds-template-${clean}.json`;
-                                a.click();
-                                toast(`Exported "${tpl.name}"`);
-                              }
-
-                              function exportAllTemplates() {
-                                if (!savedTemplates.length) {
-                                  toast("No saved templates to export yet");
-                                  return;
-                                }
-                                const blob = new Blob([JSON.stringify({ version: 2, templates: savedTemplates }, null, 2)], { type: "application/json" });
-                                const a = document.createElement("a");
-                                a.href = URL.createObjectURL(blob);
-                                a.download = `ds-templates-bundle-${new Date().toISOString().slice(0, 10)}.json`;
-                                a.click();
-                                toast(`Exported ${savedTemplates.length} template(s) ✓`);
-                              }
-
-                              function importTemplateIntoLibrary() {
-                                const inp = document.createElement("input");
-                                inp.type = "file";
-                                inp.accept = ".json,application/json";
-                                inp.multiple = true;
-                                inp.onchange = async () => {
-                                  const files = Array.from(inp.files || []);
-                                  if (!files.length) return;
-                                  let added = 0;
-                                  for (const f of files) {
-                                    const parsed = safeParse(await f.text());
-                                    if (!parsed || typeof parsed !== "object") continue;
-                                    if (Array.isArray(parsed.templates)) {
-                                      parsed.templates.forEach(t => {
-                                        if (t && t.name && t.data) {
-                                          function importTemplateIntoLibrary() {
-                                            const inp = document.createElement("input");
-                                            inp.type = "file";
-                                            inp.accept = ".json,application/json";
-                                            inp.multiple = true;
-                                            inp.onchange = async () => {
-                                              const files = Array.from(inp.files || []);
-                                              if (!files.length) return;
-                                              let added = 0;
-                                              for (const f of files) {
-                                                const parsed = safeParse(await f.text());
-                                                if (!parsed || typeof parsed !== "object") continue;
-                                                if (Array.isArray(parsed.templates)) {
-                                                  parsed.templates.forEach(t => {
-                                                    if (t && t.name && t.data) {
-                                                      savedTemplates.unshift({
-                                                        id: t.id || generateUUID(),
-                                                        name: t.name,
-                                                        kind: t.kind || "full",
-                                                        department: t.department || "",
-                                                        isDefault: false,
-                                                        updated_at: t.updated_at || new Date().toISOString(),
-                                                        data: t.data
-                                                      });
-                                                      added++;
-                                                    }
-                                                  });
-                                                } else {
-                                                  const tplName = parsed.name || f.name.replace(/\.json$/i, "") || `Imported Template ${savedTemplates.length + 1}`;
-                                                  const payload = parsed.data || parsed.draft || parsed.template || parsed;
-                                                  savedTemplates.unshift({
-                                                    id: t.id || generateUUID(),
-                                                    name: t.name,
-                                                    kind: t.kind || "full",
-                                                    department: t.department || "",
-                                                    id: generateUUID(),
-                                                    name: tplName,
-                                                    kind: parsed.kind || "full",
-                                                    department: (payload.f && payload.f.dept) || payload.dept || "",
-                                                    isDefault: false,
-                                                    updated_at: t.updated_at || new Date().toISOString(),
-                                                    data: t.data
+            const tplName = parsed.name || f.name.replace(/\.json$/i, "") || `Imported Template ${savedTemplates.length + 1}`;
+            const payload = parsed.data || parsed.draft || parsed.template || parsed;
+            savedTemplates.unshift({
+              id: generateUUID(),
+              name: tplName,
+              kind: parsed.kind || "full",
+              department: (payload.f && payload.f.dept) || payload.dept || "",
+              isDefault: false,
               updated_at: new Date().toISOString(),
-                                                    data: payload
-                                                  });
-                                                  added++;
-                                                }
-                                              });
-                                    } else {
-                                      const tplName = parsed.name || f.name.replace(/\.json$/i, "") || `Imported Template ${savedTemplates.length + 1}`;
-                                      const payload = parsed.data || parsed.draft || parsed.template || parsed;
-                                      savedTemplates.unshift({
-                                        id: generateUUID(),
-                                        name: tplName,
-                                        kind: parsed.kind || "full",
-                                        department: (payload.f && payload.f.dept) || payload.dept || "",
-                                        isDefault: false,
-                                        updated_at: new Date().toISOString(),
-                                        data: payload
-                                      });
-                                      added++;
-                                    }
-                                    if (added > 0) {
-                                      await persistSavedTemplates(true);
-                                      toast(`Imported ${added} template(s) into library ✓`);
-                                    } else {
-                                      toast("Could not parse template JSON file");
-                                    }
-                                  };
-                                  inp.click();
-                                }
+              data: payload
+            });
+            added++;
+          }
+        }
+        if (added > 0) {
+          await persistSavedTemplates(true);
+          toast(`Imported ${added} template(s) into library ✓`);
+        } else {
+          toast("Could not parse template JSON file");
+        }
+      };
+      inp.click();
+    }
 
-                                function openTemplatesModal(focusInput = false) {
-                                  renderSavedTemplatesUI();
-                                  const modal = document.getElementById("templatesModal");
-                                  if (modal) modal.style.display = "flex";
-                                  if (focusInput) {
-                                    setTimeout(() => {
-                                      const inp = document.getElementById("modalTplName");
-                                      if (inp) inp.focus();
-                                    }, 60);
-                                  }
-                                }
-                                if (added > 0) {
-                                  await persistSavedTemplates(true);
-                                  toast(`Imported ${added} template(s) into library ✓`);
-                                } else {
-                                  toast("Could not parse template JSON file");
+    function openTemplatesModal(focusInput = false) {
+      renderSavedTemplatesUI();
+      const modal = document.getElementById("templatesModal");
+      if (modal) modal.style.display = "flex";
+      if (focusInput) {
+        setTimeout(() => {
+          const inp = document.getElementById("modalTplName");
+          if (inp) inp.focus();
+        }, 60);
+      }
+    }
 
-                                  function closeTemplatesModal() {
-                                    const modal = document.getElementById("templatesModal");
-                                    if (modal) modal.style.display = "none";
-                                  }
-                                };
-                                inp.click();
-                              }
+    function closeTemplatesModal() {
+      const modal = document.getElementById("templatesModal");
+      if (modal) modal.style.display = "none";
+    }
 
-                              function openTemplatesModal(focusInput = false) {
-                                renderSavedTemplatesUI();
-                                const modal = document.getElementById("templatesModal");
-                                if (modal) modal.style.display = "flex";
-                                if (focusInput) {
-                                  setTimeout(() => {
-                                    const inp = document.getElementById("modalTplName");
-                                    if (inp) inp.focus();
-                                  }, 60);
-                                }
-                              }
-                              function renderSavedTemplatesUI() {
-                                const countBadge = document.getElementById("savedTplCountBadge");
-                                if (countBadge) countBadge.textContent = String(savedTemplates.length);
+    function renderSavedTemplatesUI() {
+      const countBadge = document.getElementById("savedTplCountBadge");
+      if (countBadge) countBadge.textContent = String(savedTemplates.length);
 
-                                function closeTemplatesModal() {
-                                  const modal = document.getElementById("templatesModal");
-                                  if (modal) modal.style.display = "none";
-                                }
-
-                                function renderSavedTemplatesUI() {
-                                  const countBadge = document.getElementById("savedTplCountBadge");
-                                  if (countBadge) countBadge.textContent = String(savedTemplates.length);
-
-                                  const buildListHTML = () => {
-                                    if (!savedTemplates.length) {
-                                      return `<div class="hint" style="margin:4px 0">No named templates saved yet. Enter a name above and tap <b>+ Save Template</b> to save as many unit or disease templates as you need.</div>`;
-                                    }
-                                    return savedTemplates.map(t => `
       const buildListHTML = () => {
         if (!savedTemplates.length) {
-          return `< div class= "hint" style = "margin:4px 0" > No named templates saved yet.Enter a name above and tap < b > + Save Template</b > to save as many unit or disease templates as you need.</div > `;
+          return `<div class="hint" style="margin:4px 0">No named templates saved yet. Enter a name above and tap <b>+ Save Template</b> to save as many unit or disease templates as you need.</div>`;
         }
         return savedTemplates.map(t => `
-                                    < div class= "tpl-item ${t.isDefault ? "is -default " : ""}" >
+          <div class="tpl-item ${t.isDefault ? "is-default" : ""}">
             <div class="tpl-item-info">
               <span class="tpl-item-name">${esc(t.name)}</span>
               <span class="tpl-badge">${t.kind === "defaults" ? "Header & Defaults" : "Full Clinical Form"}</span>
@@ -5611,17 +3003,10 @@ async function saveNamedTemplateFromInput(nameInputId, scopeSelectId) {
               <button type="button" class="btn sm out" onclick="exportSingleTemplate('${esc(t.id)}')" title="Download .json">⬇</button>
               <button type="button" class="btn sm danger" onclick="deleteSavedTemplate('${esc(t.id)}')" title="Delete template">×</button>
             </div>
-          </div >
-                                    `).join("");
-  };
+          </div>
+        `).join("");
       };
 
-  const html = buildListHTML();
-  const inlineBox = document.getElementById("inlineTemplateList");
-  if (inlineBox) inlineBox.innerHTML = html;
-  const modalBox = document.getElementById("modalTemplateList");
-  if (modalBox) modalBox.innerHTML = html;
-}
       const html = buildListHTML();
       const inlineBox = document.getElementById("inlineTemplateList");
       if (inlineBox) inlineBox.innerHTML = html;
@@ -5629,20 +3014,6 @@ async function saveNamedTemplateFromInput(nameInputId, scopeSelectId) {
       if (modalBox) modalBox.innerHTML = html;
     }
 
-/* ---------- Multi-Patient Record Persistence & Cloud Save ---------- */
-function buildRecordFromEditor(existing = null) {
-  const payload = collectDraft();
-  if (existing && existing.payload && existing.payload.__shared_from) {
-    payload.__shared_from = existing.payload.__shared_from;
-  }
-  const f = payload.f || {};
-  const nowIso = new Date().toISOString();
-  const diagPreview = (f.diagnosis || "")
-    .split("\n")
-    .map(s => s.trim())
-    .filter(Boolean)
-    .join(" • ")
-    .slice(0, 240);
     /* ---------- Multi-Patient Record Persistence & Cloud Save ---------- */
     function buildRecordFromEditor(existing = null) {
       const payload = collectDraft();
@@ -5658,23 +3029,6 @@ function buildRecordFromEditor(existing = null) {
         .join(" • ")
         .slice(0, 240);
 
-  return {
-    id: currentRecordId || generateUUID(),
-    user_id: currentUser ? currentUser.id : null,
-    status: currentRecordStatus || "incomplete",
-    patient_name: (f.name || "").trim(),
-    ip_no: (f.ipno || "").trim(),
-    doa: normalizeDateValue(f.doa),
-    dod: normalizeDateValue(f.dod),
-    unit: ((f.unitPrefix || "") + (f.unitRoman || "")).trim(),
-    diagnosis_preview: diagPreview,
-    payload,
-    created_at: (existing && existing.created_at) || currentRecordCreatedAt || nowIso,
-    updated_at: nowIso,
-    synced_at: existing ? existing.synced_at : null,
-    dirty: true
-  };
-}
       return {
         id: currentRecordId || generateUUID(),
         user_id: currentUser ? currentUser.id : null,
@@ -5693,13 +3047,6 @@ function buildRecordFromEditor(existing = null) {
       };
     }
 
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  updateSaveStatusBadge("pending");
-  saveTimer = setTimeout(() => {
-    saveCurrentRecordNow(false);
-  }, 500);
-}
     function scheduleSave() {
       clearTimeout(saveTimer);
       updateSaveStatusBadge("pending");
@@ -5708,65 +3055,37 @@ function scheduleSave() {
       }, 500);
     }
 
-async function saveCurrentRecordNow(explicit = false) {
-  if (suppressSave && !explicit) return null;
-  clearTimeout(saveTimer);
     async function saveCurrentRecordNow(explicit = false) {
       if (suppressSave && !explicit) return null;
       clearTimeout(saveTimer);
 
-  const draft = collectDraft();
-  const idx = currentRecordId ? records.findIndex(r => r.id === currentRecordId) : -1;
       const draft = collectDraft();
       const idx = currentRecordId ? records.findIndex(r => r.id === currentRecordId) : -1;
 
-  if (!explicit && idx === -1 && !hasRecordPersisted && !hasPatientContent(draft)) {
-    updateSaveStatusBadge(currentUser ? "synced" : "local");
-    return null;
-  }
       if (!explicit && idx === -1 && !hasRecordPersisted && !hasPatientContent(draft)) {
         updateSaveStatusBadge(currentUser ? "synced" : "local");
         return null;
       }
 
-  if (!currentRecordId) currentRecordId = generateUUID();
-  if (!currentRecordCreatedAt) currentRecordCreatedAt = new Date().toISOString();
-  hasRecordPersisted = true;
       if (!currentRecordId) currentRecordId = generateUUID();
       if (!currentRecordCreatedAt) currentRecordCreatedAt = new Date().toISOString();
       hasRecordPersisted = true;
 
-  const existing = idx >= 0 ? records[idx] : null;
-  const updated = buildRecordFromEditor(existing);
       const existing = idx >= 0 ? records[idx] : null;
       const updated = buildRecordFromEditor(existing);
 
-  if (idx >= 0) {
-    records[idx] = updated;
-  } else {
-    records.unshift(updated);
-  }
       if (idx >= 0) {
         records[idx] = updated;
       } else {
         records.unshift(updated);
       }
 
-  await persistScopedRecords();
-  await store.set(getActiveIdKey(), updated.id);
       await persistScopedRecords();
       await store.set(getActiveIdKey(), updated.id);
 
-  updateActivePatientBar();
-  if (activeTab === "dashboard") renderDashboard();
       updateActivePatientBar();
       if (activeTab === "dashboard") renderDashboard();
 
-  if (hasCloudAuthSession()) {
-    if (explicit) {
-      if (navigator.onLine) {
-        await upsertRecordToSupabase(updated);
-        toast("Summary saved to Supabase ✓");
       if (hasCloudAuthSession()) {
         if (explicit) {
           if (navigator.onLine) {
@@ -5788,40 +3107,18 @@ async function saveCurrentRecordNow(explicit = false) {
           }, 1200);
         }
       } else {
-        syncState = "offline";
-        updateSyncIndicators();
-        toast("Offline — draft saved on device & queued for sync");
         updateSaveStatusBadge("local");
         if (explicit) toast("Patient draft saved on device ✓");
       }
-    } else {
-      updateSaveStatusBadge(navigator.onLine ? "syncing" : "offline");
-      clearTimeout(cloudSaveTimer);
-      cloudSaveTimer = setTimeout(() => {
-        const latest = records.find(r => r.id === updated.id);
-        if (latest && latest.dirty && hasCloudAuthSession() && navigator.onLine) {
-          upsertRecordToSupabase(latest);
-        }
-      }, 1200);
 
       return updated;
     }
-  } else {
-    updateSaveStatusBadge("local");
-    if (explicit) toast("Patient draft saved on device ✓");
-  }
 
-  return updated;
-}
     async function persistScopedRecords(scope = getOwnerScope()) {
       await store.set(getRecordsKey(scope), JSON.stringify(records));
       await store.set(getDeletesKey(scope), JSON.stringify(pendingDeletes));
     }
 
-async function persistScopedRecords(scope = getOwnerScope()) {
-  await store.set(getRecordsKey(scope), JSON.stringify(records));
-  await store.set(getDeletesKey(scope), JSON.stringify(pendingDeletes));
-}
     async function loadScopedRecords() {
       const scope = getOwnerScope();
       const raw = safeParse(await store.get(getRecordsKey(scope)));
@@ -5829,24 +3126,6 @@ async function persistScopedRecords(scope = getOwnerScope()) {
       records = Array.isArray(raw) ? raw : [];
       pendingDeletes = Array.isArray(delRaw) ? delRaw : [];
 
-async function loadScopedRecords() {
-  const scope = getOwnerScope();
-  const raw = safeParse(await store.get(getRecordsKey(scope)));
-  const delRaw = safeParse(await store.get(getDeletesKey(scope)));
-  records = Array.isArray(raw) ? raw : [];
-  pendingDeletes = Array.isArray(delRaw) ? delRaw : [];
-
-  const legacyScope = getLegacyUserScope();
-  if (legacyScope && legacyScope !== scope) {
-    const legRaw = safeParse(await store.get(getRecordsKey(legacyScope)));
-    const legDel = safeParse(await store.get(getDeletesKey(legacyScope)));
-    let migrated = false;
-    if (Array.isArray(legRaw) && legRaw.length) {
-      const seen = new Set(records.map(r => r && r.id));
-      legRaw.forEach(r => {
-        if (r && r.id && !seen.has(r.id)) {
-          records.push(r);
-          seen.add(r.id);
       const legacyScope = getLegacyUserScope();
       if (legacyScope && legacyScope !== scope) {
         const legRaw = safeParse(await store.get(getRecordsKey(legacyScope)));
@@ -5862,8 +3141,6 @@ async function loadScopedRecords() {
           });
           migrated = true;
         }
-      });
-      migrated = true;
         if (Array.isArray(legDel) && legDel.length) {
           const delSet = new Set([...pendingDeletes, ...legDel]);
           pendingDeletes = Array.from(delSet);
@@ -5879,10 +3156,6 @@ async function loadScopedRecords() {
         await store.remove(getActiveIdKey(legacyScope));
       }
     }
-    if (Array.isArray(legDel) && legDel.length) {
-      const delSet = new Set([...pendingDeletes, ...legDel]);
-      pendingDeletes = Array.from(delSet);
-      migrated = true;
 
     async function checkGuestDraftsForMigration() {
       if (!currentUser) {
@@ -5895,28 +3168,7 @@ async function loadScopedRecords() {
       guestDraftsCount = guestList.length;
       guestDraftsPromptVisible = guestDraftsCount > 0;
     }
-    const legActive = await store.get(getActiveIdKey(legacyScope));
-    if (legActive && !(await store.get(getActiveIdKey(scope)))) {
-      await store.set(getActiveIdKey(scope), legActive);
-    }
-    if (migrated) await persistScopedRecords(scope);
-    await store.remove(getRecordsKey(legacyScope));
-    await store.remove(getDeletesKey(legacyScope));
-    await store.remove(getActiveIdKey(legacyScope));
-  }
-}
 
-async function checkGuestDraftsForMigration() {
-  if (!currentUser) {
-    guestDraftsPromptVisible = false;
-    guestDraftsCount = 0;
-    return;
-  }
-  const guestRaw = safeParse(await store.get(getRecordsKey("guest")));
-  const guestList = Array.isArray(guestRaw) ? guestRaw : [];
-  guestDraftsCount = guestList.length;
-  guestDraftsPromptVisible = guestDraftsCount > 0;
-}
     async function migrateGuestDraftsToAccount() {
       if (!currentUser) return;
       const guestRaw = safeParse(await store.get(getRecordsKey("guest")));
@@ -5927,15 +3179,6 @@ async function checkGuestDraftsForMigration() {
         return;
       }
 
-async function migrateGuestDraftsToAccount() {
-  if (!currentUser) return;
-  const guestRaw = safeParse(await store.get(getRecordsKey("guest")));
-  const guestList = Array.isArray(guestRaw) ? guestRaw : [];
-  if (!guestList.length) {
-    guestDraftsPromptVisible = false;
-    renderDashboard();
-    return;
-  }
       const existingIds = new Set(records.map(r => r.id));
       let importedCount = 0;
       guestList.forEach(item => {
@@ -5950,47 +3193,21 @@ async function migrateGuestDraftsToAccount() {
         importedCount++;
       });
 
-  const existingIds = new Set(records.map(r => r.id));
-  let importedCount = 0;
-  guestList.forEach(item => {
-    if (!item || !item.id) return;
-    const copy = {
-      ...item,
-      id: existingIds.has(item.id) ? generateUUID() : item.id,
-      user_id: currentUser.id,
-      dirty: true
-    };
-    records.unshift(copy);
-    importedCount++;
-  });
       await persistScopedRecords();
       await store.remove(getRecordsKey("guest"));
       await store.remove(getActiveIdKey("guest"));
       guestDraftsPromptVisible = false;
       guestDraftsCount = 0;
       renderDashboard();
-      toast(`Moved ${ importedCount } local draft(s) to your account`);
+      toast(`Moved ${importedCount} local draft(s) to your account`);
       if (hasCloudAuthSession() && navigator.onLine) await syncNow(false);
     }
 
-  await persistScopedRecords();
-  await store.remove(getRecordsKey("guest"));
-  await store.remove(getActiveIdKey("guest"));
-  guestDraftsPromptVisible = false;
-  guestDraftsCount = 0;
-  renderDashboard();
-  toast(`Moved ${ importedCount } local draft(s) to your account`);
-  if (hasCloudAuthSession() && navigator.onLine) await syncNow(false);
-}
     async function dismissGuestMigration() {
       guestDraftsPromptVisible = false;
       renderDashboard();
     }
 
-async function dismissGuestMigration() {
-  guestDraftsPromptVisible = false;
-  renderDashboard();
-}
     /* ---------- Create / Open / Toggle / Duplicate / Delete Patient Records ---------- */
     async function newSummary(skipConfirm = false) {
       if (activeTab !== "dashboard" && !skipConfirm) {
@@ -6003,17 +3220,6 @@ async function dismissGuestMigration() {
         await saveCurrentRecordNow(false);
       }
 
-/* ---------- Create / Open / Toggle / Duplicate / Delete Patient Records ---------- */
-async function newSummary(skipConfirm = false) {
-  if (activeTab !== "dashboard" && !skipConfirm) {
-    const draft = collectDraft();
-    if (hasPatientContent(draft) && !hasRecordPersisted) {
-      if (!confirm("Start a new patient? Unsaved entries in the current form will be cleared. Your saved defaults are kept.")) return;
-    }
-  }
-  if (hasRecordPersisted || hasPatientContent(collectDraft())) {
-    await saveCurrentRecordNow(false);
-  }
       suppressSave = true;
       try {
         resetEditorFieldsOnly();
@@ -6033,63 +3239,28 @@ async function newSummary(skipConfirm = false) {
         suppressSave = false;
       }
 
-  suppressSave = true;
-  try {
-    resetEditorFieldsOnly();
-    const def = await getActiveDefaults();
-    if (def) applyDefaults(def);
-    if (currentUser && currentUser.user_metadata && currentUser.user_metadata.full_name && !val("preparedBy")) {
-      setVal_("preparedBy", currentUser.user_metadata.full_name);
       await store.remove(getActiveIdKey());
       showTab("form");
       const patientCard = document.querySelector('#formTab details[data-clear="patient"]');
       if (patientCard) patientCard.open = true;
       toast("New incomplete patient ready — defaults kept");
     }
-    currentRecordId = generateUUID();
-    currentRecordStatus = "incomplete";
-    currentRecordCreatedAt = new Date().toISOString();
-    hasRecordPersisted = false;
-    setVal_("dod", todayISO());
-    renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
-    render(false);
-  } finally {
-    suppressSave = false;
-  }
 
-  await store.remove(getActiveIdKey());
-  showTab("form");
-  const patientCard = document.querySelector('#formTab details[data-clear="patient"]');
-  if (patientCard) patientCard.open = true;
-  toast("New incomplete patient ready — defaults kept");
-}
     async function openRecord(id, targetTab = "form") {
       await saveCurrentRecordNow(false);
       const rec = records.find(r => r.id === id);
       if (!rec) { toast("Patient summary not found"); return; }
 
-async function openRecord(id, targetTab = "form") {
-  await saveCurrentRecordNow(false);
-  const rec = records.find(r => r.id === id);
-  if (!rec) { toast("Patient summary not found"); return; }
       currentRecordId = rec.id;
       currentRecordStatus = rec.status || "incomplete";
       currentRecordCreatedAt = rec.created_at || rec.updated_at || new Date().toISOString();
       hasRecordPersisted = true;
 
-  currentRecordId = rec.id;
-  currentRecordStatus = rec.status || "incomplete";
-  currentRecordCreatedAt = rec.created_at || rec.updated_at || new Date().toISOString();
-  hasRecordPersisted = true;
       restoreDraft(rec.payload || {}, { preserveDod: true });
       await store.set(getActiveIdKey(), rec.id);
       showTab(targetTab);
     }
 
-  restoreDraft(rec.payload || {}, { preserveDod: true });
-  await store.set(getActiveIdKey(), rec.id);
-  showTab(targetTab);
-}
     async function toggleRecordStatus(id) {
       const rec = records.find(r => r.id === id);
       if (!rec) return;
@@ -6108,34 +3279,12 @@ async function openRecord(id, targetTab = "form") {
       toast(rec.status === "completed" ? "Marked as Completed ✓" : "Moved back to Incomplete");
     }
 
-async function toggleRecordStatus(id) {
-  const rec = records.find(r => r.id === id);
-  if (!rec) return;
-  rec.status = rec.status === "completed" ? "incomplete" : "completed";
-  rec.updated_at = new Date().toISOString();
-  rec.dirty = true;
-  if (currentRecordId === id) {
-    currentRecordStatus = rec.status;
-    updateActivePatientBar();
-  }
-  await persistScopedRecords();
-  renderDashboard();
-  if (hasCloudAuthSession() && navigator.onLine) {
-    await upsertRecordToSupabase(rec);
-  }
-  toast(rec.status === "completed" ? "Marked as Completed ✓" : "Moved back to Incomplete");
-}
     async function toggleActiveStatus() {
       currentRecordStatus = currentRecordStatus === "completed" ? "incomplete" : "completed";
       updateActivePatientBar();
       await saveCurrentRecordNow(true);
     }
 
-async function toggleActiveStatus() {
-  currentRecordStatus = currentRecordStatus === "completed" ? "incomplete" : "completed";
-  updateActivePatientBar();
-  await saveCurrentRecordNow(true);
-}
     async function duplicateRecord(id) {
       const src = records.find(r => r.id === id);
       if (!src) return;
@@ -6144,7 +3293,7 @@ async function toggleActiveStatus() {
       delete copyPayload.__shared_from;
       if (!copyPayload.f) copyPayload.f = {};
       const origName = (copyPayload.f.name || src.patient_name || "Patient").trim();
-      copyPayload.f.name = `${ origName } (Copy)`;
+      copyPayload.f.name = `${origName} (Copy)`;
       const copyRec = {
         ...src,
         id: generateUUID(),
@@ -6166,55 +3315,17 @@ async function toggleActiveStatus() {
       toast("Patient summary duplicated ✓");
     }
 
-async function duplicateRecord(id) {
-  const src = records.find(r => r.id === id);
-  if (!src) return;
-  const nowIso = new Date().toISOString();
-  const copyPayload = JSON.parse(JSON.stringify(src.payload || {}));
-  delete copyPayload.__shared_from;
-  if (!copyPayload.f) copyPayload.f = {};
-  const origName = (copyPayload.f.name || src.patient_name || "Patient").trim();
-  copyPayload.f.name = `${ origName } (Copy)`;
-  const copyRec = {
-    ...src,
-    id: generateUUID(),
-    user_id: currentUser ? currentUser.id : null,
-    status: "incomplete",
-    patient_name: copyPayload.f.name,
-    payload: copyPayload,
-    created_at: nowIso,
-    updated_at: nowIso,
-    synced_at: null,
-    dirty: true
-  };
-  records.unshift(copyRec);
-  await persistScopedRecords();
-  renderDashboard();
-  if (hasCloudAuthSession() && navigator.onLine) {
-    await upsertRecordToSupabase(copyRec);
-  }
-  toast("Patient summary duplicated ✓");
-}
     async function deleteRecord(id) {
       const rec = records.find(r => r.id === id);
       if (!rec) return;
       const label = rec.patient_name || rec.ip_no || "this patient draft";
-      if (!confirm(`Delete discharge summary for "${label}" ?\n\nThis cannot be undone.`)) return;
+      if (!confirm(`Delete discharge summary for "${label}"?\n\nThis cannot be undone.`)) return;
 
-async function deleteRecord(id) {
-  const rec = records.find(r => r.id === id);
-  if (!rec) return;
-  const label = rec.patient_name || rec.ip_no || "this patient draft";
-  if (!confirm(`Delete discharge summary for "${label}" ?\n\nThis cannot be undone.`)) return;
       const sharedId = rec.payload && rec.payload.__shared_from && rec.payload.__shared_from.share_id;
       if (sharedId) {
         await markShareIdImported(sharedId);
       }
 
-  const sharedId = rec.payload && rec.payload.__shared_from && rec.payload.__shared_from.share_id;
-  if (sharedId) {
-    await markShareIdImported(sharedId);
-  }
       records = records.filter(r => r.id !== id);
       if (currentUser && !pendingDeletes.includes(id)) {
         pendingDeletes.push(id);
@@ -6238,25 +3349,6 @@ async function deleteRecord(id) {
         await store.remove(getActiveIdKey());
       }
 
-  records = records.filter(r => r.id !== id);
-  if (currentUser && !pendingDeletes.includes(id)) {
-    pendingDeletes.push(id);
-  }
-  if (currentRecordId === id) {
-    currentRecordId = generateUUID();
-    currentRecordStatus = "incomplete";
-    currentRecordCreatedAt = new Date().toISOString();
-    hasRecordPersisted = false;
-    suppressSave = true;
-    try {
-      resetEditorFieldsOnly();
-      const def = await getActiveDefaults();
-      if (def) applyDefaults(def);
-      setVal_("dod", todayISO());
-      renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
-      render(false);
-    } finally {
-      suppressSave = false;
       await persistScopedRecords();
       renderDashboard();
 
@@ -6265,35 +3357,19 @@ async function deleteRecord(id) {
       }
       toast("Patient summary deleted");
     }
-    await store.remove(getActiveIdKey());
-  }
 
-  await persistScopedRecords();
-  renderDashboard();
     /* ---------- Active Patient Context Bar Helpers ---------- */
     function updateActivePatientBar() {
       const ptName = val("name") || (hasRecordPersisted ? "Unnamed Patient" : "New Patient Draft");
       const ipNo = val("ipno");
-      const titleText = ipNo ? `${ ptName } · IP: ${ ipNo } ` : ptName;
+      const titleText = ipNo ? `${ptName} · IP: ${ipNo}` : ptName;
 
-  if (hasCloudAuthSession() && navigator.onLine) {
-    await flushPendingDeletes();
-  }
-  toast("Patient summary deleted");
-}
       const titleEl = document.getElementById("activePatientTitle");
       if (titleEl) titleEl.textContent = titleText;
 
-/* ---------- Active Patient Context Bar Helpers ---------- */
-function updateActivePatientBar() {
-  const ptName = val("name") || (hasRecordPersisted ? "Unnamed Patient" : "New Patient Draft");
-  const ipNo = val("ipno");
-  const titleText = ipNo ? `${ ptName } · IP: ${ ipNo } ` : ptName;
       const sumTitleEl = document.getElementById("summaryPatientTitle");
       if (sumTitleEl) sumTitleEl.textContent = titleText;
 
-  const titleEl = document.getElementById("activePatientTitle");
-  if (titleEl) titleEl.textContent = titleText;
       const isComp = currentRecordStatus === "completed";
       ["activeStatusBtn", "summaryStatusBtn"].forEach(id => {
         const btn = document.getElementById(id);
@@ -6306,22 +3382,9 @@ function updateActivePatientBar() {
       const st2 = document.getElementById("summaryStatusText");
       if (st2) st2.textContent = isComp ? "✓ Completed" : "⏳ Incomplete";
 
-  const sumTitleEl = document.getElementById("summaryPatientTitle");
-  if (sumTitleEl) sumTitleEl.textContent = titleText;
       updateSaveStatusBadge();
     }
 
-  const isComp = currentRecordStatus === "completed";
-  ["activeStatusBtn", "summaryStatusBtn"].forEach(id => {
-    const btn = document.getElementById(id);
-    if (!btn) return;
-    btn.classList.toggle("completed", isComp);
-    btn.classList.toggle("incomplete", !isComp);
-  });
-  const st1 = document.getElementById("activeStatusText");
-  if (st1) st1.textContent = isComp ? "✓ Completed" : "⏳ Incomplete";
-  const st2 = document.getElementById("summaryStatusText");
-  if (st2) st2.textContent = isComp ? "✓ Completed" : "⏳ Incomplete";
     function updateSaveStatusBadge(override = null) {
       const metaEl = document.getElementById("activePatientMeta");
       if (!metaEl) return;
@@ -6329,30 +3392,16 @@ function updateActivePatientBar() {
       let statusMsg = "Auto-save ready";
       const mode = override || (hasCloudAuthSession() ? (rec && rec.dirty ? (navigator.onLine ? "pending" : "offline") : "synced") : "local");
 
-  updateSaveStatusBadge();
-}
       if (mode === "pending") statusMsg = hasCloudAuthSession() ? "Saving..." : "Unsaved changes";
       else if (mode === "syncing") statusMsg = "Syncing...";
       else if (mode === "offline") statusMsg = "Saved · Offline queue";
       else if (mode === "synced") statusMsg = "☁ Synced";
-      else if (mode === "error") statusMsg = `⚠ Local only · ${ lastSyncError || "Sync error" } `;
-      else if (hasRecordPersisted || (rec && rec.updated_at)) statusMsg = `📱 Saved${ rec && rec.updated_at ? " · " + formatRelativeTime(rec.updated_at) : "" } `;
+      else if (mode === "error") statusMsg = `⚠ Local only · ${lastSyncError || "Sync error"}`;
+      else if (hasRecordPersisted || (rec && rec.updated_at)) statusMsg = `📱 Saved${rec && rec.updated_at ? " · " + formatRelativeTime(rec.updated_at) : ""}`;
 
-function updateSaveStatusBadge(override = null) {
-  const metaEl = document.getElementById("activePatientMeta");
-  if (!metaEl) return;
-  const rec = currentRecordId ? records.find(r => r.id === currentRecordId) : null;
-  let statusMsg = "Auto-save ready";
-  const mode = override || (hasCloudAuthSession() ? (rec && rec.dirty ? (navigator.onLine ? "pending" : "offline") : "synced") : "local");
       metaEl.textContent = statusMsg;
     }
 
-  if (mode === "pending") statusMsg = hasCloudAuthSession() ? "Saving..." : "Unsaved changes";
-  else if (mode === "syncing") statusMsg = "Syncing...";
-  else if (mode === "offline") statusMsg = "Saved · Offline queue";
-  else if (mode === "synced") statusMsg = "☁ Synced";
-  else if (mode === "error") statusMsg = `⚠ Local only · ${ lastSyncError || "Sync error" } `;
-  else if (hasRecordPersisted || (rec && rec.updated_at)) statusMsg = `📱 Saved${ rec && rec.updated_at ? " · " + formatRelativeTime(rec.updated_at) : "" } `;
     /* ---------- Dashboard Rendering, Filtering & Sorting ---------- */
     function computeRecordProgress(payload) {
       const p = payload || {};
@@ -6376,8 +3425,6 @@ function updateSaveStatusBadge(override = null) {
       return { filled, total, pct: Math.round((filled / total) * 100) };
     }
 
-  metaEl.textContent = statusMsg;
-}
     function formatRelativeTime(isoStr) {
       if (!isoStr) return "Just now";
       const d = new Date(isoStr);
@@ -6385,37 +3432,15 @@ function updateSaveStatusBadge(override = null) {
       const diffSec = Math.round((Date.now() - d.getTime()) / 1000);
       if (diffSec < 45) return "Just now";
       const diffMin = Math.round(diffSec / 60);
-      if (diffMin < 60) return `${ diffMin }m ago`;
+      if (diffMin < 60) return `${diffMin}m ago`;
       const diffHr = Math.round(diffMin / 60);
-      if (diffHr < 24) return `${ diffHr }h ago`;
+      if (diffHr < 24) return `${diffHr}h ago`;
       const dd = String(d.getDate()).padStart(2, "0");
       const mm = String(d.getMonth() + 1).padStart(2, "0");
       const yyyy = d.getFullYear();
-      return `${ dd }.${ mm }.${ yyyy } `;
+      return `${dd}.${mm}.${yyyy}`;
     }
 
-/* ---------- Dashboard Rendering, Filtering & Sorting ---------- */
-function computeRecordProgress(payload) {
-  const p = payload || {};
-  const f = p.f || {};
-  const checks = [
-    Boolean((f.name || "").trim() || (f.ipno || "").trim() || (f.age || "").trim()),
-    Boolean((f.doa || "").trim() || (f.dod || "").trim()),
-    Boolean((f.diagnosis || "").trim()),
-    Boolean((p.complaints || []).length),
-    Boolean((f.hopi || "").trim() || (p.pastHistory || []).length || (p.rxHistory || []).length),
-    Boolean((f.generalExam || "").trim() || (f.vBP || "").trim() || (f.vPR || "").trim() || (f.seCVS || "").trim() || (f.seRS || "").trim() || (f.sePA || "").trim() || (f.seCNS || "").trim()),
-    Boolean(((p.invDates || []).length && (p.invParams || []).some(row => (row.name || "").trim())) || (f.invOther || "").trim()),
-    Boolean((f.course || "").trim()),
-    Boolean((p.treatment || []).length),
-    Boolean((f.condition || "").trim() || (f.condExtra || "").trim()),
-    Boolean((p.rxMeds || []).length || (f.diet || "").trim() || (f.physicalActivity || "").trim()),
-    Boolean((f.preparedBy || "").trim() || (f.chief || "").trim() || (f.signDateTime || "").trim())
-  ];
-  const filled = checks.filter(Boolean).length;
-  const total = checks.length;
-  return { filled, total, pct: Math.round((filled / total) * 100) };
-}
     function setDashFilter(f) {
       dashFilter = f;
       document.querySelectorAll(".dash-stats .stat-card[data-filter]").forEach(b => b.classList.toggle("active", b.dataset.filter === f));
@@ -6423,21 +3448,6 @@ function computeRecordProgress(payload) {
       renderDashboard();
     }
 
-function formatRelativeTime(isoStr) {
-  if (!isoStr) return "Just now";
-  const d = new Date(isoStr);
-  if (isNaN(d.getTime())) return "";
-  const diffSec = Math.round((Date.now() - d.getTime()) / 1000);
-  if (diffSec < 45) return "Just now";
-  const diffMin = Math.round(diffSec / 60);
-  if (diffMin < 60) return `${ diffMin }m ago`;
-  const diffHr = Math.round(diffMin / 60);
-  if (diffHr < 24) return `${ diffHr }h ago`;
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  return `${ dd }.${ mm }.${ yyyy } `;
-}
     function setDashSearch(q) {
       dashSearch = (q || "").trim();
       const clr = document.getElementById("dashSearchClear");
@@ -6445,34 +3455,17 @@ function formatRelativeTime(isoStr) {
       renderDashboard();
     }
 
-function setDashFilter(f) {
-  dashFilter = f;
-  document.querySelectorAll(".dash-stats .stat-card[data-filter]").forEach(b => b.classList.toggle("active", b.dataset.filter === f));
-  document.querySelectorAll("#dashFilterPills .pill").forEach(b => b.classList.toggle("active", b.dataset.filter === f));
-  renderDashboard();
-}
     function clearDashSearch() {
       const inp = document.getElementById("dashSearch");
       if (inp) inp.value = "";
       setDashSearch("");
     }
 
-function setDashSearch(q) {
-  dashSearch = (q || "").trim();
-  const clr = document.getElementById("dashSearchClear");
-  if (clr) clr.style.display = dashSearch ? "block" : "none";
-  renderDashboard();
-}
     function setDashSort(s) {
       dashSort = s;
       renderDashboard();
     }
 
-function clearDashSearch() {
-  const inp = document.getElementById("dashSearch");
-  if (inp) inp.value = "";
-  setDashSearch("");
-}
     function setDashViewMode(mode) {
       dashViewMode = mode;
       const cBtn = document.getElementById("viewBtnCards");
@@ -6482,10 +3475,6 @@ function clearDashSearch() {
       renderDashboard();
     }
 
-function setDashSort(s) {
-  dashSort = s;
-  renderDashboard();
-}
     function getFilteredSortedRecords() {
       const q = dashSearch.toLowerCase();
       let list = records.filter(r => {
@@ -6503,14 +3492,6 @@ function setDashSort(s) {
         return hay.includes(q);
       });
 
-function setDashViewMode(mode) {
-  dashViewMode = mode;
-  const cBtn = document.getElementById("viewBtnCards");
-  const tBtn = document.getElementById("viewBtnTable");
-  if (cBtn) cBtn.classList.toggle("active", mode === "cards");
-  if (tBtn) tBtn.classList.toggle("active", mode === "table");
-  renderDashboard();
-}
       list.sort((a, b) => {
         if (dashSort === "updated_asc") return new Date(a.updated_at || 0) - new Date(b.updated_at || 0);
         if (dashSort === "doa_desc") return (b.doa || "").localeCompare(a.doa || "");
@@ -6521,59 +3502,20 @@ function setDashViewMode(mode) {
       return list;
     }
 
-function getFilteredSortedRecords() {
-  const q = dashSearch.toLowerCase();
-  let list = records.filter(r => {
-    const sharedMeta = (r.payload && r.payload.__shared_from) || null;
-    if (dashFilter === "incomplete" && r.status === "completed") return false;
-    if (dashFilter === "completed" && r.status !== "completed") return false;
-    if (dashFilter === "shared" && !sharedMeta) return false;
-    if (!q) return true;
-    const hay = [
-      r.patient_name, r.ip_no, r.unit, r.diagnosis_preview,
-      r.doa ? fmtDate(r.doa) : "", r.dod ? fmtDate(r.dod) : "",
-      sharedMeta ? sharedMeta.sender_name : "",
-      sharedMeta ? sharedMeta.sender_email : ""
-    ].join(" ").toLowerCase();
-    return hay.includes(q);
-  });
     function renderDashboardHeroAndAuth() {
       const hero = document.getElementById("dashHero");
       const authCard = document.getElementById("dashAuthCard");
       const migBanner = document.getElementById("guestMigrationBanner");
 
-  list.sort((a, b) => {
-    if (dashSort === "updated_asc") return new Date(a.updated_at || 0) - new Date(b.updated_at || 0);
-    if (dashSort === "doa_desc") return (b.doa || "").localeCompare(a.doa || "");
-    if (dashSort === "dod_desc") return (b.dod || "").localeCompare(a.dod || "");
-    if (dashSort === "name_asc") return (a.patient_name || "zzz").localeCompare(b.patient_name || "zzz");
-    return new Date(b.updated_at || 0) - new Date(a.updated_at || 0);
-  });
-  return list;
-}
       if (hero) {
         if (currentUser) {
           const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || currentUser.email || "Doctor";
           const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
-          let badgeHTML = `< span class="role-badge ok" >☁ Synced</span > `;
-          if (!navigator.onLine) badgeHTML = `< span class="role-badge warn" >📡 Offline</span > `;
-          else if (dirtyCount > 0) badgeHTML = `< span class="role-badge warn" >⏳ ${ dirtyCount } Pending</span > `;
+          let badgeHTML = `<span class="role-badge ok">☁ Synced</span>`;
+          if (!navigator.onLine) badgeHTML = `<span class="role-badge warn">📡 Offline</span>`;
+          else if (dirtyCount > 0) badgeHTML = `<span class="role-badge warn">⏳ ${dirtyCount} Pending</span>`;
 
-function renderDashboardHeroAndAuth() {
-  const hero = document.getElementById("dashHero");
-  const authCard = document.getElementById("dashAuthCard");
-  const migBanner = document.getElementById("guestMigrationBanner");
-
-  if (hero) {
-    if (currentUser) {
-      const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || currentUser.email || "Doctor";
-      const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
-      let badgeHTML = `< span class="role-badge ok" >☁ Synced</span > `;
-      if (!navigator.onLine) badgeHTML = `< span class="role-badge warn" >📡 Offline</span > `;
-      else if (dirtyCount > 0) badgeHTML = `< span class="role-badge warn" >⏳ ${ dirtyCount } Pending</span > `;
-
-      hero.innerHTML = `
-                                  hero.innerHTML = `
+          hero.innerHTML = `
             <div class="dash-hero-info">
               <h2>${esc(docName)} ${badgeHTML}</h2>
               <p>${esc(currentUser.email || "")}</p>
@@ -6585,40 +3527,28 @@ function renderDashboardHeroAndAuth() {
               <button type="button" class="btn sm out" onclick="signOutUser()">Sign Out</button>
             </div>
           `;
-                                } else {
-                                  hero.innerHTML = `
         } else {
           hero.innerHTML = `
-                                    < div class="dash-hero-info" >
-                                      <h2>Clinical Workspace</h2>
-            </div >
-                                    <div class="dash-hero-actions">
-                                      <button type="button" class="btn sm btn-google-hero" onclick="signInWithGoogle()">${GOOGLE_SVG} Sign in with Google</button>
-                                      <button type="button" class="btn sm out${offlineDismissedAuthCard ? " active-local-btn" : ""}" onclick="continueOfflineMode()">Local</button>
-            </div >
-                                    `;
-    }
-  }
+            <div class="dash-hero-info">
+              <h2>Clinical Workspace</h2>
+            </div>
+            <div class="dash-hero-actions">
+              <button type="button" class="btn sm btn-google-hero" onclick="signInWithGoogle()">${GOOGLE_SVG} Sign in with Google</button>
+              <button type="button" class="btn sm out${offlineDismissedAuthCard ? " active-local-btn" : ""}" onclick="continueOfflineMode()">Local</button>
+            </div>
+          `;
         }
       }
 
-  if (authCard) {
-    authCard.style.display = "none";
-    authCard.innerHTML = "";
-  }
       if (authCard) {
         authCard.style.display = "none";
         authCard.innerHTML = "";
       }
 
-  if (migBanner) {
-    if (currentUser && guestDraftsPromptVisible && guestDraftsCount > 0) {
-      migBanner.style.display = "flex";
-      migBanner.innerHTML = `
-                                  if (migBanner) {
-                                    if (currentUser && guestDraftsPromptVisible && guestDraftsCount > 0) {
-                                      migBanner.style.display = "flex";
-                                      migBanner.innerHTML = `
+      if (migBanner) {
+        if (currentUser && guestDraftsPromptVisible && guestDraftsCount > 0) {
+          migBanner.style.display = "flex";
+          migBanner.innerHTML = `
             <div>
               <b>${guestDraftsCount} local draft${guestDraftsCount > 1 ? "s" : ""} detected</b> · Merge into Google account?
             </div>
@@ -6627,67 +3557,42 @@ function renderDashboardHeroAndAuth() {
               <button type="button" class="btn sm out" onclick="dismissGuestMigration()">Keep Local</button>
             </div>
           `;
-                                    } else {
-                                      migBanner.style.display = "none";
-                                    } else {
-                                      migBanner.style.display = "none";
-                                    }
-                                  }
-                                }
-                              }
-                            }
+        } else {
+          migBanner.style.display = "none";
+        }
+      }
+    }
 
-                            function renderDashboard() {
-                              renderDashboardHeroAndAuth();
-                              renderFrequentContactsSection();
-                              updateSyncIndicators();
-                              function renderDashboard() {
-                                renderDashboardHeroAndAuth();
-                                renderFrequentContactsSection();
-                                updateSyncIndicators();
+    function renderDashboard() {
+      renderDashboardHeroAndAuth();
+      renderFrequentContactsSection();
+      updateSyncIndicators();
 
-                                const total = records.length;
-                                const completed = records.filter(r => r.status === "completed").length;
-                                const incomplete = total - completed;
-                                const total = records.length;
-                                const completed = records.filter(r => r.status === "completed").length;
-                                const incomplete = total - completed;
+      const total = records.length;
+      const completed = records.filter(r => r.status === "completed").length;
+      const incomplete = total - completed;
 
-                                const sTotal = document.getElementById("statTotal");
-                                const sInc = document.getElementById("statIncomplete");
-                                const sComp = document.getElementById("statCompleted");
-                                if (sTotal) sTotal.textContent = String(total);
-                                if (sInc) sInc.textContent = String(incomplete);
-                                if (sComp) sComp.textContent = String(completed);
-                                const sTotal = document.getElementById("statTotal");
-                                const sInc = document.getElementById("statIncomplete");
-                                const sComp = document.getElementById("statCompleted");
-                                if (sTotal) sTotal.textContent = String(total);
-                                if (sInc) sInc.textContent = String(incomplete);
-                                if (sComp) sComp.textContent = String(completed);
+      const sTotal = document.getElementById("statTotal");
+      const sInc = document.getElementById("statIncomplete");
+      const sComp = document.getElementById("statCompleted");
+      if (sTotal) sTotal.textContent = String(total);
+      if (sInc) sInc.textContent = String(incomplete);
+      if (sComp) sComp.textContent = String(completed);
 
-                                const container = document.getElementById("dashRecordsContainer");
-                                if (!container) return;
-                                const container = document.getElementById("dashRecordsContainer");
-                                if (!container) return;
+      const container = document.getElementById("dashRecordsContainer");
+      if (!container) return;
 
-                                const list = getFilteredSortedRecords();
-                                if (!list.length) {
-                                  const isFiltered = Boolean(dashSearch || dashFilter !== "all");
-                                  container.innerHTML = isFiltered
-                                    ? `<div class="dash-empty">
       const list = getFilteredSortedRecords();
       if (!list.length) {
         const isFiltered = Boolean(dashSearch || dashFilter !== "all");
         container.innerHTML = isFiltered
-          ? `< div class="dash-empty" >
+          ? `<div class="dash-empty">
                <h3>No matching records</h3>
                <p>${dashFilter === "shared" ? "No shared patient summaries received yet." : "Adjust search query or status filter."}</p>
                <div class="dash-empty-actions">
                  <button type="button" class="btn out" onclick="clearDashSearch();setDashFilter('all')">Reset Filters (${total})</button>
                </div>
-             </div > `
-      : `< div class="dash-empty" >
+             </div>`
           : `<div class="dash-empty">
                <h3>No patient records</h3>
                <p>Create a new discharge summary, load sample data, or import a JSON record.</p>
@@ -6696,93 +3601,69 @@ function renderDashboardHeroAndAuth() {
                  <button type="button" class="btn out" onclick="importDraft()">📂 Import JSON</button>
                </div>
              </div>`;
-                                  return;
-                                }
-                                return;
-                              }
+        return;
+      }
 
-                              const useTable = dashViewMode === "table" && window.innerWidth > 768;
-                              if (useTable) {
-                                container.innerHTML = renderDashboardTableHTML(list);
-                              } else {
-                                container.innerHTML = `<div class="dash-grid">${list.map(renderPatientCardHTML).join("")}</div>`;
-                              }
-                            }
-                            const useTable = dashViewMode === "table" && window.innerWidth > 768;
-                            if (useTable) {
-                              container.innerHTML = renderDashboardTableHTML(list);
-                            } else {
-                              container.innerHTML = `<div class="dash-grid">${list.map(renderPatientCardHTML).join("")}</div>`;
-                            }
-                          }
+      const useTable = dashViewMode === "table" && window.innerWidth > 768;
+      if (useTable) {
+        container.innerHTML = renderDashboardTableHTML(list);
+      } else {
+        container.innerHTML = `<div class="dash-grid">${list.map(renderPatientCardHTML).join("")}</div>`;
+      }
+    }
 
-                          function renderPatientCardHTML(r) {
-                            const f = (r.payload && r.payload.f) || {};
-                            const sharedMeta = (r.payload && r.payload.__shared_from) || null;
-                            const name = r.patient_name || "Unnamed Patient";
-                            const ageSex = [f.age, f.sex].filter(Boolean).join(" / ");
-                            const isCompleted = r.status === "completed";
-                            const prog = computeRecordProgress(r.payload);
-                            const isActive = currentRecordId === r.id && hasRecordPersisted;
-                            function renderPatientCardHTML(r) {
-                              const f = (r.payload && r.payload.f) || {};
-                              const sharedMeta = (r.payload && r.payload.__shared_from) || null;
-                              const name = r.patient_name || "Unnamed Patient";
-                              const ageSex = [f.age, f.sex].filter(Boolean).join(" / ");
-                              const isCompleted = r.status === "completed";
-                              const prog = computeRecordProgress(r.payload);
-                              const isActive = currentRecordId === r.id && hasRecordPersisted;
+    function renderPatientCardHTML(r) {
+      const f = (r.payload && r.payload.f) || {};
+      const sharedMeta = (r.payload && r.payload.__shared_from) || null;
+      const name = r.patient_name || "Unnamed Patient";
+      const ageSex = [f.age, f.sex].filter(Boolean).join(" / ");
+      const isCompleted = r.status === "completed";
+      const prog = computeRecordProgress(r.payload);
+      const isActive = currentRecordId === r.id && hasRecordPersisted;
 
-                              const syncHtml = hasCloudAuthSession()
-                                ? (r.dirty
-                                  ? `<span class="sync-badge pending">⏳ Pending</span>`
-                                  : `<span class="sync-badge synced">☁ Synced</span>`)
-                                : `<span class="sync-badge local">📱 Local</span>`;
-                              const syncHtml = hasCloudAuthSession()
-                                ? (r.dirty
-                                  ? `<span class="sync-badge pending">⏳ Pending</span>`
-                                  : `<span class="sync-badge synced">☁ Synced</span>`)
-                                : `<span class="sync-badge local">📱 Local</span>`;
+      const syncHtml = hasCloudAuthSession()
+        ? (r.dirty
+            ? `<span class="sync-badge pending">⏳ Pending</span>`
+            : `<span class="sync-badge synced">☁ Synced</span>`)
+        : `<span class="sync-badge local">📱 Local</span>`;
 
-                              const sharedSender = sharedMeta ? (sharedMeta.sender_name || sharedMeta.sender_email || "Doctor") : "";
-                              const sharedSender = sharedMeta ? (sharedMeta.sender_name || sharedMeta.sender_email || "Doctor") : "";
+      const sharedSender = sharedMeta ? (sharedMeta.sender_name || sharedMeta.sender_email || "Doctor") : "";
 
-                              return `
       return `
-                                < article class="patient-card${isActive ? " is - active - editing" : ""}" >
-                                  <div class="pc-top">
-                                    <div class="pc-name-wrap">
-                                      <h3 class="pc-name">${esc(name)}</h3>
-                                      <div class="pc-sub">${ageSex ? esc(ageSex) + " · " : ""}${esc(f.modeOfDischarge || "Discharge")}</div>
-                                    </div>
-                                    <button type="button" class="status-pill ${isCompleted ? " completed" : "incomplete"}" onclick="toggleRecordStatus('${esc(r.id)}')" title="Click to toggle status">
-                                    ${isCompleted ? "✓ Completed" : "⏳ Incomplete"}
-                                  </button>
-          </div >
+        <article class="patient-card${isActive ? " is-active-editing" : ""}">
+          <div class="pc-top">
+            <div class="pc-name-wrap">
+              <h3 class="pc-name">${esc(name)}</h3>
+              <div class="pc-sub">${ageSex ? esc(ageSex) + " · " : ""}${esc(f.modeOfDischarge || "Discharge")}</div>
+            </div>
+            <button type="button" class="status-pill ${isCompleted ? "completed" : "incomplete"}" onclick="toggleRecordStatus('${esc(r.id)}')" title="Click to toggle status">
+              ${isCompleted ? "✓ Completed" : "⏳ Incomplete"}
+            </button>
+          </div>
 
-                                <div class="pc-meta">
-                                  ${sharedMeta ? `<span class="meta-chip shared-chip" title="Shared by ${esc(sharedMeta.sender_email || "")}">📨 From ${esc(sharedSender)}</span>` : ""}
-                                  ${r.ip_no ? `<span class="meta-chip">IP: ${esc(r.ip_no)}</span>` : ""}
-                                  ${r.unit ? `<span class="meta-chip">${esc(r.unit)}</span>` : ""}
-                                  ${r.doa ? `<span class="meta-chip">DOA: ${esc(fmtDate(r.doa))}</span>` : ""}
-                                  ${r.dod ? `<span class="meta-chip">DOD: ${esc(fmtDate(r.dod))}</span>` : ""}
-                                </div>
+          <div class="pc-meta">
+            ${sharedMeta ? `<span class="meta-chip shared-chip" title="Shared by ${esc(sharedMeta.sender_email || "")}">📨 From ${esc(sharedSender)}</span>` : ""}
+            ${r.ip_no ? `<span class="meta-chip">IP: ${esc(r.ip_no)}</span>` : ""}
+            ${r.unit ? `<span class="meta-chip">${esc(r.unit)}</span>` : ""}
+            ${r.doa ? `<span class="meta-chip">DOA: ${esc(fmtDate(r.doa))}</span>` : ""}
+            ${r.dod ? `<span class="meta-chip">DOD: ${esc(fmtDate(r.dod))}</span>` : ""}
+          </div>
 
-          ${ sharedMeta && sharedMeta.note ? `<div class="pc-shared-note">💬 ${esc(sharedMeta.note)}</div>` : "" }
+          ${sharedMeta && sharedMeta.note ? `<div class="pc-shared-note">💬 ${esc(sharedMeta.note)}</div>` : ""}
 
-                              <div class="pc-diag${r.diagnosis_preview ? "" : " empty - diag"}" >
-                                <span class="pc-diag-text">${r.diagnosis_preview ? esc(r.diagnosis_preview) : "No diagnosis recorded"}</span>
-          </div >
+          <div class="pc-diag${r.diagnosis_preview ? "" : " empty-diag"}">
+            <span class="pc-diag-text">${r.diagnosis_preview ? esc(r.diagnosis_preview) : "No diagnosis recorded"}</span>
+          </div>
 
-                                <div class="pc-progress">
-                                  <div class="pc-progress-head">
-                                    <span>Completion</span>
-                                    <span>${prog.filled}/${prog.total} · ${prog.pct}%</span>
-                                  </div>
-                                  <div class="prog-track">
-                                    <div class="prog-fill${isCompleted ? " complete" : ""}" style="width:${prog.pct}%"></div>
-                                </div>
-          </div >
+          <div class="pc-progress">
+            <div class="pc-progress-head">
+              <span>Completion</span>
+              <span>${prog.filled}/${prog.total} · ${prog.pct}%</span>
+            </div>
+            <div class="prog-track">
+              <div class="prog-fill${isCompleted ? " complete" : ""}" style="width:${prog.pct}%"></div>
+            </div>
+          </div>
 
           <div class="pc-foot">
             <span>${esc(formatRelativeTime(r.updated_at))}</span>
@@ -6796,33 +3677,21 @@ function renderDashboardHeroAndAuth() {
             <button type="button" class="btn sm out" onclick="duplicateRecord('${esc(r.id)}')" title="Duplicate summary">⧉</button>
             <button type="button" class="btn sm danger" onclick="deleteRecord('${esc(r.id)}')" title="Delete summary">🗑</button>
           </div>
-        </article >
-                                `;
-}
+        </article>
+      `;
     }
 
-function renderDashboardTableHTML(list) {
-  const rows = list.map(r => {
-    const f = (r.payload && r.payload.f) || {};
-    const sharedMeta = (r.payload && r.payload.__shared_from) || null;
-    const name = r.patient_name || "Unnamed Patient";
-    const ageSex = [f.age, f.sex].filter(Boolean).join("/");
-    const isCompleted = r.status === "completed";
-    const dates = [r.doa ? `DOA ${ fmtDate(r.doa) } ` : "", r.dod ? `DOD ${ fmtDate(r.dod) } ` : ""].filter(Boolean).join(" · ") || "—";
-    const syncIcon = hasCloudAuthSession() ? (r.dirty ? "⏳" : "☁") : "📱";
-    const sharedBadge = sharedMeta ? `< br > <span class="meta-chip shared-chip" style="margin-top:3px">📨 From ${esc(sharedMeta.sender_name || sharedMeta.sender_email || "Doctor")}</span>` : "";
-    return `
-                              function renderDashboardTableHTML(list) {
-                                const rows = list.map(r => {
-                                  const f = (r.payload && r.payload.f) || {};
-                                  const sharedMeta = (r.payload && r.payload.__shared_from) || null;
-                                  const name = r.patient_name || "Unnamed Patient";
-                                  const ageSex = [f.age, f.sex].filter(Boolean).join("/");
-                                  const isCompleted = r.status === "completed";
-                                  const dates = [r.doa ? `DOA ${fmtDate(r.doa)}` : "", r.dod ? `DOD ${fmtDate(r.dod)}` : ""].filter(Boolean).join(" · ") || "—";
-                                  const syncIcon = hasCloudAuthSession() ? (r.dirty ? "⏳" : "☁") : "📱";
-                                  const sharedBadge = sharedMeta ? `<br><span class="meta-chip shared-chip" style="margin-top:3px">📨 From ${esc(sharedMeta.sender_name || sharedMeta.sender_email || "Doctor")}</span>` : "";
-                                  return `
+    function renderDashboardTableHTML(list) {
+      const rows = list.map(r => {
+        const f = (r.payload && r.payload.f) || {};
+        const sharedMeta = (r.payload && r.payload.__shared_from) || null;
+        const name = r.patient_name || "Unnamed Patient";
+        const ageSex = [f.age, f.sex].filter(Boolean).join("/");
+        const isCompleted = r.status === "completed";
+        const dates = [r.doa ? `DOA ${fmtDate(r.doa)}` : "", r.dod ? `DOD ${fmtDate(r.dod)}` : ""].filter(Boolean).join(" · ") || "—";
+        const syncIcon = hasCloudAuthSession() ? (r.dirty ? "⏳" : "☁") : "📱";
+        const sharedBadge = sharedMeta ? `<br><span class="meta-chip shared-chip" style="margin-top:3px">📨 From ${esc(sharedMeta.sender_name || sharedMeta.sender_email || "Doctor")}</span>` : "";
+        return `
           <tr>
             <td><b>${esc(name)}</b>${ageSex ? `<br><small style="color:var(--muted)">${esc(ageSex)}</small>` : ""}${sharedBadge}</td>
             <td>${esc(r.ip_no || "—")}</td>
@@ -6846,47 +3715,34 @@ function renderDashboardTableHTML(list) {
             </td>
           </tr>
         `;
-                                }).join("");
-                              }).join("");
+      }).join("");
 
-                              return `
       return `
-                                < div class="dash-table-wrap" >
-                                  <table class="dash-table">
-                                    <thead>
-                                      <tr>
-                                        <th>Patient</th>
-                                        <th>IP No.</th>
-                                        <th>Unit</th>
-                                        <th>Dates</th>
-                                        <th>Diagnosis</th>
-                                        <th>Status</th>
-                                        <th>Updated</th>
-                                        <th>Actions</th>
-                                      </tr>
-                                    </thead>
-                                    <tbody>${rows}</tbody>
-                                  </table>
-        </div >
-                                `;
-}
+        <div class="dash-table-wrap">
+          <table class="dash-table">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>IP No.</th>
+                <th>Unit</th>
+                <th>Dates</th>
+                <th>Diagnosis</th>
+                <th>Status</th>
+                <th>Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
     }
 
-/* ---------- Supabase Integration, Auth & Cloud Sync ---------- */
-function normalizeSupabaseUrl(u) {
-  return String(u || "").trim().replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
-}
     /* ---------- Supabase Integration, Auth & Cloud Sync ---------- */
     function normalizeSupabaseUrl(u) {
       return String(u || "").trim().replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
     }
 
-function resolveSupabaseConfig() {
-  const cfg = window.DS_SUPABASE_CONFIG || {};
-  const fileUrl = normalizeSupabaseUrl(cfg.url || "https://voczhrkycygwquxqswxx.supabase.co");
-  const fileKey = String(cfg.anonKey || "sb_publishable_6zeQfj-22YzFdjuSHpvQGg_ZbBiTxaC").trim();
-  return { url: fileUrl, anonKey: fileKey, source: "config-file" };
-}
     function resolveSupabaseConfig() {
       const cfg = window.DS_SUPABASE_CONFIG || {};
       const fileUrl = normalizeSupabaseUrl(cfg.url || "https://voczhrkycygwquxqswxx.supabase.co");
@@ -6894,38 +3750,18 @@ function resolveSupabaseConfig() {
       return { url: fileUrl, anonKey: fileKey, source: "config-file" };
     }
 
-function isMissingTableError(err) {
-  if (!err) return false;
-  const msg = `${ err.code || "" } ${ err.message || "" } ${ err.details || "" } `;
-  return /PGRST205|42P01|could not find the table|relation .* does not exist|schema cache/i.test(msg);
-}
     function isMissingTableError(err) {
       if (!err) return false;
-      const msg = `${ err.code || "" } ${ err.message || "" } ${ err.details || "" } `;
+      const msg = `${err.code || ""} ${err.message || ""} ${err.details || ""}`;
       return /PGRST205|42P01|could not find the table|relation .* does not exist|schema cache/i.test(msg);
     }
 
-function isMissingRpcError(err) {
-  if (!err) return false;
-  const msg = `${ err.code || "" } ${ err.message || "" } ${ err.details || "" } `;
-  return err.status === 404 || /PGRST202|42883|could not find the function|function .* does not exist|schema cache/i.test(msg);
-}
     function isMissingRpcError(err) {
       if (!err) return false;
-      const msg = `${ err.code || "" } ${ err.message || "" } ${ err.details || "" } `;
+      const msg = `${err.code || ""} ${err.message || ""} ${err.details || ""}`;
       return err.status === 404 || /PGRST202|42883|could not find the function|function .* does not exist|schema cache/i.test(msg);
     }
 
-function isGoogleUserSession(user) {
-  if (!user || !user.id) return false;
-  if (user.is_google === true) return true;
-  const appMeta = user.app_metadata || {};
-  const providers = Array.isArray(appMeta.providers) ? appMeta.providers : [];
-  const identities = Array.isArray(user.identities) ? user.identities : [];
-  return appMeta.provider === "google" ||
-    providers.includes("google") ||
-    identities.some(i => i && i.provider === "google");
-}
     function isGoogleUserSession(user) {
       if (!user || !user.id) return false;
       if (user.is_google === true) return true;
@@ -6937,21 +3773,10 @@ function isGoogleUserSession(user) {
         identities.some(i => i && i.provider === "google");
     }
 
-function hasCloudAuthSession() {
-  return Boolean(currentUser && isGoogleUserSession(currentUser) && sbClient);
-}
     function hasCloudAuthSession() {
       return Boolean(currentUser && isGoogleUserSession(currentUser) && sbClient);
     }
 
-async function readCloudAuthMeta(forceRefresh = false) {
-  if (!hasCloudAuthSession()) return { summaries: [], deleted_ids: [], defaults: null, templates: null, frequent_contacts: null, outbox_shares: [], theme_color: null };
-  if (forceRefresh && navigator.onLine) {
-    try {
-      const { data, error } = await sbClient.auth.getUser();
-      if (!error && data && data.user) {
-        currentUser = data.user;
-        cacheLastUser(currentUser);
     async function readCloudAuthMeta(forceRefresh = false) {
       if (!hasCloudAuthSession()) return { summaries: [], deleted_ids: [], defaults: null, templates: null, frequent_contacts: null, outbox_shares: [], theme_color: null };
       if (forceRefresh && navigator.onLine) {
@@ -6963,42 +3788,6 @@ async function readCloudAuthMeta(forceRefresh = false) {
           }
         } catch (e) { }
       }
-    } catch (e) { }
-  }
-  const meta = (currentUser && currentUser.user_metadata && currentUser.user_metadata.ds_cloud_v2) || {};
-  return {
-    summaries: Array.isArray(meta.summaries) ? meta.summaries : [],
-    deleted_ids: Array.isArray(meta.deleted_ids) ? meta.deleted_ids : [],
-    defaults: (meta.defaults && typeof meta.defaults === "object") ? meta.defaults : null,
-    templates: Array.isArray(meta.templates) ? meta.templates : null,
-    frequent_contacts: Array.isArray(meta.frequent_contacts) ? meta.frequent_contacts : null,
-    outbox_shares: Array.isArray(meta.outbox_shares) ? meta.outbox_shares : [],
-    theme_color: meta.theme_color || null
-  };
-}
-
-async function writeCloudAuthMeta(patch) {
-  if (!hasCloudAuthSession() || !navigator.onLine) return false;
-  const cur = await readCloudAuthMeta(false);
-  const nextStore = {
-    summaries: patch.summaries !== undefined ? patch.summaries.slice(0, 60) : cur.summaries,
-    deleted_ids: patch.deleted_ids !== undefined ? patch.deleted_ids.slice(-100) : cur.deleted_ids,
-    defaults: patch.defaults !== undefined ? patch.defaults : cur.defaults,
-    templates: patch.templates !== undefined ? patch.templates.slice(0, 40) : cur.templates,
-    frequent_contacts: patch.frequent_contacts !== undefined ? patch.frequent_contacts.slice(0, 50) : cur.frequent_contacts,
-    outbox_shares: patch.outbox_shares !== undefined ? patch.outbox_shares.slice(-15) : cur.outbox_shares,
-    theme_color: patch.theme_color !== undefined ? patch.theme_color : cur.theme_color,
-    updated_at: new Date().toISOString()
-  };
-  suppressAuthReload = true;
-  try {
-    const { data, error } = await sbClient.auth.updateUser({
-      data: { ds_cloud_v2: nextStore }
-    });
-    if (error) throw error;
-    if (data && data.user) {
-      currentUser = data.user;
-      cacheLastUser(currentUser);
       const meta = (currentUser && currentUser.user_metadata && currentUser.user_metadata.ds_cloud_v2) || {};
       return {
         summaries: Array.isArray(meta.summaries) ? meta.summaries : [],
@@ -7010,25 +3799,7 @@ async function writeCloudAuthMeta(patch) {
         theme_color: meta.theme_color || null
       };
     }
-    return true;
-  } finally {
-    suppressAuthReload = false;
-  }
-}
 
-function detectAndCleanAuthUrlErrors() {
-  try {
-    const hash = window.location.hash ? window.location.hash.slice(1) : "";
-    const search = window.location.search ? window.location.search.slice(1) : "";
-    const hParams = new URLSearchParams(hash);
-    const sParams = new URLSearchParams(search);
-    const errCode = hParams.get("error_code") || sParams.get("error_code") || "";
-    const errDesc = hParams.get("error_description") || sParams.get("error_description") || "";
-    const err = hParams.get("error") || sParams.get("error") || "";
-
-    if (err || errCode || errDesc) {
-      if (window.history && window.history.replaceState) {
-        window.history.replaceState(null, "", window.location.pathname);
     async function writeCloudAuthMeta(patch) {
       if (!hasCloudAuthSession() || !navigator.onLine) return false;
       const cur = await readCloudAuthMeta(false);
@@ -7056,19 +3827,8 @@ function detectAndCleanAuthUrlErrors() {
       } finally {
         suppressAuthReload = false;
       }
-      authFeedback = {
-        type: "err",
-        text: (errDesc || err || "Google authentication error").replace(/\+/g, " ")
-      };
     }
-  } catch (e) { }
-}
 
-async function initSupabase() {
-  detectAndCleanAuthUrlErrors();
-  sbConfig = resolveSupabaseConfig();
-  sbClient = null;
-  currentUser = null;
     function detectAndCleanAuthUrlErrors() {
       try {
         const hash = window.location.hash ? window.location.hash.slice(1) : "";
@@ -7079,11 +3839,6 @@ async function initSupabase() {
         const errDesc = hParams.get("error_description") || sParams.get("error_description") || "";
         const err = hParams.get("error") || sParams.get("error") || "";
 
-  if (!sbConfig.url || !sbConfig.anonKey) {
-    syncState = "local";
-    updateSyncIndicators();
-    return;
-  }
         if (err || errCode || errDesc) {
           if (window.history && window.history.replaceState) {
             window.history.replaceState(null, "", window.location.pathname);
@@ -7096,67 +3851,18 @@ async function initSupabase() {
       } catch (e) { }
     }
 
-  if (!window.supabase || typeof window.supabase.createClient !== "function") {
-    syncState = navigator.onLine ? "error" : "offline";
-    lastSyncError = "Supabase SDK unavailable offline";
-    try {
-      const cachedUser = safeParse(localStorage.getItem("ds-v2:last-user"));
-      if (cachedUser && cachedUser.id && isGoogleUserSession(cachedUser)) currentUser = cachedUser;
-    } catch (e) { }
-    updateSyncIndicators();
-    return;
-  }
     async function initSupabase() {
       detectAndCleanAuthUrlErrors();
       sbConfig = resolveSupabaseConfig();
       sbClient = null;
       currentUser = null;
 
-  try {
-    sbClient = window.supabase.createClient(sbConfig.url, sbConfig.anonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storageKey: "ds-v2-supabase-auth"
-      }
-    });
-
-    // Complete Google OAuth PKCE callback (?code=...)
-    try {
-      const sParams = new URLSearchParams(window.location.search);
-      const code = sParams.get("code");
-      if (code && typeof sbClient.auth.exchangeCodeForSession === "function") {
-        await sbClient.auth.exchangeCodeForSession(code);
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState(null, "", window.location.pathname);
-        }
-      }
-    } catch (e) { }
-
-    sbClient.auth.onAuthStateChange(async (event, session) => {
-      if (suppressAuthReload && event === "USER_UPDATED") return;
-      const rawUser = session && session.user ? session.user : null;
-      if (rawUser && !isGoogleUserSession(rawUser)) {
-        try { await sbClient.auth.signOut(); } catch (e) { }
-        currentUser = null;
-        cacheLastUser(null);
-        authFeedback = { type: "info", text: "Only Google Sign-In is supported. Please sign in with your Google account." };
-        await handleUserScopeChange(null);
       if (!sbConfig.url || !sbConfig.anonKey) {
         syncState = "local";
         updateSyncIndicators();
         return;
       }
-      const nextUser = rawUser;
-      const prevUserId = currentUser ? currentUser.id : null;
-      const nextUserId = nextUser ? nextUser.id : null;
-      currentUser = nextUser;
-      cacheLastUser(nextUser);
 
-      if (prevUserId !== nextUserId) {
-        await handleUserScopeChange(nextUserId);
-      } else {
       if (!window.supabase || typeof window.supabase.createClient !== "function") {
         syncState = navigator.onLine ? "error" : "offline";
         lastSyncError = "Supabase SDK unavailable offline";
@@ -7165,33 +3871,9 @@ async function initSupabase() {
           if (cachedUser && cachedUser.id && isGoogleUserSession(cachedUser)) currentUser = cachedUser;
         } catch (e) { }
         updateSyncIndicators();
-        if (activeTab === "dashboard") renderDashboardHeroAndAuth();
         return;
       }
-    });
 
-    const { data, error } = await sbClient.auth.getSession();
-    if (!error && data && data.session && data.session.user) {
-      if (isGoogleUserSession(data.session.user)) {
-        currentUser = data.session.user;
-        cacheLastUser(currentUser);
-      } else {
-        try { await sbClient.auth.signOut(); } catch (e) { }
-        currentUser = null;
-        cacheLastUser(null);
-        authFeedback = { type: "info", text: "Only Google Sign-In is supported. Please sign in with your Google account." };
-      }
-    } else {
-      const cachedUser = safeParse(localStorage.getItem("ds-v2:last-user"));
-      if (cachedUser && cachedUser.id && !navigator.onLine && isGoogleUserSession(cachedUser)) {
-        currentUser = cachedUser;
-      }
-    }
-  } catch (e) {
-    console.warn("Supabase init warning:", e);
-    lastSyncError = e.message || "Connection failed";
-    syncState = "error";
-  }
       try {
         sbClient = window.supabase.createClient(sbConfig.url, sbConfig.anonKey, {
           auth: {
@@ -7202,8 +3884,6 @@ async function initSupabase() {
           }
         });
 
-  updateSyncIndicators();
-}
         // Complete Google OAuth PKCE callback (?code=...)
         try {
           const sParams = new URLSearchParams(window.location.search);
@@ -7216,22 +3896,6 @@ async function initSupabase() {
           }
         } catch (e) { }
 
-function cacheLastUser(user) {
-  try {
-    if (user && user.id && isGoogleUserSession(user)) {
-      localStorage.setItem("ds-v2:last-user", JSON.stringify({
-        id: user.id,
-        email: normalizeEmail(user.email),
-        user_metadata: user.user_metadata || {},
-        app_metadata: user.app_metadata || {},
-        identities: Array.isArray(user.identities) ? user.identities.map(i => ({ provider: i.provider })) : [],
-        is_google: true
-      }));
-    } else {
-      localStorage.removeItem("ds-v2:last-user");
-    }
-  } catch (e) { }
-}
         sbClient.auth.onAuthStateChange(async (event, session) => {
           if (suppressAuthReload && event === "USER_UPDATED") return;
           const rawUser = session && session.user ? session.user : null;
@@ -7249,13 +3913,6 @@ function cacheLastUser(user) {
           currentUser = nextUser;
           cacheLastUser(nextUser);
 
-async function handleUserScopeChange(nextUserId) {
-  contactsAddFormOpen = false;
-  contactsAddFeedback = null;
-  await loadScopedRecords();
-  await loadSavedTemplates();
-  await loadFrequentContacts();
-  await checkGuestDraftsForMigration();
           if (prevUserId !== nextUserId) {
             await handleUserScopeChange(nextUserId);
           } else {
@@ -7264,27 +3921,6 @@ async function handleUserScopeChange(nextUserId) {
           }
         });
 
-  if (nextUserId) {
-    offlineDismissedAuthCard = false;
-    closeAuthModal();
-    if (hasCloudAuthSession()) {
-      saveCurrentUserToLocalGoogleRegistry();
-      await deliverPendingSharedInboxForCurrentUser();
-      initRealtimeSharingChannel();
-    }
-    // Reset editor cleanly if previous scope had unsaved guest view
-    currentRecordId = generateUUID();
-    currentRecordStatus = "incomplete";
-    currentRecordCreatedAt = new Date().toISOString();
-    hasRecordPersisted = false;
-    suppressSave = true;
-    try {
-      resetEditorFieldsOnly();
-      const def = await getActiveDefaults();
-      if (def) applyDefaults(def);
-      const docMetaName = currentUser && currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name);
-      if (docMetaName && !val("preparedBy")) {
-        setVal_("preparedBy", docMetaName);
         const { data, error } = await sbClient.auth.getSession();
         if (!error && data && data.session && data.session.user) {
           if (isGoogleUserSession(data.session.user)) {
@@ -7307,17 +3943,10 @@ async function handleUserScopeChange(nextUserId) {
         lastSyncError = e.message || "Connection failed";
         syncState = "error";
       }
-      setVal_("dod", todayISO());
-      renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
-      render(false);
-    } finally {
-      suppressSave = false;
 
       updateSyncIndicators();
     }
 
-    if (hasCloudAuthSession() && navigator.onLine) {
-      await syncNow(false);
     function cacheLastUser(user) {
       try {
         if (user && user.id && isGoogleUserSession(user)) {
@@ -7334,33 +3963,7 @@ async function handleUserScopeChange(nextUserId) {
         }
       } catch (e) { }
     }
-  } else {
-    teardownRealtimeSharingChannel();
-    // Signed out: isolate view cleanly back to guest scope
-    currentRecordId = generateUUID();
-    currentRecordStatus = "incomplete";
-    currentRecordCreatedAt = new Date().toISOString();
-    hasRecordPersisted = false;
-    suppressSave = true;
-    try {
-      resetEditorFieldsOnly();
-      const def = await getActiveDefaults();
-      if (def) applyDefaults(def);
-      setVal_("dod", todayISO());
-      renderComplaints(); renderTx(); renderRx(); renderInvEditor(); renderPast(); renderRxHistory();
-      render(false);
-    } finally {
-      suppressSave = false;
-    }
-  }
-  renderDashboard();
-}
 
-function updateSyncIndicators() {
-  const dot = document.getElementById("topbarAuthDot");
-  const txt = document.getElementById("topbarAuthText");
-  const sText = document.getElementById("statSyncText");
-  const sSub = document.getElementById("statSyncSub");
     async function handleUserScopeChange(nextUserId) {
       contactsAddFormOpen = false;
       contactsAddFeedback = null;
@@ -7369,11 +3972,6 @@ function updateSyncIndicators() {
       await loadFrequentContacts();
       await checkGuestDraftsForMigration();
 
-  const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
-  let dotClass = "offline";
-  let topLabel = offlineDismissedAuthCard ? "Local" : "Sign in";
-  let statLabel = offlineDismissedAuthCard ? "Local" : "Sign in";
-  let statSub = offlineDismissedAuthCard ? "On this device" : "Google Account";
       if (nextUserId) {
         offlineDismissedAuthCard = false;
         closeAuthModal();
@@ -7403,29 +4001,6 @@ function updateSyncIndicators() {
           suppressSave = false;
         }
 
-  if (currentUser) {
-    const displayUser = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || currentUser.email || "Doctor";
-    topLabel = displayUser.split("@")[0];
-    if (syncState === "syncing") {
-      dotClass = "syncing";
-      statLabel = "Syncing";
-      statSub = "In progress";
-    } else if (!navigator.onLine) {
-      dotClass = "offline";
-      statLabel = "Offline";
-      statSub = dirtyCount > 0 ? `${ dirtyCount } queued` : "Local cache";
-    } else if (syncState === "error") {
-      dotClass = "error";
-      statLabel = "Sync Error";
-      statSub = "Tap to retry";
-    } else if (dirtyCount > 0) {
-      dotClass = "syncing";
-      statLabel = `${ dirtyCount } Pending`;
-      statSub = "Sync now";
-    } else {
-      dotClass = "online";
-      statLabel = "Synced";
-      statSub = lastSyncTime ? lastSyncTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "Google Cloud";
         if (hasCloudAuthSession() && navigator.onLine) {
           await syncNow(false);
         }
@@ -7450,33 +4025,19 @@ function updateSyncIndicators() {
       }
       renderDashboard();
     }
-  }
 
-  if (dot) dot.className = `sync - dot ${ dotClass } `;
-  if (txt) txt.textContent = topLabel;
-  if (sText) sText.textContent = statLabel;
-  if (sSub) sSub.textContent = statSub;
     function updateSyncIndicators() {
       const dot = document.getElementById("topbarAuthDot");
       const txt = document.getElementById("topbarAuthText");
       const sText = document.getElementById("statSyncText");
       const sSub = document.getElementById("statSyncSub");
 
-  updateSaveStatusBadge();
-}
       const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
       let dotClass = "offline";
       let topLabel = offlineDismissedAuthCard ? "Local" : "Sign in";
       let statLabel = offlineDismissedAuthCard ? "Local" : "Sign in";
       let statSub = offlineDismissedAuthCard ? "On this device" : "Google Account";
 
-function handleSyncCardClick() {
-  if (!currentUser) {
-    openAuthModal();
-  } else {
-    syncNow(true);
-  }
-}
       if (currentUser) {
         const displayUser = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || currentUser.email || "Doctor";
         topLabel = displayUser.split("@")[0];
@@ -7487,14 +4048,14 @@ function handleSyncCardClick() {
         } else if (!navigator.onLine) {
           dotClass = "offline";
           statLabel = "Offline";
-          statSub = dirtyCount > 0 ? `${ dirtyCount } queued` : "Local cache";
+          statSub = dirtyCount > 0 ? `${dirtyCount} queued` : "Local cache";
         } else if (syncState === "error") {
           dotClass = "error";
           statLabel = "Sync Error";
           statSub = "Tap to retry";
         } else if (dirtyCount > 0) {
           dotClass = "syncing";
-          statLabel = `${ dirtyCount } Pending`;
+          statLabel = `${dirtyCount} Pending`;
           statSub = "Sync now";
         } else {
           dotClass = "online";
@@ -7503,105 +4064,22 @@ function handleSyncCardClick() {
         }
       }
 
-async function upsertRecordToSupabase(rec) {
-  if (!hasCloudAuthSession()) return false;
-  try {
-    syncState = "syncing";
-    updateSyncIndicators();
-    const row = {
-      id: rec.id,
-      user_id: currentUser.id,
-      status: rec.status || "incomplete",
-      patient_name: rec.patient_name || "",
-      ip_no: rec.ip_no || "",
-      doa: rec.doa || "",
-      dod: rec.dod || "",
-      unit: rec.unit || "",
-      diagnosis_preview: rec.diagnosis_preview || "",
-      payload: rec.payload || {},
-      created_at: rec.created_at || rec.updated_at || new Date().toISOString(),
-      updated_at: rec.updated_at || new Date().toISOString()
-    };
-    const { error } = await sbClient
-      .from("discharge_summaries")
-      .upsert(row, { onConflict: "id" });
-      if (dot) dot.className = `sync - dot ${ dotClass } `;
+      if (dot) dot.className = `sync-dot ${dotClass}`;
       if (txt) txt.textContent = topLabel;
       if (sText) sText.textContent = statLabel;
       if (sSub) sSub.textContent = statSub;
 
-    if (error) {
-      if (isMissingTableError(error)) {
-        const meta = await readCloudAuthMeta(false);
-        const list = meta.summaries.filter(item => item && item.id !== row.id);
-        list.unshift(row);
-        await writeCloudAuthMeta({ summaries: list });
-      } else {
-        throw error;
-      }
       updateSaveStatusBadge();
     }
 
-    rec.dirty = false;
-    rec.synced_at = new Date().toISOString();
-    lastSyncTime = new Date();
-    lastSyncError = "";
-    syncState = records.some(r => r.dirty) || pendingDeletes.length ? "pending" : "synced";
-    await persistScopedRecords();
-    updateSyncIndicators();
-    if (activeTab === "dashboard") renderDashboard();
-    return true;
-  } catch (e) {
-    console.warn("Supabase upsert failed:", e);
-    lastSyncError = e.message || "Upload failed";
-    syncState = navigator.onLine ? "error" : "offline";
-    updateSyncIndicators();
-    return false;
-  }
-}
-
-async function flushPendingDeletes() {
-  if (!hasCloudAuthSession() || !pendingDeletes.length) return;
-  const remaining = [];
-  let usedMetaFallback = false;
-  const deletedViaMeta = [];
-  for (const id of pendingDeletes) {
-    const { error } = await sbClient
-      .from("discharge_summaries")
-      .delete()
-      .eq("id", id)
-      .eq("user_id", currentUser.id);
-    if (error) {
-      if (isMissingTableError(error)) {
-        usedMetaFallback = true;
-        deletedViaMeta.push(id);
     function handleSyncCardClick() {
       if (!currentUser) {
         openAuthModal();
       } else {
-        console.warn("Pending delete failed:", id, error);
-        remaining.push(id);
         syncNow(true);
       }
     }
-  }
-  if (usedMetaFallback && deletedViaMeta.length) {
-    try {
-      const meta = await readCloudAuthMeta(false);
-      const delSet = new Set([...(meta.deleted_ids || []), ...deletedViaMeta]);
-      const nextSummaries = (meta.summaries || []).filter(r => r && !delSet.has(r.id));
-      await writeCloudAuthMeta({ summaries: nextSummaries, deleted_ids: Array.from(delSet) });
-    } catch (e) {
-      remaining.push(...deletedViaMeta);
-    }
-  }
-  pendingDeletes = remaining;
-  await persistScopedRecords();
-}
 
-function getLocalGoogleRegistry() {
-  return safeParse(localStorage.getItem(LOCAL_GOOGLE_REGISTRY_KEY)) || {};
-}
     async function upsertRecordToSupabase(rec) {
       if (!hasCloudAuthSession()) return false;
       try {
@@ -7625,21 +4103,6 @@ function getLocalGoogleRegistry() {
           .from("discharge_summaries")
           .upsert(row, { onConflict: "id" });
 
-function saveUserToLocalGoogleRegistry(entry) {
-  const email = normalizeEmail(entry && entry.email);
-  if (!email) return;
-  const reg = getLocalGoogleRegistry();
-  const prev = reg[email] || {};
-  reg[email] = {
-    user_id: entry.user_id || prev.user_id || null,
-    email,
-    full_name: String(entry.full_name || prev.full_name || "").trim(),
-    avatar_url: String(entry.avatar_url || prev.avatar_url || "").trim(),
-    provider: "google",
-    last_seen_at: new Date().toISOString()
-  };
-  try { localStorage.setItem(LOCAL_GOOGLE_REGISTRY_KEY, JSON.stringify(reg)); } catch (e) { }
-}
         if (error) {
           if (isMissingTableError(error)) {
             const meta = await readCloudAuthMeta(false);
@@ -7651,16 +4114,6 @@ function saveUserToLocalGoogleRegistry(entry) {
           }
         }
 
-function saveCurrentUserToLocalGoogleRegistry() {
-  if (!hasCloudAuthSession()) return;
-  const meta = currentUser.user_metadata || {};
-  saveUserToLocalGoogleRegistry({
-    user_id: currentUser.id,
-    email: currentUser.email,
-    full_name: meta.full_name || meta.name || "",
-    avatar_url: meta.avatar_url || meta.picture || ""
-  });
-}
         rec.dirty = false;
         rec.synced_at = new Date().toISOString();
         lastSyncTime = new Date();
@@ -7679,7 +4132,6 @@ function saveCurrentUserToLocalGoogleRegistry() {
       }
     }
 
-const GLOBAL_SHARED_OUTBOX_KEY = "ds-v2:global-shared-outbox";
     async function flushPendingDeletes() {
       if (!hasCloudAuthSession() || !pendingDeletes.length) return;
       const remaining = [];
@@ -7715,17 +4167,10 @@ const GLOBAL_SHARED_OUTBOX_KEY = "ds-v2:global-shared-outbox";
       await persistScopedRecords();
     }
 
-function getSharedInboxKey(email) {
-  return `ds - v2: shared - inbox:${ normalizeEmail(email) } `;
-}
     function getLocalGoogleRegistry() {
       return safeParse(localStorage.getItem(LOCAL_GOOGLE_REGISTRY_KEY)) || {};
     }
 
-function readGlobalSharedOutbox() {
-  const list = safeParse(localStorage.getItem(GLOBAL_SHARED_OUTBOX_KEY));
-  return Array.isArray(list) ? list : [];
-}
     function saveUserToLocalGoogleRegistry(entry) {
       const email = normalizeEmail(entry && entry.email);
       if (!email) return;
@@ -7742,29 +4187,6 @@ function readGlobalSharedOutbox() {
       try { localStorage.setItem(LOCAL_GOOGLE_REGISTRY_KEY, JSON.stringify(reg)); } catch (e) { }
     }
 
-function enqueueGlobalSharedOutbox(sharedRow) {
-  if (!sharedRow) return;
-  const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id;
-  if (!shareId) return;
-  const cur = readGlobalSharedOutbox();
-  if (!cur.some(item => item && (item.share_id || item.id) === shareId)) {
-    cur.unshift({ ...sharedRow, share_id: shareId });
-    try { localStorage.setItem(GLOBAL_SHARED_OUTBOX_KEY, JSON.stringify(cur.slice(0, 50))); } catch (e) { }
-  }
-}
-
-async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
-  if (!sharedRow) return;
-  const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id || generateUUID();
-  const row = { ...sharedRow, share_id: shareId };
-  const key = getSharedInboxKey(recipientEmail);
-  const cur = safeParse(await store.get(key));
-  const list = Array.isArray(cur) ? cur : [];
-  if (!list.some(item => item && item.share_id === sharedRow.share_id)) {
-    list.unshift(sharedRow);
-    if (!list.some(item => item && (item.share_id || item.id) === shareId)) {
-      list.unshift(row);
-      await store.set(key, JSON.stringify(list.slice(0, 50)));
     function saveCurrentUserToLocalGoogleRegistry() {
       if (!hasCloudAuthSession()) return;
       const meta = currentUser.user_metadata || {};
@@ -7775,45 +4197,18 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         avatar_url: meta.avatar_url || meta.picture || ""
       });
     }
-    enqueueGlobalSharedOutbox(row);
-  }
 
-  async function deliverIncomingSharedItem(sharedRow) {
-    if (!hasCloudAuthSession() || !sharedRow) return false;
-    const myEmail = normalizeEmail(currentUser.email);
-    if (normalizeEmail(sharedRow.recipient_email) !== myEmail) return false;
     const GLOBAL_SHARED_OUTBOX_KEY = "ds-v2:global-shared-outbox";
 
-    const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id);
-    const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id || generateUUID();
-    if (!shareId) return false;
     function getSharedInboxKey(email) {
-      return `ds - v2: shared - inbox:${ normalizeEmail(email) } `;
+      return `ds-v2:shared-inbox:${normalizeEmail(email)}`;
     }
 
-    const importedIds = await getImportedShareIdsSet();
-    if (importedIds.has(shareId)) return false;
-    if (records.some(r => r && r.payload && r.payload.__shared_from && r.payload.__shared_from.share_id === shareId)) {
-      await markShareIdImported(shareId);
-      return false;
     function readGlobalSharedOutbox() {
       const list = safeParse(localStorage.getItem(GLOBAL_SHARED_OUTBOX_KEY));
       return Array.isArray(list) ? list : [];
     }
 
-    const payloadCopy = JSON.parse(JSON.stringify(sharedRow.payload || {}));
-    if (!payloadCopy.__shared_from) {
-      payloadCopy.__shared_from = {
-        share_id: shareId,
-        sender_id: sharedRow.sender_id || "",
-        sender_email: sharedRow.sender_email || "",
-        sender_name: sharedRow.sender_name || "",
-        note: sharedRow.note || "",
-        shared_at: sharedRow.created_at || new Date().toISOString(),
-        source_summary_id: sharedRow.source_summary_id || null
-      };
-    } else if (!payloadCopy.__shared_from.share_id) {
-      payloadCopy.__shared_from.share_id = shareId;
     function enqueueGlobalSharedOutbox(sharedRow) {
       if (!sharedRow) return;
       const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id;
@@ -7825,29 +4220,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       }
     }
 
-    const newRec = {
-      id: sharedRow.id || generateUUID(),
-      user_id: currentUser.id,
-      status: sharedRow.status || "incomplete",
-      patient_name: sharedRow.patient_name || "",
-      ip_no: sharedRow.ip_no || "",
-      doa: sharedRow.doa || "",
-      dod: sharedRow.dod || "",
-      unit: sharedRow.unit || "",
-      diagnosis_preview: sharedRow.diagnosis_preview || "",
-      payload: sharedRow.payload || {},
-      payload: payloadCopy,
-      created_at: sharedRow.created_at || new Date().toISOString(),
-      updated_at: sharedRow.updated_at || new Date().toISOString(),
-      dirty: true
-    };
-
-    records.unshift(newRec);
-    await markShareIdImported(shareId);
-    await persistScopedRecords();
-    if (activeTab === "dashboard") renderDashboard();
-    if (navigator.onLine) {
-      upsertRecordToSupabase(newRec).catch(() => { });
     async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       if (!sharedRow) return;
       const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id || generateUUID();
@@ -7861,37 +4233,15 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       }
       enqueueGlobalSharedOutbox(row);
     }
-    return true;
-  }
 
-  async function deliverPendingSharedInboxForCurrentUser() {
-    if (!hasCloudAuthSession()) return 0;
-    const key = getSharedInboxKey(currentUser.email);
-    const myEmail = normalizeEmail(currentUser.email);
-    const key = getSharedInboxKey(myEmail);
-    const raw = safeParse(await store.get(key));
-    const list = Array.isArray(raw) ? raw : [];
-    const inboxList = Array.isArray(raw) ? raw : [];
-    const globalList = readGlobalSharedOutbox().filter(item => item && normalizeEmail(item.recipient_email) === myEmail);
     async function deliverIncomingSharedItem(sharedRow) {
       if (!hasCloudAuthSession() || !sharedRow) return false;
       const myEmail = normalizeEmail(currentUser.email);
       if (normalizeEmail(sharedRow.recipient_email) !== myEmail) return false;
 
-    const combinedMap = new Map();
-    [...inboxList, ...globalList].forEach(item => {
-      if (!item) return;
-      const sid = item.share_id || (item.payload && item.payload.__shared_from && item.payload.__shared_from.share_id) || item.id;
-      if (sid && !combinedMap.has(sid)) combinedMap.set(sid, item);
-    });
-    const list = Array.from(combinedMap.values());
-    if (!list.length) return 0;
       const shareId = sharedRow.share_id || (sharedRow.payload && sharedRow.payload.__shared_from && sharedRow.payload.__shared_from.share_id) || sharedRow.id || generateUUID();
       if (!shareId) return false;
 
-    let added = 0;
-    for (const item of list) {
-      if (await deliverIncomingSharedItem(item)) added++;
       const importedIds = await getImportedShareIdsSet();
       if (importedIds.has(shareId)) return false;
       if (records.some(r => r && r.payload && r.payload.__shared_from && r.payload.__shared_from.share_id === shareId)) {
@@ -7939,25 +4289,7 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       }
       return true;
     }
-    await store.remove(key);
-    if (inboxList.length) await store.remove(key);
-    if (added > 0) {
-      toast(`📨 Received ${ added } shared patient summar${ added > 1 ? "ies" : "y" } ✓`);
-    }
-    return added;
-  }
 
-  async function flushOutboxSharesToOnlineRecipient(targetEmail) {
-    if (!hasCloudAuthSession() || !realtimeSharingChannel || !targetEmail) return;
-    const target = normalizeEmail(targetEmail);
-    if (!target || target === normalizeEmail(currentUser.email)) return;
-    try {
-      const meta = await readCloudAuthMeta(false);
-      const matches = (meta.outbox_shares || []).filter(item => item && normalizeEmail(item.recipient_email) === target);
-      const metaMatches = (meta.outbox_shares || []).filter(item => item && normalizeEmail(item.recipient_email) === target);
-      const localInbox = safeParse(await store.get(getSharedInboxKey(target)));
-      const localMatches = Array.isArray(localInbox) ? localInbox : [];
-      const globalMatches = readGlobalSharedOutbox().filter(item => item && normalizeEmail(item.recipient_email) === target);
     async function deliverPendingSharedInboxForCurrentUser() {
       if (!hasCloudAuthSession()) return 0;
       const myEmail = normalizeEmail(currentUser.email);
@@ -7966,43 +4298,26 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       const inboxList = Array.isArray(raw) ? raw : [];
       const globalList = readGlobalSharedOutbox().filter(item => item && normalizeEmail(item.recipient_email) === myEmail);
 
-      const seen = new Set();
-      const matches = [...metaMatches, ...localMatches, ...globalMatches].filter(item => {
-        if (!item) return false;
       const combinedMap = new Map();
       [...inboxList, ...globalList].forEach(item => {
         if (!item) return;
         const sid = item.share_id || (item.payload && item.payload.__shared_from && item.payload.__shared_from.share_id) || item.id;
-        if (!sid || seen.has(sid)) return false;
-        seen.add(sid);
-        return true;
         if (sid && !combinedMap.has(sid)) combinedMap.set(sid, item);
       });
       const list = Array.from(combinedMap.values());
       if (!list.length) return 0;
 
-      for (const item of matches) {
-        await realtimeSharingChannel.send({
-          type: "broadcast",
-          event: "patient_share",
-          payload: item
-        });
       let added = 0;
       for (const item of list) {
         if (await deliverIncomingSharedItem(item)) added++;
       }
-    } catch (e) { }
-  }
       if (inboxList.length) await store.remove(key);
       if (added > 0) {
-        toast(`📨 Received ${ added } shared patient summar${ added > 1 ? "ies" : "y" } ✓`);
+        toast(`📨 Received ${added} shared patient summar${added > 1 ? "ies" : "y"} ✓`);
       }
       return added;
     }
 
-  function teardownRealtimeSharingChannel() {
-    if (realtimeSharingChannel && sbClient && typeof sbClient.removeChannel === "function") {
-      try { sbClient.removeChannel(realtimeSharingChannel); } catch (e) { }
     async function flushOutboxSharesToOnlineRecipient(targetEmail) {
       if (!hasCloudAuthSession() || !realtimeSharingChannel || !targetEmail) return;
       const target = normalizeEmail(targetEmail);
@@ -8032,14 +4347,7 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         }
       } catch (e) { }
     }
-    realtimeSharingChannel = null;
-    realtimeSharingUserId = null;
-  }
 
-  function initRealtimeSharingChannel() {
-    if (!hasCloudAuthSession() || !navigator.onLine || typeof sbClient.channel !== "function") return;
-    if (realtimeSharingChannel && realtimeSharingUserId === currentUser.id) return;
-    teardownRealtimeSharingChannel();
     function teardownRealtimeSharingChannel() {
       if (realtimeSharingChannel && sbClient && typeof sbClient.removeChannel === "function") {
         try { sbClient.removeChannel(realtimeSharingChannel); } catch (e) { }
@@ -8048,32 +4356,15 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       realtimeSharingUserId = null;
     }
 
-    const myEmail = normalizeEmail(currentUser.email);
-    if (!myEmail) return;
-    const myMeta = currentUser.user_metadata || {};
     function initRealtimeSharingChannel() {
       if (!hasCloudAuthSession() || !navigator.onLine || typeof sbClient.channel !== "function") return;
       if (realtimeSharingChannel && realtimeSharingUserId === currentUser.id) return;
       teardownRealtimeSharingChannel();
 
-    try {
-      realtimeSharingUserId = currentUser.id;
-      const ch = sbClient.channel("ds-v2-google-sharing", {
-        config: { presence: { key: myEmail } }
-      });
       const myEmail = normalizeEmail(currentUser.email);
       if (!myEmail) return;
       const myMeta = currentUser.user_metadata || {};
 
-      const ingestPresenceUsers = () => {
-        try {
-          const state = ch.presenceState ? ch.presenceState() : {};
-          Object.values(state || {}).forEach(entries => {
-            (Array.isArray(entries) ? entries : []).forEach(entry => {
-              if (entry && entry.email && entry.provider === "google") {
-                saveUserToLocalGoogleRegistry(entry);
-                flushOutboxSharesToOnlineRecipient(entry.email);
-              }
       try {
         realtimeSharingUserId = currentUser.id;
         const ch = sbClient.channel("ds-v2-google-sharing", {
@@ -8102,16 +4393,8 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
               flushOutboxSharesToOnlineRecipient(entry.email);
             }
           });
-        } catch (e) { }
-      };
         });
 
-      ch.on("presence", { event: "sync" }, ingestPresenceUsers);
-      ch.on("presence", { event: "join" }, ({ newPresences }) => {
-        (Array.isArray(newPresences) ? newPresences : []).forEach(entry => {
-          if (entry && entry.email && entry.provider === "google") {
-            saveUserToLocalGoogleRegistry(entry);
-            flushOutboxSharesToOnlineRecipient(entry.email);
         ch.on("broadcast", { event: "patient_share" }, async ({ payload }) => {
           if (!payload) return;
           if (normalizeEmail(payload.recipient_email) === myEmail) {
@@ -8119,20 +4402,11 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
             if (received) {
               const fromMeta = (payload.payload && payload.payload.__shared_from) || {};
               const sender = fromMeta.sender_name || fromMeta.sender_email || "a colleague";
-              toast(`📨 Received patient "${payload.patient_name || "Summary"}" from ${ sender } ✓`);
+              toast(`📨 Received patient "${payload.patient_name || "Summary"}" from ${sender} ✓`);
             }
           }
         });
-      });
 
-      ch.on("broadcast", { event: "patient_share" }, async ({ payload }) => {
-        if (!payload) return;
-        if (normalizeEmail(payload.recipient_email) === myEmail) {
-          const received = await deliverIncomingSharedItem(payload);
-          if (received) {
-            const fromMeta = (payload.payload && payload.payload.__shared_from) || {};
-            const sender = fromMeta.sender_name || fromMeta.sender_email || "a colleague";
-            toast(`📨 Received patient "${payload.patient_name || "Summary"}" from ${ sender } ✓`);
         ch.on("broadcast", { event: "whois_google_user" }, async ({ payload }) => {
           if (!payload || !hasCloudAuthSession()) return;
           if (normalizeEmail(payload.email) === myEmail) {
@@ -8150,18 +4424,8 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
               });
             } catch (e) { }
           }
-        }
-      });
         });
 
-      ch.on("broadcast", { event: "whois_google_user" }, async ({ payload }) => {
-        if (!payload || !hasCloudAuthSession()) return;
-        if (normalizeEmail(payload.email) === myEmail) {
-          try {
-            await ch.send({
-              type: "broadcast",
-              event: "whois_google_user_ack",
-              payload: {
         ch.on("broadcast", { event: "whois_google_user_ack" }, ({ payload }) => {
           if (payload && payload.user_id && payload.email && payload.provider === "google") {
             saveUserToLocalGoogleRegistry(payload);
@@ -8182,12 +4446,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
                 email: myEmail,
                 full_name: String(myMeta.full_name || myMeta.name || "").trim(),
                 avatar_url: String(myMeta.avatar_url || myMeta.picture || "").trim(),
-                provider: "google"
-              }
-            });
-          } catch (e) { }
-        }
-      });
                 provider: "google",
                 online_at: new Date().toISOString()
               });
@@ -8200,20 +4458,12 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
           }
         });
 
-      ch.on("broadcast", { event: "whois_google_user_ack" }, ({ payload }) => {
-        if (payload && payload.user_id && payload.email && payload.provider === "google") {
-          saveUserToLocalGoogleRegistry(payload);
-        }
-      });
         realtimeSharingChannel = ch;
       } catch (e) {
         console.warn("Realtime sharing channel warning:", e);
       }
     }
 
-      ch.on("broadcast", { event: "request_pending_shares" }, ({ payload }) => {
-        if (payload && payload.recipient_email && hasCloudAuthSession()) {
-          flushOutboxSharesToOnlineRecipient(payload.recipient_email);
     async function registerCurrentGoogleUserInDirectory() {
       if (!hasCloudAuthSession()) return;
       saveCurrentUserToLocalGoogleRegistry();
@@ -8237,39 +4487,16 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         if (error && !isMissingTableError(error)) {
           console.warn("Directory upsert warning:", error);
         }
-      });
       } catch (e) {
         console.warn("Directory sync warning:", e);
       }
     }
 
-      ch.subscribe(async status => {
-        if (status === "SUBSCRIBED") {
-          try {
-            await ch.track({
-              user_id: currentUser.id,
-              email: myEmail,
-              full_name: String(myMeta.full_name || myMeta.name || "").trim(),
-              avatar_url: String(myMeta.avatar_url || myMeta.picture || "").trim(),
-              provider: "google",
-              online_at: new Date().toISOString()
-            });
-            await ch.send({
-              type: "broadcast",
-              event: "request_pending_shares",
-              payload: { recipient_email: myEmail }
-            });
-          } catch (e) { }
-        }
-      });
     async function getImportedShareIdsSet() {
       const raw = safeParse(await store.get(getImportedSharesKey()));
       return new Set(Array.isArray(raw) ? raw : []);
     }
 
-      realtimeSharingChannel = ch;
-    } catch (e) {
-      console.warn("Realtime sharing channel warning:", e);
     async function markShareIdImported(shareId) {
       if (!shareId) return;
       const set = await getImportedShareIdsSet();
@@ -8278,21 +4505,7 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         await store.set(getImportedSharesKey(), JSON.stringify(Array.from(set).slice(-300)));
       }
     }
-  }
 
-  async function registerCurrentGoogleUserInDirectory() {
-    if (!hasCloudAuthSession()) return;
-    saveCurrentUserToLocalGoogleRegistry();
-    if (!navigator.onLine) return;
-    const email = normalizeEmail(currentUser.email);
-    if (!email) return;
-    const meta = currentUser.user_metadata || {};
-    const fullName = String(meta.full_name || meta.name || "").trim();
-    const avatarUrl = String(meta.avatar_url || meta.picture || "").trim();
-    try {
-      const { error } = await sbClient
-        .from("user_directory")
-        .upsert({
     async function pushUserSettingsToCloud(explicitDefaults = null) {
       if (!hasCloudAuthSession() || !navigator.onLine) return;
       try {
@@ -8306,62 +4519,11 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         const themeColor = serializeThemeString(themeConfig);
         const { error } = await sbClient.from("user_settings").upsert({
           user_id: currentUser.id,
-          email,
-          full_name: fullName,
-          avatar_url: avatarUrl,
-          provider: "google",
-          last_seen_at: new Date().toISOString()
           defaults: defaultsPayload,
           theme_color: themeColor,
           updated_at: new Date().toISOString()
         }, { onConflict: "user_id" });
-      if (error && !isMissingTableError(error)) {
-        console.warn("Directory upsert warning:", error);
-      }
-    } catch (e) {
-      console.warn("Directory sync warning:", e);
-    }
-  }
 
-  async function getImportedShareIdsSet() {
-    const raw = safeParse(await store.get(getImportedSharesKey()));
-    return new Set(Array.isArray(raw) ? raw : []);
-  }
-
-  async function markShareIdImported(shareId) {
-    if (!shareId) return;
-    const set = await getImportedShareIdsSet();
-    if (!set.has(shareId)) {
-      set.add(shareId);
-      await store.set(getImportedSharesKey(), JSON.stringify(Array.from(set).slice(-300)));
-    }
-  }
-
-  async function pushUserSettingsToCloud(explicitDefaults = null) {
-    if (!hasCloudAuthSession() || !navigator.onLine) return;
-    try {
-      const rawDef = explicitDefaults || safeParse(await store.get(getDefaultsKey())) || {};
-      const defaultsPayload = {
-        ...rawDef,
-        __templates: savedTemplates,
-        __theme_config: themeConfig,
-        __frequent_contacts: frequentContacts
-      };
-      const themeColor = serializeThemeString(themeConfig);
-      const { error } = await sbClient.from("user_settings").upsert({
-        user_id: currentUser.id,
-        defaults: defaultsPayload,
-        theme_color: themeColor,
-        updated_at: new Date().toISOString()
-      }, { onConflict: "user_id" });
-
-      if (error && isMissingTableError(error)) {
-        await writeCloudAuthMeta({
-          defaults: rawDef,
-          templates: savedTemplates,
-          frequent_contacts: frequentContacts,
-          theme_color: themeColor
-        });
         if (error && isMissingTableError(error)) {
           await writeCloudAuthMeta({
             defaults: rawDef,
@@ -8373,19 +4535,8 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       } catch (e) {
         console.warn("Settings cloud push failed:", e);
       }
-    } catch (e) {
-      console.warn("Settings cloud push failed:", e);
     }
-  }
 
-  async function pullUserSettingsFromCloud() {
-    if (!hasCloudAuthSession() || !navigator.onLine) return;
-    try {
-      const { data, error } = await sbClient
-        .from("user_settings")
-        .select("defaults, theme_color, updated_at")
-        .eq("user_id", currentUser.id)
-        .maybeSingle();
     async function pullUserSettingsFromCloud() {
       if (!hasCloudAuthSession() || !navigator.onLine) return;
       try {
@@ -8395,14 +4546,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
           .eq("user_id", currentUser.id)
           .maybeSingle();
 
-      if (error) {
-        if (isMissingTableError(error)) {
-          const meta = await readCloudAuthMeta(false);
-          if (meta.defaults && Object.keys(meta.defaults).length) {
-            const localDef = safeParse(await store.get(getDefaultsKey()));
-            if (!localDef) {
-              await store.set(getDefaultsKey(), JSON.stringify(meta.defaults));
-              applyDefaults(meta.defaults);
         if (error) {
           if (isMissingTableError(error)) {
             const meta = await readCloudAuthMeta(false);
@@ -8424,8 +4567,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
               setThemeColor(meta.theme_color, false);
             }
           }
-          if (Array.isArray(meta.templates) && meta.templates.length && !savedTemplates.length) {
-            savedTemplates = meta.templates;
           return;
         }
 
@@ -8446,13 +4587,9 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
             savedTemplates = remoteTemplates;
             await persistSavedTemplates(false);
           }
-          if (Array.isArray(meta.frequent_contacts) && meta.frequent_contacts.length) {
-            await mergeRemoteFrequentContacts(meta.frequent_contacts);
           if (remoteContacts && remoteContacts.length) {
             await mergeRemoteFrequentContacts(remoteContacts);
           }
-          if (meta.theme_color) {
-            setThemeColor(meta.theme_color, false);
           if (data.theme_color) {
             setThemeColor(data.theme_color, false);
           }
@@ -8462,57 +4599,16 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
             await pushUserSettingsToCloud(localDef || {});
           }
         }
-        return;
       } catch (e) {
         console.warn("Settings pull warning:", e);
       }
     }
 
-      if (data) {
-        const remoteDef = { ...(data.defaults || {}) };
-        const remoteTemplates = Array.isArray(remoteDef.__templates) ? remoteDef.__templates : null;
-        const remoteContacts = Array.isArray(remoteDef.__frequent_contacts) ? remoteDef.__frequent_contacts : null;
-        delete remoteDef.__templates;
-        delete remoteDef.__theme_config;
-        delete remoteDef.__frequent_contacts;
-
-        const localDef = safeParse(await store.get(getDefaultsKey()));
-        if (!localDef && Object.keys(remoteDef).length) {
-          await store.set(getDefaultsKey(), JSON.stringify(remoteDef));
-          applyDefaults(remoteDef);
-        }
-        if (remoteTemplates && remoteTemplates.length && !savedTemplates.length) {
-          savedTemplates = remoteTemplates;
-          await persistSavedTemplates(false);
-        }
-        if (remoteContacts && remoteContacts.length) {
-          await mergeRemoteFrequentContacts(remoteContacts);
-        }
-        if (data.theme_color) {
-          setThemeColor(data.theme_color, false);
-        }
-      } else {
-        const localDef = safeParse(await store.get(getDefaultsKey()));
-        if ((localDef && Object.keys(localDef).length) || savedTemplates.length || frequentContacts.length) {
-          await pushUserSettingsToCloud(localDef || {});
-        }
     async function syncNow(interactive = false) {
       if (!currentUser || !sbClient || !isGoogleUserSession(currentUser)) {
         if (interactive) openAuthModal();
         return;
       }
-    } catch (e) {
-      console.warn("Settings pull warning:", e);
-    }
-  }
-
-  async function syncNow(interactive = false) {
-    if (!currentUser || !sbClient || !isGoogleUserSession(currentUser)) {
-      if (interactive) openAuthModal();
-      return;
-    }
-    if (!navigator.onLine) {
-      syncState = "offline";
       if (!navigator.onLine) {
         syncState = "offline";
         updateSyncIndicators();
@@ -8523,29 +4619,13 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       syncInFlight = true;
       syncState = "syncing";
       updateSyncIndicators();
-      if (interactive) toast("You are offline — changes stay safely on device");
-      return;
-    }
-    if (syncInFlight) return;
-    syncInFlight = true;
-    syncState = "syncing";
-    updateSyncIndicators();
 
-    try {
-      await registerCurrentGoogleUserInDirectory();
-      initRealtimeSharingChannel();
-      await deliverPendingSharedInboxForCurrentUser();
-      await flushPendingDeletes();
       try {
         await registerCurrentGoogleUserInDirectory();
         initRealtimeSharingChannel();
         await deliverPendingSharedInboxForCurrentUser();
         await flushPendingDeletes();
 
-      records.forEach(r => {
-        if (r && (!r.user_id || r.user_id !== currentUser.id)) {
-          r.user_id = currentUser.id;
-          r.dirty = true;
         records.forEach(r => {
           if (r && (!r.user_id || r.user_id !== currentUser.id)) {
             r.user_id = currentUser.id;
@@ -8557,35 +4637,16 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         for (const rec of dirtyList) {
           await upsertRecordToSupabase(rec);
         }
-      });
 
-      const dirtyList = records.filter(r => r.dirty && !pendingDeletes.includes(r.id));
-      for (const rec of dirtyList) {
-        await upsertRecordToSupabase(rec);
-      }
         let remoteRows = [];
         let usingMetaFallback = false;
 
-      let remoteRows = [];
-      let usingMetaFallback = false;
         const { data: tableRows, error } = await sbClient
           .from("discharge_summaries")
           .select("id, user_id, status, patient_name, ip_no, doa, dod, unit, diagnosis_preview, payload, created_at, updated_at")
           .eq("user_id", currentUser.id)
           .order("updated_at", { ascending: false });
 
-      const { data: tableRows, error } = await sbClient
-        .from("discharge_summaries")
-        .select("id, user_id, status, patient_name, ip_no, doa, dod, unit, diagnosis_preview, payload, created_at, updated_at")
-        .eq("user_id", currentUser.id)
-        .order("updated_at", { ascending: false });
-
-      if (error) {
-        if (isMissingTableError(error)) {
-          usingMetaFallback = true;
-          const meta = await readCloudAuthMeta(true);
-          const delSet = new Set(meta.deleted_ids || []);
-          remoteRows = (meta.summaries || []).filter(r => r && !delSet.has(r.id));
         if (error) {
           if (isMissingTableError(error)) {
             usingMetaFallback = true;
@@ -8596,45 +4657,13 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
             throw error;
           }
         } else {
-          throw error;
           remoteRows = tableRows || [];
         }
-      } else {
-        remoteRows = tableRows || [];
-      }
 
-      const localById = new Map(records.map(r => [r.id, r]));
-      const merged = [];
-      const seenIds = new Set();
         const localById = new Map(records.map(r => [r.id, r]));
         const merged = [];
         const seenIds = new Set();
 
-      (remoteRows || []).forEach(r => {
-        if (pendingDeletes.includes(r.id)) return;
-        seenIds.add(r.id);
-        const local = localById.get(r.id);
-        if (local && local.dirty && new Date(local.updated_at || 0) > new Date(r.updated_at || 0)) {
-          merged.push(local);
-        } else {
-          merged.push({
-            id: r.id,
-            user_id: r.user_id || currentUser.id,
-            status: r.status || "incomplete",
-            patient_name: r.patient_name || "",
-            ip_no: r.ip_no || "",
-            doa: r.doa || "",
-            dod: r.dod || "",
-            unit: r.unit || "",
-            diagnosis_preview: r.diagnosis_preview || "",
-            payload: r.payload || {},
-            created_at: r.created_at,
-            updated_at: r.updated_at,
-            synced_at: new Date().toISOString(),
-            dirty: false
-          });
-        }
-      });
         (remoteRows || []).forEach(r => {
           if (pendingDeletes.includes(r.id)) return;
           seenIds.add(r.id);
@@ -8661,12 +4690,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
           }
         });
 
-      // Keep any unsynced local-only records so nothing is ever lost
-      records.forEach(local => {
-        if (!seenIds.has(local.id) && !pendingDeletes.includes(local.id)) {
-          merged.push({ ...local, dirty: false, synced_at: new Date().toISOString() });
-        }
-      });
         // Keep any unsynced local-only records so nothing is ever lost
         records.forEach(local => {
           if (!seenIds.has(local.id) && !pendingDeletes.includes(local.id)) {
@@ -8674,15 +4697,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
           }
         });
 
-      // Fallback safety: check patient_shares for any unmaterialized shares sent to this doctor
-      if (!usingMetaFallback) {
-        try {
-          const { data: shareRows, error: shareErr } = await sbClient
-            .from("patient_shares")
-            .select("id, sender_id, sender_email, sender_name, recipient_summary_id, source_summary_id, status, patient_name, ip_no, doa, dod, unit, diagnosis_preview, payload, note, created_at")
-            .eq("recipient_id", currentUser.id)
-            .order("created_at", { ascending: false })
-            .limit(50);
         // Fallback safety: check patient_shares for any unmaterialized shares sent to this doctor
         if (!usingMetaFallback) {
           try {
@@ -8693,13 +4707,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
               .order("created_at", { ascending: false })
               .limit(50);
 
-          if (!shareErr && Array.isArray(shareRows) && shareRows.length) {
-            const importedIds = await getImportedShareIdsSet();
-            const existingShareIds = new Set(importedIds);
-            merged.forEach(r => {
-              const sid = r && r.payload && r.payload.__shared_from && r.payload.__shared_from.share_id;
-              if (sid) existingShareIds.add(sid);
-            });
             if (!shareErr && Array.isArray(shareRows) && shareRows.length) {
               const importedIds = await getImportedShareIdsSet();
               const existingShareIds = new Set(importedIds);
@@ -8708,38 +4715,6 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
                 if (sid) existingShareIds.add(sid);
               });
 
-            for (const sh of shareRows) {
-              if (!sh || existingShareIds.has(sh.id) || sh.recipient_summary_id) continue;
-              const payload = {
-                ...(sh.payload || {}),
-                __shared_from: {
-                  share_id: sh.id,
-                  sender_id: sh.sender_id,
-                  sender_email: sh.sender_email,
-                  sender_name: sh.sender_name,
-                  note: sh.note || "",
-                  shared_at: sh.created_at,
-                  source_summary_id: sh.source_summary_id || null
-                }
-              };
-              const materialized = {
-                id: generateUUID(),
-                user_id: currentUser.id,
-                status: sh.status || "incomplete",
-                patient_name: sh.patient_name || "",
-                ip_no: sh.ip_no || "",
-                doa: sh.doa || "",
-                dod: sh.dod || "",
-                unit: sh.unit || "",
-                diagnosis_preview: sh.diagnosis_preview || "",
-                payload,
-                created_at: sh.created_at,
-                updated_at: sh.created_at,
-                dirty: true
-              };
-              merged.unshift(materialized);
-              await markShareIdImported(sh.id);
-              await upsertRecordToSupabase(materialized);
               for (const sh of shareRows) {
                 if (!sh || existingShareIds.has(sh.id) || sh.recipient_summary_id) continue;
                 const payload = {
@@ -8777,41 +4752,12 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
           } catch (e) {
             console.warn("Incoming shares check warning:", e);
           }
-        } catch (e) {
-          console.warn("Incoming shares check warning:", e);
         }
-      }
 
-      merged.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
-      records = merged;
-      await persistScopedRecords();
         merged.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0));
         records = merged;
         await persistScopedRecords();
 
-      if (usingMetaFallback) {
-        const localDef = safeParse(await store.get(getDefaultsKey())) || {};
-        await writeCloudAuthMeta({
-          summaries: records.map(r => ({
-            id: r.id,
-            user_id: currentUser.id,
-            status: r.status || "incomplete",
-            patient_name: r.patient_name || "",
-            ip_no: r.ip_no || "",
-            doa: r.doa || "",
-            dod: r.dod || "",
-            unit: r.unit || "",
-            diagnosis_preview: r.diagnosis_preview || "",
-            payload: r.payload || {},
-            created_at: r.created_at,
-            updated_at: r.updated_at
-          })),
-          defaults: localDef,
-          templates: savedTemplates,
-          frequent_contacts: frequentContacts,
-          theme_color: serializeThemeString(themeConfig)
-        });
-      }
         if (usingMetaFallback) {
           const localDef = safeParse(await store.get(getDefaultsKey())) || {};
           await writeCloudAuthMeta({
@@ -8836,21 +4782,8 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
           });
         }
 
-      await pullUserSettingsFromCloud();
         await pullUserSettingsFromCloud();
 
-      lastSyncTime = new Date();
-      lastSyncError = "";
-      syncState = records.some(r => r.dirty) || pendingDeletes.length ? "pending" : "synced";
-      renderDashboard();
-      if (interactive) toast("Synced with Supabase ✓");
-    } catch (e) {
-      console.warn("Supabase sync failed:", e);
-      lastSyncError = e.message || "Sync failed";
-      syncState = "error";
-      updateSyncIndicators();
-      if (interactive) {
-        toast(`Sync error: ${ lastSyncError } `);
         lastSyncTime = new Date();
         lastSyncError = "";
         syncState = records.some(r => r.dirty) || pendingDeletes.length ? "pending" : "synced";
@@ -8862,27 +4795,14 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         syncState = "error";
         updateSyncIndicators();
         if (interactive) {
-          toast(`Sync error: ${ lastSyncError } `);
+          toast(`Sync error: ${lastSyncError}`);
         }
       } finally {
         syncInFlight = false;
         updateSyncIndicators();
       }
-    } finally {
-      syncInFlight = false;
-      updateSyncIndicators();
     }
-  }
 
-  window.addEventListener("online", () => {
-    if (hasCloudAuthSession()) syncNow(false);
-    else updateSyncIndicators();
-  });
-  window.addEventListener("offline", () => {
-    syncState = "offline";
-    updateSyncIndicators();
-    if (activeTab === "dashboard") renderDashboardHeroAndAuth();
-  });
     window.addEventListener("online", () => {
       if (hasCloudAuthSession()) syncNow(false);
       else updateSyncIndicators();
@@ -8893,15 +4813,9 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       if (activeTab === "dashboard") renderDashboardHeroAndAuth();
     });
 
-  /* ---------- Auth UI & Actions (Google-Only Sign-In) ---------- */
-  const GOOGLE_SVG = `< svg class="google-g-icon" viewBox = "0 0 24 24" width = "16" height = "16" aria - hidden="true" ><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg > `;
     /* ---------- Auth UI & Actions (Google-Only Sign-In) ---------- */
-    const GOOGLE_SVG = `< svg class="google-g-icon" viewBox = "0 0 24 24" width = "16" height = "16" aria - hidden="true" ><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg > `;
+    const GOOGLE_SVG = `<svg class="google-g-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/></svg>`;
 
-  function getCanonicalAuthRedirectUrl() {
-    const host = window.location.hostname || "";
-    if (!host || host === "localhost" || host === "127.0.0.1" || window.location.protocol === "file:") {
-      return "https://dsum.shop/";
     function getCanonicalAuthRedirectUrl() {
       const host = window.location.hostname || "";
       if (!host || host === "localhost" || host === "127.0.0.1" || window.location.protocol === "file:") {
@@ -8909,33 +4823,7 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
       }
       return window.location.origin + window.location.pathname;
     }
-    return window.location.origin + window.location.pathname;
-  }
 
-  async function signInWithGoogle() {
-    if (!sbClient) {
-      await initSupabase();
-    }
-    if (!sbClient) {
-      authFeedback = {
-        type: "err",
-        text: navigator.onLine
-          ? "Authentication service is still loading. Please reload and try again."
-          : "You are offline. Connect to the internet to sign in with Google."
-      };
-      if (document.getElementById("authModal").style.display === "none") openAuthModal();
-      else renderAuthFeedback();
-      return;
-    }
-    if (!navigator.onLine) {
-      authFeedback = {
-        type: "err",
-        text: "You are offline. Connect to the internet to sign in with Google."
-      };
-      if (document.getElementById("authModal").style.display === "none") openAuthModal();
-      else renderAuthFeedback();
-      return;
-    }
     async function signInWithGoogle() {
       if (!sbClient) {
         await initSupabase();
@@ -8961,35 +4849,14 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         return;
       }
 
-    authFeedback = { type: "info", text: "Connecting to Google Sign-In..." };
-    renderAuthFeedback();
       authFeedback = { type: "info", text: "Connecting to Google Sign-In..." };
       renderAuthFeedback();
 
-    try {
       try {
-        const ctl = new AbortController();
-        const timer = setTimeout(() => ctl.abort(), 3000);
-        const res = await fetch(`${ sbConfig.url } /auth/v1 / settings`, {
-          headers: { apikey: sbConfig.anonKey },
-          signal: ctl.signal
-        });
-        clearTimeout(timer);
-        if (res.ok) {
-          const settings = await res.json();
-          if (settings && settings.external && settings.external.google === false) {
-            authFeedback = {
-              type: "err",
-              text: "Google Sign-In is currently disabled on the authentication server. Please enable Google provider in Supabase."
-            };
-            const modalEl = document.getElementById("authModal");
-            if (modalEl && modalEl.style.display === "none") {
-              modalEl.style.display = "flex";
-              document.getElementById("authModalTitle").textContent = "Sign In with Google";
         try {
           const ctl = new AbortController();
           const timer = setTimeout(() => ctl.abort(), 3000);
-          const res = await fetch(`${ sbConfig.url } /auth/v1 / settings`, {
+          const res = await fetch(`${sbConfig.url}/auth/v1/settings`, {
             headers: { apikey: sbConfig.anonKey },
             signal: ctl.signal
           });
@@ -9009,30 +4876,9 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
               renderAuthFeedback();
               return;
             }
-            renderAuthFeedback();
-            return;
           }
-        }
-      } catch (e) { }
         } catch (e) { }
 
-      const redirectUrl = getCanonicalAuthRedirectUrl();
-      const { error } = await sbClient.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: { prompt: "select_account" }
-        }
-      });
-      if (error) throw error;
-    } catch (e) {
-      authFeedback = {
-        type: "err",
-        text: (e && e.message) ? e.message : "Could not start Google Sign-In."
-      };
-      const modalEl = document.getElementById("authModal");
-      if (modalEl && modalEl.style.display === "none") modalEl.style.display = "flex";
-      renderAuthFeedback();
         const redirectUrl = getCanonicalAuthRedirectUrl();
         const { error } = await sbClient.auth.signInWithOAuth({
           provider: "google",
@@ -9052,19 +4898,13 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         renderAuthFeedback();
       }
     }
-  }
 
-  function buildAuthPanelHTML(inline = false) {
-    const msgHtml = authFeedback
-      ? `< div class="auth-msg ${esc(authFeedback.type)}" > ${ esc(authFeedback.text) }</div > `
-      : "";
     function buildAuthPanelHTML(inline = false) {
       const msgHtml = authFeedback
-        ? `< div class="auth-msg ${esc(authFeedback.type)}" > ${ esc(authFeedback.text) }</div > `
+        ? `<div class="auth-msg ${esc(authFeedback.type)}">${esc(authFeedback.text)}</div>`
         : "";
 
-    return `
-                              return `
+      return `
         <div class="${inline ? "auth-grid" : ""}">
           <div class="auth-google-box" style="gap:10px">
             ${msgHtml}
@@ -9076,109 +4916,67 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
           </div>
         </div>
       `;
-                            }
-                          }
+    }
 
-                          function continueOfflineMode() {
-                            offlineDismissedAuthCard = true;
-                            renderDashboardHeroAndAuth();
-                            updateSyncIndicators();
-                            toast("Local mode");
-                          }
-                          function continueOfflineMode() {
-                            offlineDismissedAuthCard = true;
-                            renderDashboardHeroAndAuth();
-                            updateSyncIndicators();
-                            toast("Local mode");
-                          }
+    function continueOfflineMode() {
+      offlineDismissedAuthCard = true;
+      renderDashboardHeroAndAuth();
+      updateSyncIndicators();
+      toast("Local mode");
+    }
 
-                          function openAuthOrAccount() {
-                            openAuthModal();
-                          }
-                          function openAuthOrAccount() {
-                            openAuthModal();
-                          }
+    function openAuthOrAccount() {
+      openAuthModal();
+    }
 
-                          function openAuthModal() {
-                            authFeedback = null;
-                            const modal = document.getElementById("authModal");
-                            const title = document.getElementById("authModalTitle");
-                            const body = document.getElementById("authModalBody");
-                            function openAuthModal() {
-                              authFeedback = null;
-                              const modal = document.getElementById("authModal");
-                              const title = document.getElementById("authModalTitle");
-                              const body = document.getElementById("authModalBody");
+    function openAuthModal() {
+      authFeedback = null;
+      const modal = document.getElementById("authModal");
+      const title = document.getElementById("authModalTitle");
+      const body = document.getElementById("authModalBody");
 
-                              if (currentUser && isGoogleUserSession(currentUser)) {
-                                const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || "Doctor Account";
-                                title.textContent = "Google Doctor Account";
-                                body.innerHTML = `
       if (currentUser && isGoogleUserSession(currentUser)) {
         const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || "Doctor Account";
         title.textContent = "Google Doctor Account";
         body.innerHTML = `
-                                  < div class="auth-msg ok" >
-            ✓ Signed in with Google as <b>${ esc(currentUser.email || docName) }</b >
-          </div >
-                                  <p class="hint" style="font-size:13px">
-                                    <b>Name:</b> ${esc(docName)}<br>
-                                      <b>Google Email:</b> ${esc(currentUser.email || "—")}<br>
-                                        <b>Saved summaries:</b> ${records.length}<br>
-                                          <b>Frequently shared contacts:</b> ${frequentContacts.length}
-                                        </p>
-                                        <div class="modal-actions">
-                                          <button type="button" class="btn" onclick="syncNow(true)">☁ Sync Now</button>
-                                          <button type="button" class="btn out" onclick="closeAuthModal();openSharePatientModal(null)">📤 Share Patient</button>
-                                          <button type="button" class="btn danger" onclick="signOutUser()">Sign Out</button>
-                                        </div>
-                                        `;
-    } else {
-                                          title.textContent = "Sign In with Google";
-                                        body.innerHTML = buildAuthPanelHTML(false);
+          <div class="auth-msg ok">
+            ✓ Signed in with Google as <b>${esc(currentUser.email || docName)}</b>
+          </div>
+          <p class="hint" style="font-size:13px">
+            <b>Name:</b> ${esc(docName)}<br>
+            <b>Google Email:</b> ${esc(currentUser.email || "—")}<br>
+            <b>Saved summaries:</b> ${records.length}<br>
+            <b>Frequently shared contacts:</b> ${frequentContacts.length}
+          </p>
+          <div class="modal-actions">
+            <button type="button" class="btn" onclick="syncNow(true)">☁ Sync Now</button>
+            <button type="button" class="btn out" onclick="closeAuthModal();openSharePatientModal(null)">📤 Share Patient</button>
+            <button type="button" class="btn danger" onclick="signOutUser()">Sign Out</button>
+          </div>
+        `;
       } else {
-                                          title.textContent = "Sign In with Google";
-                                        body.innerHTML = buildAuthPanelHTML(false);
+        title.textContent = "Sign In with Google";
+        body.innerHTML = buildAuthPanelHTML(false);
       }
 
-                                        modal.style.display = "flex";
+      modal.style.display = "flex";
     }
 
-                                        modal.style.display = "flex";
-  }
-                                        function closeAuthModal() {
-                                          document.getElementById("authModal").style.display = "none";
+    function closeAuthModal() {
+      document.getElementById("authModal").style.display = "none";
     }
 
-                                        function closeAuthModal() {
-                                          document.getElementById("authModal").style.display = "none";
-  }
-
-                                        function renderAuthFeedback() {
-    if (document.getElementById("authModal").style.display !== "none" && !currentUser) {
-                                          document.getElementById("authModalBody").innerHTML = buildAuthPanelHTML(false);
-                                        function renderAuthFeedback() {
+    function renderAuthFeedback() {
       if (document.getElementById("authModal").style.display !== "none" && !currentUser) {
-                                          document.getElementById("authModalBody").innerHTML = buildAuthPanelHTML(false);
+        document.getElementById("authModalBody").innerHTML = buildAuthPanelHTML(false);
       }
-                                        renderDashboardHeroAndAuth();
+      renderDashboardHeroAndAuth();
     }
-                                        renderDashboardHeroAndAuth();
-  }
 
-                                        async function signOutUser() {
-    const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
-    if (dirtyCount > 0 && hasCloudAuthSession() && navigator.onLine) {
-                                          await syncNow(false);
-    }
-    const remainingDirty = records.filter(r => r.dirty).length;
-    if (hasCloudAuthSession() && remainingDirty > 0) {
-      if (!confirm(`You have ${remainingDirty} offline unsynced edit(s) waiting for internet.\n\nSign out anyway? (Your unsynced drafts remain cached safely for this account on this device until you sign back in.)`)) {
-        return;
-                                        async function signOutUser() {
+    async function signOutUser() {
       const dirtyCount = records.filter(r => r.dirty).length + pendingDeletes.length;
       if (dirtyCount > 0 && hasCloudAuthSession() && navigator.onLine) {
-                                          await syncNow(false);
+        await syncNow(false);
       }
       const remainingDirty = records.filter(r => r.dirty).length;
       if (hasCloudAuthSession() && remainingDirty > 0) {
@@ -9187,1030 +4985,599 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         }
       }
 
-                                        if (sbClient && currentUser) {
-        try {await sbClient.auth.signOut(); } catch (e) {console.warn("signOut:", e); }
+      if (sbClient && currentUser) {
+        try { await sbClient.auth.signOut(); } catch (e) { console.warn("signOut:", e); }
       }
-                                        teardownRealtimeSharingChannel();
-                                        currentUser = null;
-                                        cacheLastUser(null);
-                                        closeAuthModal();
-                                        await handleUserScopeChange(null);
-                                        toast("Signed out cleanly");
+      teardownRealtimeSharingChannel();
+      currentUser = null;
+      cacheLastUser(null);
+      closeAuthModal();
+      await handleUserScopeChange(null);
+      toast("Signed out cleanly");
     }
 
-                                        if (sbClient && currentUser) {
-      try {await sbClient.auth.signOut(); } catch (e) {console.warn("signOut:", e); }
-                                        /* ---------- Frequently Shared Contacts & Patient Sharing ---------- */
-                                        function sortFrequentContacts(list) {
+    /* ---------- Frequently Shared Contacts & Patient Sharing ---------- */
+    function sortFrequentContacts(list) {
       return (Array.isArray(list) ? list : [])
         .filter(c => c && normalizeEmail(c.email))
         .sort((a, b) => {
           const countDiff = (Number(b.share_count) || 0) - (Number(a.share_count) || 0);
-                                        if (countDiff !== 0) return countDiff;
-                                        const tB = new Date(b.last_shared_at || b.added_at || 0).getTime() || 0;
-                                        const tA = new Date(a.last_shared_at || a.added_at || 0).getTime() || 0;
-                                        return tB - tA;
+          if (countDiff !== 0) return countDiff;
+          const tB = new Date(b.last_shared_at || b.added_at || 0).getTime() || 0;
+          const tA = new Date(a.last_shared_at || a.added_at || 0).getTime() || 0;
+          return tB - tA;
         });
     }
-                                        teardownRealtimeSharingChannel();
-                                        currentUser = null;
-                                        cacheLastUser(null);
-                                        closeAuthModal();
-                                        await handleUserScopeChange(null);
-                                        toast("Signed out cleanly");
-  }
 
-                                        /* ---------- Frequently Shared Contacts & Patient Sharing ---------- */
-                                        function sortFrequentContacts(list) {
-    return (Array.isArray(list) ? list : [])
-      .filter(c => c && normalizeEmail(c.email))
-      .sort((a, b) => {
-        const countDiff = (Number(b.share_count) || 0) - (Number(a.share_count) || 0);
-                                        if (countDiff !== 0) return countDiff;
-                                        const tB = new Date(b.last_shared_at || b.added_at || 0).getTime() || 0;
-                                        const tA = new Date(a.last_shared_at || a.added_at || 0).getTime() || 0;
-                                        return tB - tA;
-      });
-  }
-                                        async function loadFrequentContacts() {
+    async function loadFrequentContacts() {
       const scope = getOwnerScope();
-                                        let list = safeParse(await store.get(getContactsKey(scope)));
-                                        if (!Array.isArray(list)) list = [];
+      let list = safeParse(await store.get(getContactsKey(scope)));
+      if (!Array.isArray(list)) list = [];
       frequentContacts = sortFrequentContacts(list).filter(c => Boolean(c && c.user_id));
-                                        renderFrequentContactsSection();
+      renderFrequentContactsSection();
     }
 
-                                        async function loadFrequentContacts() {
-    const scope = getOwnerScope();
-                                        let list = safeParse(await store.get(getContactsKey(scope)));
-                                        if (!Array.isArray(list)) list = [];
-    frequentContacts = sortFrequentContacts(list).filter(c => Boolean(c && c.user_id));
-                                        renderFrequentContactsSection();
-  }
-
-                                        async function persistFrequentContacts(syncCloud = true) {
-                                          frequentContacts = sortFrequentContacts(frequentContacts).slice(0, 40);
-                                        await store.set(getContactsKey(), JSON.stringify(frequentContacts));
-                                        renderFrequentContactsSection();
-                                        if (syncCloud && hasCloudAuthSession() && navigator.onLine) {
-                                          pushUserSettingsToCloud().catch(() => { });
-                                        async function persistFrequentContacts(syncCloud = true) {
-                                          frequentContacts = sortFrequentContacts(frequentContacts).slice(0, 40);
-                                        await store.set(getContactsKey(), JSON.stringify(frequentContacts));
-                                        renderFrequentContactsSection();
-                                        if (syncCloud && hasCloudAuthSession() && navigator.onLine) {
-                                          pushUserSettingsToCloud().catch(() => { });
+    async function persistFrequentContacts(syncCloud = true) {
+      frequentContacts = sortFrequentContacts(frequentContacts).slice(0, 40);
+      await store.set(getContactsKey(), JSON.stringify(frequentContacts));
+      renderFrequentContactsSection();
+      if (syncCloud && hasCloudAuthSession() && navigator.onLine) {
+        pushUserSettingsToCloud().catch(() => {});
       }
     }
-  }
 
-                                        async function mergeRemoteFrequentContacts(remoteList) {
-    if (!Array.isArray(remoteList) || !remoteList.length) return;
-                                        const map = new Map();
-    frequentContacts.forEach(c => {
-      const key = normalizeEmail(c && c.email);
-                                        if (key) map.set(key, {...c, email: key });
-    });
-                                        let changed = false;
-    remoteList.forEach(rc => {
-      const key = normalizeEmail(rc && rc.email);
-                                        if (!key) return;
-                                        const existing = map.get(key);
-                                        if (!existing) {
-                                          map.set(key, {
-                                            email: key,
-                                            full_name: String(rc.full_name || "").trim(),
-                                            avatar_url: String(rc.avatar_url || "").trim(),
-                                            user_id: rc.user_id || null,
-                                            google_verified: Boolean(rc.google_verified !== false),
-                                            share_count: Number(rc.share_count) || 0,
-                                            last_shared_at: rc.last_shared_at || "",
-                                            added_at: rc.added_at || new Date().toISOString()
-                                          });
-                                        changed = true;
-      } else {
-        const maxShares = Math.max(Number(existing.share_count) || 0, Number(rc.share_count) || 0);
-                                        const mergedName = existing.full_name || rc.full_name || "";
-                                        const mergedAvatar = existing.avatar_url || rc.avatar_url || "";
-        const mergedDate = new Date(existing.last_shared_at || 0) >= new Date(rc.last_shared_at || 0)
-                                        ? existing.last_shared_at
-                                        : rc.last_shared_at;
-                                        if (maxShares !== existing.share_count || mergedName !== existing.full_name || mergedAvatar !== existing.avatar_url || mergedDate !== existing.last_shared_at) {
-                                          async function mergeRemoteFrequentContacts(remoteList) {
-                                            if (!Array.isArray(remoteList) || !remoteList.length) return;
-                                            const map = new Map();
-                                            frequentContacts.forEach(c => {
-                                              const key = normalizeEmail(c && c.email);
-                                              if (key) map.set(key, { ...c, email: key });
-                                            });
-                                            let changed = false;
-                                            remoteList.forEach(rc => {
-                                              const key = normalizeEmail(rc && rc.email);
-                                              if (!key) return;
-                                              const existing = map.get(key);
-                                              if (!existing) {
-                                                map.set(key, {
-                                                  ...existing,
-                                                  full_name: mergedName,
-                                                  avatar_url: mergedAvatar,
-                                                  user_id: existing.user_id || rc.user_id || null,
-                                                  google_verified: Boolean(existing.google_verified || rc.google_verified),
-                                                  share_count: maxShares,
-                                                  last_shared_at: mergedDate
+    async function mergeRemoteFrequentContacts(remoteList) {
+      if (!Array.isArray(remoteList) || !remoteList.length) return;
+      const map = new Map();
+      frequentContacts.forEach(c => {
+        const key = normalizeEmail(c && c.email);
+        if (key) map.set(key, { ...c, email: key });
+      });
+      let changed = false;
+      remoteList.forEach(rc => {
+        const key = normalizeEmail(rc && rc.email);
+        if (!key) return;
+        const existing = map.get(key);
+        if (!existing) {
+          map.set(key, {
             email: key,
-                                                  full_name: String(rc.full_name || "").trim(),
-                                                  avatar_url: String(rc.avatar_url || "").trim(),
-                                                  user_id: rc.user_id || null,
-                                                  google_verified: Boolean(rc.google_verified !== false),
-                                                  share_count: Number(rc.share_count) || 0,
-                                                  last_shared_at: rc.last_shared_at || "",
-                                                  added_at: rc.added_at || new Date().toISOString()
-                                                });
-                                                changed = true;
-                                              } else {
-                                                const maxShares = Math.max(Number(existing.share_count) || 0, Number(rc.share_count) || 0);
-                                                const mergedName = existing.full_name || rc.full_name || "";
-                                                const mergedAvatar = existing.avatar_url || rc.avatar_url || "";
-                                                const mergedDate = new Date(existing.last_shared_at || 0) >= new Date(rc.last_shared_at || 0)
-                                                  ? existing.last_shared_at
-                                                  : rc.last_shared_at;
-                                                if (maxShares !== existing.share_count || mergedName !== existing.full_name || mergedAvatar !== existing.avatar_url || mergedDate !== existing.last_shared_at) {
-                                                  map.set(key, {
-                                                    ...existing,
-                                                    full_name: mergedName,
-                                                    avatar_url: mergedAvatar,
-                                                    user_id: existing.user_id || rc.user_id || null,
-                                                    google_verified: Boolean(existing.google_verified || rc.google_verified),
-                                                    share_count: maxShares,
-                                                    last_shared_at: mergedDate
-                                                  });
-                                                  changed = true;
-                                                }
-                                              }
-                                            });
-                                            if (changed) {
-                                              frequentContacts = sortFrequentContacts(Array.from(map.values())).filter(c => Boolean(c && c.user_id)).slice(0, 40);
-                                              await store.set(getContactsKey(), JSON.stringify(frequentContacts));
-                                            }
-                                          });
-                                        if (changed) {
-                                          frequentContacts = sortFrequentContacts(Array.from(map.values())).filter(c => Boolean(c && c.user_id)).slice(0, 40);
-                                        await store.set(getContactsKey(), JSON.stringify(frequentContacts));
+            full_name: String(rc.full_name || "").trim(),
+            avatar_url: String(rc.avatar_url || "").trim(),
+            user_id: rc.user_id || null,
+            google_verified: Boolean(rc.google_verified !== false),
+            share_count: Number(rc.share_count) || 0,
+            last_shared_at: rc.last_shared_at || "",
+            added_at: rc.added_at || new Date().toISOString()
+          });
+          changed = true;
+        } else {
+          const maxShares = Math.max(Number(existing.share_count) || 0, Number(rc.share_count) || 0);
+          const mergedName = existing.full_name || rc.full_name || "";
+          const mergedAvatar = existing.avatar_url || rc.avatar_url || "";
+          const mergedDate = new Date(existing.last_shared_at || 0) >= new Date(rc.last_shared_at || 0)
+            ? existing.last_shared_at
+            : rc.last_shared_at;
+          if (maxShares !== existing.share_count || mergedName !== existing.full_name || mergedAvatar !== existing.avatar_url || mergedDate !== existing.last_shared_at) {
+            map.set(key, {
+              ...existing,
+              full_name: mergedName,
+              avatar_url: mergedAvatar,
+              user_id: existing.user_id || rc.user_id || null,
+              google_verified: Boolean(existing.google_verified || rc.google_verified),
+              share_count: maxShares,
+              last_shared_at: mergedDate
+            });
+            changed = true;
+          }
+        }
+      });
+      if (changed) {
+        frequentContacts = sortFrequentContacts(Array.from(map.values())).filter(c => Boolean(c && c.user_id)).slice(0, 40);
+        await store.set(getContactsKey(), JSON.stringify(frequentContacts));
+      }
     }
-  }
 
-                                        async function recordFrequentContact(email, fullName = "", avatarUrl = "", incrementShare = true, googleVerified = true, userId = null) {
-    const key = normalizeEmail(email);
-                                        if (!key) return;
-                                        if (currentUser && key === normalizeEmail(currentUser.email)) return;
-                                        const nowIso = new Date().toISOString();
-    const idx = frequentContacts.findIndex(c => normalizeEmail(c.email) === key);
-    if (idx >= 0) {
-      const cur = frequentContacts[idx];
-                                        frequentContacts[idx] = {
-                                          ...cur,
-                                          email: key,
-                                        full_name: String(fullName || cur.full_name || "").trim(),
-                                        avatar_url: String(avatarUrl || cur.avatar_url || "").trim(),
-                                        user_id: userId || cur.user_id || null,
-                                        google_verified: Boolean(googleVerified || cur.google_verified),
-                                        share_count: (Number(cur.share_count) || 0) + (incrementShare ? 1 : 0),
-                                        last_shared_at: incrementShare ? nowIso : (cur.last_shared_at || "")
-      };
-    } else {
-                                          frequentContacts.unshift({
-                                            email: key,
-                                            full_name: String(fullName || "").trim(),
-                                            avatar_url: String(avatarUrl || "").trim(),
-                                            user_id: userId || null,
-                                            google_verified: Boolean(googleVerified),
-                                            share_count: incrementShare ? 1 : 0,
-                                            last_shared_at: incrementShare ? nowIso : "",
-                                            added_at: nowIso
-                                          });
-                                        async function recordFrequentContact(email, fullName = "", avatarUrl = "", incrementShare = true, googleVerified = true, userId = null) {
+    async function recordFrequentContact(email, fullName = "", avatarUrl = "", incrementShare = true, googleVerified = true, userId = null) {
       const key = normalizeEmail(email);
-                                        if (!key) return;
-                                        if (currentUser && key === normalizeEmail(currentUser.email)) return;
-                                        const nowIso = new Date().toISOString();
+      if (!key) return;
+      if (currentUser && key === normalizeEmail(currentUser.email)) return;
+      const nowIso = new Date().toISOString();
       const idx = frequentContacts.findIndex(c => normalizeEmail(c.email) === key);
       if (idx >= 0) {
         const cur = frequentContacts[idx];
-                                        frequentContacts[idx] = {
-                                          ...cur,
-                                          email: key,
-                                        full_name: String(fullName || cur.full_name || "").trim(),
-                                        avatar_url: String(avatarUrl || cur.avatar_url || "").trim(),
-                                        user_id: userId || cur.user_id || null,
-                                        google_verified: Boolean(googleVerified || cur.google_verified),
-                                        share_count: (Number(cur.share_count) || 0) + (incrementShare ? 1 : 0),
-                                        last_shared_at: incrementShare ? nowIso : (cur.last_shared_at || "")
+        frequentContacts[idx] = {
+          ...cur,
+          email: key,
+          full_name: String(fullName || cur.full_name || "").trim(),
+          avatar_url: String(avatarUrl || cur.avatar_url || "").trim(),
+          user_id: userId || cur.user_id || null,
+          google_verified: Boolean(googleVerified || cur.google_verified),
+          share_count: (Number(cur.share_count) || 0) + (incrementShare ? 1 : 0),
+          last_shared_at: incrementShare ? nowIso : (cur.last_shared_at || "")
         };
       } else {
-                                          frequentContacts.unshift({
-                                            email: key,
-                                            full_name: String(fullName || "").trim(),
-                                            avatar_url: String(avatarUrl || "").trim(),
-                                            user_id: userId || null,
-                                            google_verified: Boolean(googleVerified),
-                                            share_count: incrementShare ? 1 : 0,
-                                            last_shared_at: incrementShare ? nowIso : "",
-                                            added_at: nowIso
-                                          });
+        frequentContacts.unshift({
+          email: key,
+          full_name: String(fullName || "").trim(),
+          avatar_url: String(avatarUrl || "").trim(),
+          user_id: userId || null,
+          google_verified: Boolean(googleVerified),
+          share_count: incrementShare ? 1 : 0,
+          last_shared_at: incrementShare ? nowIso : "",
+          added_at: nowIso
+        });
       }
-                                        await persistFrequentContacts(true);
+      await persistFrequentContacts(true);
     }
-                                        await persistFrequentContacts(true);
-  }
 
-                                        async function removeFrequentContact(email) {
-    const key = normalizeEmail(email);
-                                        if (!key) return;
-    frequentContacts = frequentContacts.filter(c => normalizeEmail(c.email) !== key);
-                                        await persistFrequentContacts(true);
-                                        toast("Removed contact");
-  }
-                                        async function removeFrequentContact(email) {
+    async function removeFrequentContact(email) {
       const key = normalizeEmail(email);
-                                        if (!key) return;
+      if (!key) return;
       frequentContacts = frequentContacts.filter(c => normalizeEmail(c.email) !== key);
-                                        await persistFrequentContacts(true);
-                                        toast("Removed contact");
+      await persistFrequentContacts(true);
+      toast("Removed contact");
     }
 
-                                        function toggleAddContactForm() {
-                                          contactsAddFormOpen = !contactsAddFormOpen;
-                                        contactsAddFeedback = null;
-                                        renderFrequentContactsSection();
-                                        if (contactsAddFormOpen) {
-                                          setTimeout(() => {
-                                            const inp = document.getElementById("quickAddContactEmail");
-                                            if (inp) inp.focus();
-                                          }, 40);
-                                        function toggleAddContactForm() {
-                                          contactsAddFormOpen = !contactsAddFormOpen;
-                                        contactsAddFeedback = null;
-                                        renderFrequentContactsSection();
-                                        if (contactsAddFormOpen) {
-                                          setTimeout(() => {
-                                            const inp = document.getElementById("quickAddContactEmail");
-                                            if (inp) inp.focus();
-                                          }, 40);
+    function toggleAddContactForm() {
+      contactsAddFormOpen = !contactsAddFormOpen;
+      contactsAddFeedback = null;
+      renderFrequentContactsSection();
+      if (contactsAddFormOpen) {
+        setTimeout(() => {
+          const inp = document.getElementById("quickAddContactEmail");
+          if (inp) inp.focus();
+        }, 40);
       }
     }
-  }
 
-                                        async function addFrequentContactFromDashboard(event) {
-    if (event) event.preventDefault();
-                                        const inp = document.getElementById("quickAddContactEmail");
-                                        const email = normalizeEmail(inp && inp.value);
-                                        if (!email) return;
-                                        async function addFrequentContactFromDashboard(event) {
+    async function addFrequentContactFromDashboard(event) {
       if (event) event.preventDefault();
-                                        const inp = document.getElementById("quickAddContactEmail");
-                                        const email = normalizeEmail(inp && inp.value);
-                                        if (!email) return;
+      const inp = document.getElementById("quickAddContactEmail");
+      const email = normalizeEmail(inp && inp.value);
+      if (!email) return;
 
-                                        if (!hasCloudAuthSession()) {
-                                          contactsAddFeedback = { type: "err", text: "Sign in with Google first to verify and save colleague contacts." };
-                                        if (!hasCloudAuthSession()) {
-                                          contactsAddFeedback = { type: "err", text: "Sign in with Google first to verify and save colleague contacts." };
-                                        renderFrequentContactsSection();
-                                        return;
+      if (!hasCloudAuthSession()) {
+        contactsAddFeedback = { type: "err", text: "Sign in with Google first to verify and save colleague contacts." };
+        renderFrequentContactsSection();
+        return;
       }
-                                        if (!navigator.onLine) {
-                                          contactsAddFeedback = { type: "err", text: "Internet connection required to verify Google sign-in for this contact." };
-                                        renderFrequentContactsSection();
-                                        return;
+      if (!navigator.onLine) {
+        contactsAddFeedback = { type: "err", text: "Internet connection required to verify Google sign-in for this contact." };
+        renderFrequentContactsSection();
+        return;
       }
 
-                                        contactsAddFeedback = {type: "info", text: `Checking Google sign-in for ${email}...` };
-                                        renderFrequentContactsSection();
-                                        return;
-    }
-                                        if (!navigator.onLine) {
-                                          contactsAddFeedback = { type: "err", text: "Internet connection required to verify Google sign-in for this contact." };
-                                        renderFrequentContactsSection();
-                                        return;
-    }
+      contactsAddFeedback = { type: "info", text: `Checking Google sign-in for ${email}...` };
+      renderFrequentContactsSection();
 
-                                        contactsAddFeedback = {type: "info", text: `Checking Google sign-in for ${email}...` };
-                                        renderFrequentContactsSection();
-                                        const check = await verifyRecipientGoogleAccount(email);
-                                        if (!check.verified || !check.user_id) {
-                                          contactsAddFeedback = { type: "err", text: check.message || `User not signed in with the service (${email}).` };
-                                        renderFrequentContactsSection();
-                                        return;
+      const check = await verifyRecipientGoogleAccount(email);
+      if (!check.verified || !check.user_id) {
+        contactsAddFeedback = { type: "err", text: check.message || `User not signed in with the service (${email}).` };
+        renderFrequentContactsSection();
+        return;
       }
 
-                                        const check = await verifyRecipientGoogleAccount(email);
-                                        if (!check.verified || !check.user_id) {
-                                          contactsAddFeedback = { type: "err", text: check.message || `User not signed in with the service (${email}).` };
-                                        await recordFrequentContact(check.email, check.full_name, check.avatar_url, false, true, check.user_id);
-                                        contactsAddFormOpen = false;
-                                        contactsAddFeedback = null;
-                                        renderFrequentContactsSection();
-                                        return;
-                                        toast(`Added ${check.full_name || check.email} to Frequently Shared Contacts ✓`);
+      await recordFrequentContact(check.email, check.full_name, check.avatar_url, false, true, check.user_id);
+      contactsAddFormOpen = false;
+      contactsAddFeedback = null;
+      renderFrequentContactsSection();
+      toast(`Added ${check.full_name || check.email} to Frequently Shared Contacts ✓`);
     }
 
-                                        await recordFrequentContact(check.email, check.full_name, check.avatar_url, false, true, check.user_id);
-                                        contactsAddFormOpen = false;
-                                        contactsAddFeedback = null;
-                                        renderFrequentContactsSection();
-                                        toast(`Added ${check.full_name || check.email} to Frequently Shared Contacts ✓`);
-  }
-                                        function getContactInitials(name, email) {
+    function getContactInitials(name, email) {
       const src = String(name || email || "DR").trim();
-                                        const parts = src.split(/\s+/).filter(Boolean);
+      const parts = src.split(/\s+/).filter(Boolean);
       if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-                                        return src.slice(0, 2).toUpperCase();
+      return src.slice(0, 2).toUpperCase();
     }
 
-                                        function getContactInitials(name, email) {
-    const src = String(name || email || "DR").trim();
-                                        const parts = src.split(/\s+/).filter(Boolean);
-    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-                                        return src.slice(0, 2).toUpperCase();
-  }
-                                        function renderFrequentContactsSection() {
+    function renderFrequentContactsSection() {
       const box = document.getElementById("dashContactsSection");
-                                        if (!box) return;
+      if (!box) return;
 
-                                        function renderFrequentContactsSection() {
-    const box = document.getElementById("dashContactsSection");
-                                        if (!box) return;
-                                        const addFeedbackHtml = contactsAddFeedback
-                                        ? `<div class="auth-msg ${esc(contactsAddFeedback.type)}" style="margin-top:8px;margin-bottom:0">${esc(contactsAddFeedback.text)}</div>`
-                                        : "";
+      const addFeedbackHtml = contactsAddFeedback
+        ? `<div class="auth-msg ${esc(contactsAddFeedback.type)}" style="margin-top:8px;margin-bottom:0">${esc(contactsAddFeedback.text)}</div>`
+        : "";
 
-                                        const addFeedbackHtml = contactsAddFeedback
-                                        ? `<div class="auth-msg ${esc(contactsAddFeedback.type)}" style="margin-top:8px;margin-bottom:0">${esc(contactsAddFeedback.text)}</div>`
-                                        : "";
+      const addFormHtml = contactsAddFormOpen ? `
+        <form class="contacts-add-bar" onsubmit="addFrequentContactFromDashboard(event)">
+          <input type="email" id="quickAddContactEmail" placeholder="Colleague's Google email (e.g. doctor@gmail.com)" autocomplete="email" required>
+          <button type="submit" class="btn sm">✓ Verify &amp; Add</button>
+          <button type="button" class="btn sm out" onclick="toggleAddContactForm()">Cancel</button>
+        </form>
+        ${addFeedbackHtml}
+      ` : "";
 
-                                        const addFormHtml = contactsAddFormOpen ? `
-                                        const addFormHtml = contactsAddFormOpen ? `
-                                        <form class="contacts-add-bar" onsubmit="addFrequentContactFromDashboard(event)">
-                                          <input type="email" id="quickAddContactEmail" placeholder="Colleague's Google email (e.g. doctor@gmail.com)" autocomplete="email" required>
-                                            <button type="submit" class="btn sm">✓ Verify &amp; Add</button>
-                                            <button type="button" class="btn sm out" onclick="toggleAddContactForm()">Cancel</button>
-                                        </form>
-                                        ${addFeedbackHtml}
-                                        ` : "";
-
-                                        const listHtml = frequentContacts.length ? `
-                                        const listHtml = frequentContacts.length ? `
-                                        <div class="contacts-grid">
-                                          ${frequentContacts.map(c => {
-                                            const label = c.full_name || c.email.split("@")[0];
-                                            const initials = getContactInitials(c.full_name, c.email);
-                                            const countLabel = (Number(c.share_count) || 0) > 0 ? `Shared ${c.share_count}×` : "Pinned contact";
-                                            return `
+      const listHtml = frequentContacts.length ? `
+        <div class="contacts-grid">
+          ${frequentContacts.map(c => {
             const label = c.full_name || c.email.split("@")[0];
             const initials = getContactInitials(c.full_name, c.email);
-            const countLabel = (Number(c.share_count) || 0) > 0 ? `Shared ${ c.share_count }×` : "Pinned contact";
-                                          return `
-                                          <div class="contact-chip-card">
-                                            <div class="contact-avatar">${c.avatar_url ? `<img src="${esc(c.avatar_url)}" alt="${esc(label)}" referrerpolicy="no-referrer">` : esc(initials)}</div>
-                                            <div class="contact-meta">
-                                              <div class="contact-name-row">
-                                                <span class="contact-name" title="${esc(label)}">${esc(label)}</span>
-                                                <span class="contact-verified-badge" title="Signed in with Google">✓ Google</span>
-                                              </div>
-                                              <div class="contact-email" title="${esc(c.email)}">${esc(c.email)}</div>
-                                              <div class="contact-sub">${esc(countLabel)}</div>
-                                            </div>
-                                            <div class="contact-actions">
-                                              <button type="button" class="btn sm" onclick="quickShareToContact('${esc(c.email)}')" title="Share a patient summary to ${esc(c.email)}">📤 Share</button>
-                                              <button type="button" class="contact-remove-btn" onclick="removeFrequentContact('${esc(c.email)}')" title="Remove contact" aria-label="Remove ${esc(c.email)}">×</button>
-                                            </div>
-                                          </div>
-                                          `;
-    }).join("")}
+            const countLabel = (Number(c.share_count) || 0) > 0 ? `Shared ${c.share_count}×` : "Pinned contact";
+            return `
+              <div class="contact-chip-card">
+                <div class="contact-avatar">${c.avatar_url ? `<img src="${esc(c.avatar_url)}" alt="${esc(label)}" referrerpolicy="no-referrer">` : esc(initials)}</div>
+                <div class="contact-meta">
+                  <div class="contact-name-row">
+                    <span class="contact-name" title="${esc(label)}">${esc(label)}</span>
+                    <span class="contact-verified-badge" title="Signed in with Google">✓ Google</span>
+                  </div>
+                  <div class="contact-email" title="${esc(c.email)}">${esc(c.email)}</div>
+                  <div class="contact-sub">${esc(countLabel)}</div>
+                </div>
+                <div class="contact-actions">
+                  <button type="button" class="btn sm" onclick="quickShareToContact('${esc(c.email)}')" title="Share a patient summary to ${esc(c.email)}">📤 Share</button>
+                  <button type="button" class="contact-remove-btn" onclick="removeFrequentContact('${esc(c.email)}')" title="Remove contact" aria-label="Remove ${esc(c.email)}">×</button>
+                </div>
+              </div>
+            `;
           }).join("")}
-                                        </div>
-                                        ` : "";
+        </div>
+      ` : "";
 
-                                        const compactClass = (!frequentContacts.length && !contactsAddFormOpen) ? " compact" : "";
-                                        const compactClass = (!frequentContacts.length && !contactsAddFormOpen) ? " compact" : "";
+      const compactClass = (!frequentContacts.length && !contactsAddFormOpen) ? " compact" : "";
 
-                                        box.innerHTML = `
-                                        box.innerHTML = `
-                                        <div class="contacts-header${compactClass}">
-                                          <div>
-                                            <h3>👥 Frequently Shared Contacts</h3>
-                                          </div>
-                                          <button type="button" class="btn sm out" onclick="toggleAddContactForm()">${contactsAddFormOpen ? "Close" : "+ Add Contact"}</button>
-                                        </div>
-                                        ${addFormHtml}
-                                        ${listHtml}
-                                        `;
-  }
+      box.innerHTML = `
+        <div class="contacts-header${compactClass}">
+          <div>
+            <h3>👥 Frequently Shared Contacts</h3>
+          </div>
+          <button type="button" class="btn sm out" onclick="toggleAddContactForm()">${contactsAddFormOpen ? "Close" : "+ Add Contact"}</button>
+        </div>
+        ${addFormHtml}
+        ${listHtml}
+      `;
     }
 
-                                        function syncPresenceToLocalGoogleRegistry() {
-    if (!realtimeSharingChannel || typeof realtimeSharingChannel.presenceState !== "function") return;
-                                        try {
-      const state = realtimeSharingChannel.presenceState();
-                                        Object.values(state || { }).forEach(entries => {
-                                          (Array.isArray(entries) ? entries : []).forEach(entry => {
-                                            if (entry && entry.user_id && entry.email && entry.provider === "google") {
-                                              saveUserToLocalGoogleRegistry(entry);
-                                            }
-                                          });
-      });
-    } catch (e) { }
-  }
-
-                                        async function verifyFallbackWithoutSchema(email) {
-                                          syncPresenceToLocalGoogleRegistry();
-
-                                        let reg = getLocalGoogleRegistry();
-                                        let cached = reg[email];
-                                        if (!(cached && cached.email && cached.user_id) && realtimeSharingChannel && typeof realtimeSharingChannel.send === "function") {
-                                          function syncPresenceToLocalGoogleRegistry() {
-                                            if (!realtimeSharingChannel || typeof realtimeSharingChannel.presenceState !== "function") return;
-                                            try {
-                                              await realtimeSharingChannel.send({
-                                                type: "broadcast",
-                                                event: "whois_google_user",
-                                                payload: { email }
+    function syncPresenceToLocalGoogleRegistry() {
+      if (!realtimeSharingChannel || typeof realtimeSharingChannel.presenceState !== "function") return;
+      try {
         const state = realtimeSharingChannel.presenceState();
-                                                Object.values(state || {}).forEach(entries => {
-                                                  (Array.isArray(entries) ? entries : []).forEach(entry => {
-                                                    if (entry && entry.user_id && entry.email && entry.provider === "google") {
-                                                      saveUserToLocalGoogleRegistry(entry);
-                                                    }
-                                                  });
-                                                });
-                                                await new Promise(resolve => setTimeout(resolve, 500));
-                                                syncPresenceToLocalGoogleRegistry();
-        reg = getLocalGoogleRegistry();
-                                                cached = reg[email];
-                                              } catch (e) { }
-                                            }
+        Object.values(state || {}).forEach(entries => {
+          (Array.isArray(entries) ? entries : []).forEach(entry => {
+            if (entry && entry.user_id && entry.email && entry.provider === "google") {
+              saveUserToLocalGoogleRegistry(entry);
+            }
+          });
+        });
+      } catch (e) { }
+    }
 
-    if (cached && cached.email && cached.user_id) {
-                                              async function verifyFallbackWithoutSchema(email) {
-                                                syncPresenceToLocalGoogleRegistry();
+    async function verifyFallbackWithoutSchema(email) {
+      syncPresenceToLocalGoogleRegistry();
 
-                                                let reg = getLocalGoogleRegistry();
-                                                let cached = reg[email];
-                                                if (!(cached && cached.email && cached.user_id) && realtimeSharingChannel && typeof realtimeSharingChannel.send === "function") {
-                                                  try {
-                                                    await realtimeSharingChannel.send({
-                                                      type: "broadcast",
-                                                      event: "whois_google_user",
-                                                      payload: { email }
-                                                    });
-                                                    await new Promise(resolve => setTimeout(resolve, 500));
-                                                    syncPresenceToLocalGoogleRegistry();
-                                                    reg = getLocalGoogleRegistry();
-                                                    cached = reg[email];
-                                                  } catch (e) { }
-                                                }
+      let reg = getLocalGoogleRegistry();
+      let cached = reg[email];
+      if (!(cached && cached.email && cached.user_id) && realtimeSharingChannel && typeof realtimeSharingChannel.send === "function") {
+        try {
+          await realtimeSharingChannel.send({
+            type: "broadcast",
+            event: "whois_google_user",
+            payload: { email }
+          });
+          await new Promise(resolve => setTimeout(resolve, 500));
+          syncPresenceToLocalGoogleRegistry();
+          reg = getLocalGoogleRegistry();
+          cached = reg[email];
+        } catch (e) { }
+      }
 
-                                                if (cached && cached.email && cached.user_id) {
-                                                  return {
-                                                    verified: true,
-                                                    user_id: cached.user_id,
-                                                    email,
-                                                    full_name: String(cached.full_name || "").trim(),
-                                                    avatar_url: String(cached.avatar_url || "").trim(),
-                                                    viaFallback: true,
-                                                    message: `Verified: ${cached.full_name ? `${cached.full_name} (${email})` : email} is signed in with Google.`
-                                                  };
-                                                }
+      if (cached && cached.email && cached.user_id) {
+        return {
+          verified: true,
+          user_id: cached.user_id,
+          email,
+          full_name: String(cached.full_name || "").trim(),
+          avatar_url: String(cached.avatar_url || "").trim(),
+          viaFallback: true,
+          message: `Verified: ${cached.full_name ? `${cached.full_name} (${email})` : email} is signed in with Google.`
+        };
+      }
 
-                                                return {
-                                                  verified: true,
-                                                  user_id: cached.user_id,
-                                                  verified: false,
-                                                  email,
-                                                  full_name: String(cached.full_name || "").trim(),
-                                                  avatar_url: String(cached.avatar_url || "").trim(),
-                                                  viaFallback: true,
-                                                  message: `Verified: ${cached.full_name ? `${cached.full_name} (${email})` : email} is signed in with Google.`
+      return {
+        verified: false,
+        email,
         reason: "not_signed_in",
-                                                  message: `User not signed in with the service (${email}).`
-                                                };
-                                              }
+        message: `User not signed in with the service (${email}).`
+      };
+    }
 
-                                              return {
-                                                verified: false,
-                                                email,
-                                                reason: "not_signed_in",
-                                                message: `User not signed in with the service (${email}).`
-                                              };
-                                            }
-                                            async function verifyRecipientGoogleAccount(rawEmail) {
-                                              const email = normalizeEmail(rawEmail);
-                                              if (!email) {
-                                                return { verified: false, email: "", reason: "empty", message: "Enter the recipient's Google email address." };
-                                              }
-                                              if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                                                return { verified: false, email, reason: "invalid", message: "Enter a valid email address." };
-                                              }
-                                              if (!hasCloudAuthSession()) {
-                                                return { verified: false, email, reason: "sender_unauthenticated", message: "Please sign in with Google first before sharing patient details." };
-                                              }
-                                              if (!navigator.onLine) {
-                                                return { verified: false, email, reason: "offline", message: "You are offline. Connect to the internet to verify whether this user has signed in with the service." };
-                                              }
-                                              if (email === normalizeEmail(currentUser.email)) {
-                                                return { verified: false, email, reason: "self", message: "You cannot share a summary to your own signed-in email. Enter a colleague's Google email." };
-                                              }
+    async function verifyRecipientGoogleAccount(rawEmail) {
+      const email = normalizeEmail(rawEmail);
+      if (!email) {
+        return { verified: false, email: "", reason: "empty", message: "Enter the recipient's Google email address." };
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        return { verified: false, email, reason: "invalid", message: "Enter a valid email address." };
+      }
+      if (!hasCloudAuthSession()) {
+        return { verified: false, email, reason: "sender_unauthenticated", message: "Please sign in with Google first before sharing patient details." };
+      }
+      if (!navigator.onLine) {
+        return { verified: false, email, reason: "offline", message: "You are offline. Connect to the internet to verify whether this user has signed in with the service." };
+      }
+      if (email === normalizeEmail(currentUser.email)) {
+        return { verified: false, email, reason: "self", message: "You cannot share a summary to your own signed-in email. Enter a colleague's Google email." };
+      }
 
-                                              async function verifyRecipientGoogleAccount(rawEmail) {
-                                                const email = normalizeEmail(rawEmail);
-                                                if (!email) {
-                                                  return { verified: false, email: "", reason: "empty", message: "Enter the recipient's Google email address." };
-                                                }
-                                                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                                                  return { verified: false, email, reason: "invalid", message: "Enter a valid email address." };
-                                                }
-                                                if (!hasCloudAuthSession()) {
-                                                  return { verified: false, email, reason: "sender_unauthenticated", message: "Please sign in with Google first before sharing patient details." };
-                                                }
-                                                if (!navigator.onLine) {
-                                                  return { verified: false, email, reason: "offline", message: "You are offline. Connect to the internet to verify whether this user has signed in with the service." };
-                                                }
-                                                if (email === normalizeEmail(currentUser.email)) {
-                                                  return { verified: false, email, reason: "self", message: "You cannot share a summary to your own signed-in email. Enter a colleague's Google email." };
-                                                }
-                                                try {
-                                                  const { data, error } = await sbClient.rpc("verify_google_recipient", { target_email: email });
-                                                  if (!error && data) {
-                                                    if (data.verified && data.user_id) {
-                                                      const verifiedUser = {
-                                                        verified: true,
-                                                        user_id: data.user_id,
-                                                        email: normalizeEmail(data.email || email),
-                                                        full_name: String(data.full_name || "").trim(),
-                                                        avatar_url: String(data.avatar_url || "").trim(),
-                                                        message: `Verified: ${data.full_name ? `${data.full_name} (${email})` : email} is signed in using Google.`
-                                                      };
-                                                      saveUserToLocalGoogleRegistry(verifiedUser);
-                                                      return verifiedUser;
-                                                    }
-                                                    return {
-                                                      verified: false,
-                                                      email,
-                                                      reason: data.reason || "not_signed_in",
-                                                      message: `User not signed in with the service (${email}).`
-                                                    };
-                                                  }
+      try {
+        const { data, error } = await sbClient.rpc("verify_google_recipient", { target_email: email });
+        if (!error && data) {
+          if (data.verified && data.user_id) {
+            const verifiedUser = {
+              verified: true,
+              user_id: data.user_id,
+              email: normalizeEmail(data.email || email),
+              full_name: String(data.full_name || "").trim(),
+              avatar_url: String(data.avatar_url || "").trim(),
+              message: `Verified: ${data.full_name ? `${data.full_name} (${email})` : email} is signed in using Google.`
+            };
+            saveUserToLocalGoogleRegistry(verifiedUser);
+            return verifiedUser;
+          }
+          return {
+            verified: false,
+            email,
+            reason: data.reason || "not_signed_in",
+            message: `User not signed in with the service (${email}).`
+          };
+        }
 
-                                                  try {
-                                                    const { data, error } = await sbClient.rpc("verify_google_recipient", { target_email: email });
-                                                    if (!error && data) {
-                                                      if (data.verified && data.user_id) {
-                                                        if (error && !isMissingRpcError(error)) {
-                                                          throw error;
-                                                        }
+        if (error && !isMissingRpcError(error)) {
+          throw error;
+        }
 
-                                                        // Fallback if RPC isn't deployed yet: check public.user_directory directly
-                                                        const { data: dirRow, error: dirErr } = await sbClient
-                                                          .from("user_directory")
-                                                          .select("user_id, email, full_name, avatar_url, provider")
-                                                          .eq("email", email)
-                                                          .eq("provider", "google")
-                                                          .maybeSingle();
+        // Fallback if RPC isn't deployed yet: check public.user_directory directly
+        const { data: dirRow, error: dirErr } = await sbClient
+          .from("user_directory")
+          .select("user_id, email, full_name, avatar_url, provider")
+          .eq("email", email)
+          .eq("provider", "google")
+          .maybeSingle();
 
-                                                        if (dirErr) {
-                                                          if (isMissingTableError(dirErr)) {
-                                                            return await verifyFallbackWithoutSchema(email);
-                                                          }
-                                                          throw dirErr;
-                                                        }
+        if (dirErr) {
+          if (isMissingTableError(dirErr)) {
+            return await verifyFallbackWithoutSchema(email);
+          }
+          throw dirErr;
+        }
 
-                                                        if (dirRow && dirRow.user_id) {
-                                                          const verifiedUser = {
-                                                            verified: true,
-                                                            user_id: data.user_id,
-                                                            email: normalizeEmail(data.email || email),
-                                                            full_name: String(data.full_name || "").trim(),
-                                                            avatar_url: String(data.avatar_url || "").trim(),
-                                                            message: `Verified: ${data.full_name ? `${data.full_name} (${email})` : email} is signed in using Google.`
+        if (dirRow && dirRow.user_id) {
+          const verifiedUser = {
+            verified: true,
             user_id: dirRow.user_id,
-                                                            email: normalizeEmail(dirRow.email),
-                                                            full_name: String(dirRow.full_name || "").trim(),
-                                                            avatar_url: String(dirRow.avatar_url || "").trim(),
-                                                            message: `Verified: ${dirRow.full_name ? `${dirRow.full_name} (${email})` : email} is signed in using Google.`
-                                                          };
-                                                          saveUserToLocalGoogleRegistry(verifiedUser);
-                                                          return verifiedUser;
-                                                        }
+            email: normalizeEmail(dirRow.email),
+            full_name: String(dirRow.full_name || "").trim(),
+            avatar_url: String(dirRow.avatar_url || "").trim(),
+            message: `Verified: ${dirRow.full_name ? `${dirRow.full_name} (${email})` : email} is signed in using Google.`
+          };
+          saveUserToLocalGoogleRegistry(verifiedUser);
+          return verifiedUser;
+        }
 
-                                                        return {
-                                                          verified: false,
-                                                          email,
-                                                          reason: data.reason || "not_signed_in",
-                                                          reason: "not_signed_in",
-                                                          message: `User not signed in with the service (${email}).`
-                                                        };
-                                                      } catch (e) {
-                                                        if (isMissingTableError(e) || isMissingRpcError(e)) {
-                                                          return await verifyFallbackWithoutSchema(email);
-                                                        }
-                                                        return {
-                                                          verified: false,
-                                                          email,
-                                                          reason: "error",
-                                                          message: e && e.message ? e.message : "Could not verify recipient's Google sign-in."
-                                                        };
-                                                      }
-                                                    }
+        return {
+          verified: false,
+          email,
+          reason: "not_signed_in",
+          message: `User not signed in with the service (${email}).`
+        };
+      } catch (e) {
+        if (isMissingTableError(e) || isMissingRpcError(e)) {
+          return await verifyFallbackWithoutSchema(email);
+        }
+        return {
+          verified: false,
+          email,
+          reason: "error",
+          message: e && e.message ? e.message : "Could not verify recipient's Google sign-in."
+        };
+      }
+    }
 
-                                                    if (error && !isMissingRpcError(error)) {
-                                                      throw error;
-                                                    }
-                                                    function cleanSharePayload(payload) {
-                                                      const copy = JSON.parse(JSON.stringify(payload || {}));
-                                                      delete copy.__shared_from;
-                                                      return copy;
-                                                    }
+    function cleanSharePayload(payload) {
+      const copy = JSON.parse(JSON.stringify(payload || {}));
+      delete copy.__shared_from;
+      return copy;
+    }
 
-                                                    // Fallback if RPC isn't deployed yet: check public.user_directory directly
-                                                    const { data: dirRow, error: dirErr } = await sbClient
-                                                      .from("user_directory")
-                                                      .select("user_id, email, full_name, avatar_url, provider")
-                                                      .eq("email", email)
-                                                      .eq("provider", "google")
-                                                      .maybeSingle();
-                                                    async function quickShareToContact(contactEmail) {
-                                                      const targetId = (hasRecordPersisted && currentRecordId && records.some(r => r.id === currentRecordId))
-                                                        ? currentRecordId
-                                                        : (records[0] ? records[0].id : null);
-                                                      await openSharePatientModal(targetId, contactEmail);
-                                                    }
+    async function quickShareToContact(contactEmail) {
+      const targetId = (hasRecordPersisted && currentRecordId && records.some(r => r.id === currentRecordId))
+        ? currentRecordId
+        : (records[0] ? records[0].id : null);
+      await openSharePatientModal(targetId, contactEmail);
+    }
 
-                                                    if (dirErr) {
-                                                      if (isMissingTableError(dirErr)) {
-                                                        return await verifyFallbackWithoutSchema(email);
-                                                        async function openSharePatientModal(recordId = null, prefillEmail = "") {
-                                                          if (activeTab === "form" || activeTab === "summary") {
-                                                            if (hasPatientContent(collectDraft()) || hasRecordPersisted) {
-                                                              await saveCurrentRecordNow(false);
-                                                            }
-                                                            throw dirErr;
-                                                          }
+    async function openSharePatientModal(recordId = null, prefillEmail = "") {
+      if (activeTab === "form" || activeTab === "summary") {
+        if (hasPatientContent(collectDraft()) || hasRecordPersisted) {
+          await saveCurrentRecordNow(false);
+        }
+      }
 
-                                                          if (dirRow && dirRow.user_id) {
-                                                            const verifiedUser = {
-                                                              verified: true,
-                                                              user_id: dirRow.user_id,
-                                                              email: normalizeEmail(dirRow.email),
-                                                              full_name: String(dirRow.full_name || "").trim(),
-                                                              avatar_url: String(dirRow.avatar_url || "").trim(),
-                                                              message: `Verified: ${dirRow.full_name ? `${dirRow.full_name} (${email})` : email} is signed in using Google.`
-                                                            };
-                                                            saveUserToLocalGoogleRegistry(verifiedUser);
-                                                            return verifiedUser;
-                                                          }
-                                                          const resolvedId = recordId && records.some(r => r.id === recordId)
-                                                            ? recordId
-                                                            : (hasRecordPersisted && records.some(r => r.id === currentRecordId) ? currentRecordId : (records[0] ? records[0].id : null));
-                                                          shareModalRecordId = resolvedId;
+      const resolvedId = recordId && records.some(r => r.id === recordId)
+        ? recordId
+        : (hasRecordPersisted && records.some(r => r.id === currentRecordId) ? currentRecordId : (records[0] ? records[0].id : null));
+      shareModalRecordId = resolvedId;
 
-                                                          return {
-                                                            const normalizedPrefill = normalizeEmail(prefillEmail);
-                                                            shareRecipientVerifyState = {
-                                                              email: normalizedPrefill,
-                                                              status: "idle",
-                                                              verified: false,
-                                                              email,
-                                                              reason: "not_signed_in",
-                                                              message: `User not signed in with the service (${email}).`
+      const normalizedPrefill = normalizeEmail(prefillEmail);
+      shareRecipientVerifyState = {
+        email: normalizedPrefill,
+        status: "idle",
+        verified: false,
         user_id: null,
-                                                              full_name: "",
-                                                              avatar_url: "",
-                                                              message: ""
-                                                            };
-                                                          } catch (e) {
-                                                            if (isMissingTableError(e) || isMissingRpcError(e)) {
-                                                              return await verifyFallbackWithoutSchema(email);
-                                                            }
-                                                            return {
-                                                              verified: false,
-                                                              email,
-                                                              reason: "error",
-                                                              message: e && e.message ? e.message : "Could not verify recipient's Google sign-in."
-                                                            };
-                                                          }
-                                                        }
+        full_name: "",
+        avatar_url: "",
+        message: ""
+      };
 
-                                                        function cleanSharePayload(payload) {
-                                                          const copy = JSON.parse(JSON.stringify(payload || {}));
-                                                          delete copy.__shared_from;
-                                                          return copy;
-                                                        }
-                                                        renderSharePatientModalBody();
-                                                        const modal = document.getElementById("sharePatientModal");
-                                                        if (modal) modal.style.display = "flex";
+      renderSharePatientModalBody();
+      const modal = document.getElementById("sharePatientModal");
+      if (modal) modal.style.display = "flex";
 
-                                                        async function quickShareToContact(contactEmail) {
-                                                          const targetId = (hasRecordPersisted && currentRecordId && records.some(r => r.id === currentRecordId))
-                                                            ? currentRecordId
-                                                            : (records[0] ? records[0].id : null);
-                                                          await openSharePatientModal(targetId, contactEmail);
-                                                        }
+      if (normalizedPrefill && hasCloudAuthSession() && navigator.onLine) {
+        await checkShareRecipientGoogle();
+      }
+    }
 
-                                                        async function openSharePatientModal(recordId = null, prefillEmail = "") {
-                                                          if (activeTab === "form" || activeTab === "summary") {
-                                                            if (hasPatientContent(collectDraft()) || hasRecordPersisted) {
-                                                              await saveCurrentRecordNow(false);
-                                                              if (normalizedPrefill && hasCloudAuthSession() && navigator.onLine) {
-                                                                await checkShareRecipientGoogle();
-                                                              }
-                                                            }
+    function closeSharePatientModal() {
+      const modal = document.getElementById("sharePatientModal");
+      if (modal) modal.style.display = "none";
+    }
 
-                                                            const resolvedId = recordId && records.some(r => r.id === recordId)
-                                                              ? recordId
-                                                              : (hasRecordPersisted && records.some(r => r.id === currentRecordId) ? currentRecordId : (records[0] ? records[0].id : null));
-                                                            shareModalRecordId = resolvedId;
-                                                            function closeSharePatientModal() {
-                                                              const modal = document.getElementById("sharePatientModal");
-                                                              if (modal) modal.style.display = "none";
-                                                            }
+    function onShareRecordChange(nextId) {
+      shareModalRecordId = nextId || null;
+      renderSharePatientModalBody();
+    }
 
-                                                            const normalizedPrefill = normalizeEmail(prefillEmail);
-                                                            shareRecipientVerifyState = {
-                                                              email: normalizedPrefill,
-                                                              status: "idle",
-                                                              verified: false,
-                                                              user_id: null,
-                                                              full_name: "",
-                                                              avatar_url: "",
-                                                              message: ""
-                                                            };
-                                                            function onShareRecordChange(nextId) {
-                                                              shareModalRecordId = nextId || null;
-                                                              renderSharePatientModalBody();
-                                                            }
+    function onShareEmailInputChange() {
+      const inp = document.getElementById("shareRecipientEmail");
+      const curEmail = normalizeEmail(inp && inp.value);
+      if (curEmail !== shareRecipientVerifyState.email) {
+        shareRecipientVerifyState = {
+          email: curEmail,
+          status: "idle",
+          verified: false,
+          user_id: null,
+          full_name: "",
+          avatar_url: "",
+          message: ""
+        };
+        renderShareVerifyStatusBox();
+      }
+    }
 
-                                                            renderSharePatientModalBody();
-                                                            const modal = document.getElementById("sharePatientModal");
-                                                            if (modal) modal.style.display = "flex";
+    async function selectShareRecipient(email) {
+      const inp = document.getElementById("shareRecipientEmail");
+      if (inp) inp.value = normalizeEmail(email);
+      shareRecipientVerifyState = {
+        email: normalizeEmail(email),
+        status: "idle",
+        verified: false,
+        user_id: null,
+        full_name: "",
+        avatar_url: "",
+        message: ""
+      };
+      await checkShareRecipientGoogle();
+    }
 
-                                                            if (normalizedPrefill && hasCloudAuthSession() && navigator.onLine) {
-                                                              await checkShareRecipientGoogle();
-                                                              function onShareEmailInputChange() {
-                                                                const inp = document.getElementById("shareRecipientEmail");
-                                                                const curEmail = normalizeEmail(inp && inp.value);
-                                                                if (curEmail !== shareRecipientVerifyState.email) {
-                                                                  shareRecipientVerifyState = {
-                                                                    email: curEmail,
-                                                                    status: "idle",
-                                                                    verified: false,
-                                                                    user_id: null,
-                                                                    full_name: "",
-                                                                    avatar_url: "",
-                                                                    message: ""
-                                                                  };
-                                                                  renderShareVerifyStatusBox();
-                                                                }
-                                                              }
-                                                            }
+    function renderShareVerifyStatusBox() {
+      const box = document.getElementById("shareVerifyStatus");
+      if (!box) return;
+      const st = shareRecipientVerifyState;
+      if (st.status === "idle" || !st.message) {
+        box.style.display = "none";
+        box.className = "share-verify-box";
+        box.textContent = "";
+        return;
+      }
+      box.style.display = "block";
+      const cls = st.status === "verified" ? "ok" : (st.status === "checking" ? "info" : "err");
+      box.className = `share-verify-box ${cls}`;
+      box.textContent = st.message;
+    }
 
-                                                            function closeSharePatientModal() {
-                                                              const modal = document.getElementById("sharePatientModal");
-                                                              if (modal) modal.style.display = "none";
-                                                            }
+    async function checkShareRecipientGoogle() {
+      const inp = document.getElementById("shareRecipientEmail");
+      const email = normalizeEmail((inp && inp.value) || shareRecipientVerifyState.email);
+      if (!email) {
+        shareRecipientVerifyState = {
+          email: "",
+          status: "error",
+          verified: false,
+          user_id: null,
+          full_name: "",
+          avatar_url: "",
+          message: "Enter the recipient's Google email address first."
+        };
+        renderShareVerifyStatusBox();
+        return shareRecipientVerifyState;
+      }
 
-                                                            function onShareRecordChange(nextId) {
-                                                              shareModalRecordId = nextId || null;
-                                                              renderSharePatientModalBody();
-                                                            }
-
-                                                            function onShareEmailInputChange() {
-                                                              const inp = document.getElementById("shareRecipientEmail");
-                                                              const curEmail = normalizeEmail(inp && inp.value);
-                                                              if (curEmail !== shareRecipientVerifyState.email) {
-                                                                async function selectShareRecipient(email) {
-                                                                  const inp = document.getElementById("shareRecipientEmail");
-                                                                  if (inp) inp.value = normalizeEmail(email);
-                                                                  shareRecipientVerifyState = {
-                                                                    email: curEmail,
-                                                                    email: normalizeEmail(email),
-                                                                    status: "idle",
-                                                                    verified: false,
-                                                                    user_id: null,
-                                                                    full_name: "",
-                                                                    avatar_url: "",
-                                                                    message: ""
-                                                                  };
-                                                                  renderShareVerifyStatusBox();
-                                                                  await checkShareRecipientGoogle();
-                                                                }
-                                                              }
-
-                                                              async function selectShareRecipient(email) {
-                                                                const inp = document.getElementById("shareRecipientEmail");
-                                                                if (inp) inp.value = normalizeEmail(email);
-                                                                shareRecipientVerifyState = {
-                                                                  email: normalizeEmail(email),
-                                                                  status: "idle",
-                                                                  verified: false,
-                                                                  user_id: null,
-                                                                  full_name: "",
-                                                                  avatar_url: "",
-                                                                  message: ""
-                                                                };
-                                                                await checkShareRecipientGoogle();
-                                                              }
-
-                                                              function renderShareVerifyStatusBox() {
-                                                                const box = document.getElementById("shareVerifyStatus");
-                                                                if (!box) return;
-                                                                const st = shareRecipientVerifyState;
-                                                                if (st.status === "idle" || !st.message) {
-                                                                  box.style.display = "none";
-                                                                  box.className = "share-verify-box";
-                                                                  box.textContent = "";
-                                                                  return;
-                                                                  function renderShareVerifyStatusBox() {
-                                                                    const box = document.getElementById("shareVerifyStatus");
-                                                                    if (!box) return;
-                                                                    const st = shareRecipientVerifyState;
-                                                                    if (st.status === "idle" || !st.message) {
-                                                                      box.style.display = "none";
-                                                                      box.className = "share-verify-box";
-                                                                      box.textContent = "";
-                                                                      return;
-                                                                    }
-                                                                    box.style.display = "block";
-                                                                    const cls = st.status === "verified" ? "ok" : (st.status === "checking" ? "info" : "err");
-                                                                    box.className = `share-verify-box ${cls}`;
-                                                                    box.textContent = st.message;
-                                                                  }
-                                                                  box.style.display = "block";
-                                                                  const cls = st.status === "verified" ? "ok" : (st.status === "checking" ? "info" : "err");
-                                                                  box.className = `share-verify-box ${cls}`;
-                                                                  box.textContent = st.message;
-                                                                }
-
-                                                                async function checkShareRecipientGoogle() {
-                                                                  const inp = document.getElementById("shareRecipientEmail");
-                                                                  const email = normalizeEmail((inp && inp.value) || shareRecipientVerifyState.email);
-                                                                  if (!email) {
-                                                                    async function checkShareRecipientGoogle() {
-                                                                      const inp = document.getElementById("shareRecipientEmail");
-                                                                      const email = normalizeEmail((inp && inp.value) || shareRecipientVerifyState.email);
-                                                                      if (!email) {
-                                                                        shareRecipientVerifyState = {
-                                                                          email: "",
-                                                                          status: "error",
-                                                                          verified: false,
-                                                                          user_id: null,
-                                                                          full_name: "",
-                                                                          avatar_url: "",
-                                                                          message: "Enter the recipient's Google email address first."
-                                                                        };
-                                                                        renderShareVerifyStatusBox();
-                                                                        return shareRecipientVerifyState;
-                                                                      }
-
-                                                                      shareRecipientVerifyState = {
-                                                                        email: "",
-                                                                        status: "error",
-                                                                        email,
-                                                                        status: "checking",
-                                                                        verified: false,
-                                                                        user_id: null,
-                                                                        full_name: "",
-                                                                        avatar_url: "",
-                                                                        message: "Enter the recipient's Google email address first."
+      shareRecipientVerifyState = {
+        email,
+        status: "checking",
+        verified: false,
+        user_id: null,
+        full_name: "",
+        avatar_url: "",
         message: `Checking Google sign-in for ${email}...`
-                                                                      };
-                                                                      renderShareVerifyStatusBox();
+      };
+      renderShareVerifyStatusBox();
 
-                                                                      const res = await verifyRecipientGoogleAccount(email);
-                                                                      shareRecipientVerifyState = {
-                                                                        email: res.email || email,
-                                                                        status: res.verified ? "verified" : "unverified",
-                                                                        verified: Boolean(res.verified),
-                                                                        user_id: res.user_id || null,
-                                                                        full_name: res.full_name || "",
-                                                                        avatar_url: res.avatar_url || "",
-                                                                        message: res.message || ""
-                                                                      };
-                                                                      renderShareVerifyStatusBox();
-                                                                      return shareRecipientVerifyState;
-                                                                    }
+      const res = await verifyRecipientGoogleAccount(email);
+      shareRecipientVerifyState = {
+        email: res.email || email,
+        status: res.verified ? "verified" : "unverified",
+        verified: Boolean(res.verified),
+        user_id: res.user_id || null,
+        full_name: res.full_name || "",
+        avatar_url: res.avatar_url || "",
+        message: res.message || ""
+      };
+      renderShareVerifyStatusBox();
+      return shareRecipientVerifyState;
+    }
 
-                                                                    shareRecipientVerifyState = {
-                                                                      email,
-                                                                      status: "checking",
-                                                                      verified: false,
-                                                                      user_id: null,
-                                                                      full_name: "",
-                                                                      avatar_url: "",
-                                                                      message: `Checking Google sign-in for ${email}...`
-                                                                    };
-                                                                    renderShareVerifyStatusBox();
-                                                                    function renderSharePatientModalBody() {
-                                                                      const body = document.getElementById("sharePatientModalBody");
-                                                                      if (!body) return;
+    function renderSharePatientModalBody() {
+      const body = document.getElementById("sharePatientModalBody");
+      if (!body) return;
 
-                                                                      const res = await verifyRecipientGoogleAccount(email);
-                                                                      shareRecipientVerifyState = {
-                                                                        email: res.email || email,
-                                                                        status: res.verified ? "verified" : "unverified",
-                                                                        verified: Boolean(res.verified),
-                                                                        user_id: res.user_id || null,
-                                                                        full_name: res.full_name || "",
-                                                                        avatar_url: res.avatar_url || "",
-                                                                        message: res.message || ""
-                                                                      };
-                                                                      renderShareVerifyStatusBox();
-                                                                      return shareRecipientVerifyState;
-                                                                    }
-
-                                                                    function renderSharePatientModalBody() {
-                                                                      const body = document.getElementById("sharePatientModalBody");
-                                                                      if (!body) return;
-
-                                                                      if (!hasCloudAuthSession()) {
-                                                                        body.innerHTML = `
       if (!hasCloudAuthSession()) {
         body.innerHTML = `
-                                                                          < div class="auth-msg info" >
-                                                                            Sign in with your Google account to share patient summaries directly with another Google - signed -in doctor.
+          <div class="auth-msg info">
+            Sign in with your Google account to share patient summaries directly with another Google-signed-in doctor.
           </div>
-                                      <button type="button" class="btn-google-primary" onclick="closeSharePatientModal();signInWithGoogle()">
-                                        ${GOOGLE_SVG}
-                                        <span>Sign in with Google</span>
-                                      </button>
-                                      `;
-                                      return;
-    }
-                                      return;
+          <button type="button" class="btn-google-primary" onclick="closeSharePatientModal();signInWithGoogle()">
+            ${GOOGLE_SVG}
+            <span>Sign in with Google</span>
+          </button>
+        `;
+        return;
       }
 
-                                      if (!records.length) {
-                                        body.innerHTML = `
       if (!records.length) {
         body.innerHTML = `
-                                        < div class="auth-msg info">
-                                      No saved patient summaries found yet. Create and fill a patient summary first before sharing.
-                                    </div>
-                                    <div class="modal-actions">
-                                      <button type="button" class="btn" onclick="closeSharePatientModal();newSummary()">+ New Patient</button>
-                                      <button type="button" class="btn out" onclick="closeSharePatientModal()">Close</button>
-                                    </div>
-                                    `;
-                                    return;
-    }
-                                    return;
+          <div class="auth-msg info">
+            No saved patient summaries found yet. Create and fill a patient summary first before sharing.
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn" onclick="closeSharePatientModal();newSummary()">+ New Patient</button>
+            <button type="button" class="btn out" onclick="closeSharePatientModal()">Close</button>
+          </div>
+        `;
+        return;
       }
 
-    const selectedRec = records.find(r => r.id === shareModalRecordId) || records[0];
-                                    if (selectedRec) shareModalRecordId = selectedRec.id;
       const selectedRec = records.find(r => r.id === shareModalRecordId) || records[0];
-                                    if (selectedRec) shareModalRecordId = selectedRec.id;
+      if (selectedRec) shareModalRecordId = selectedRec.id;
 
-    const optionsHtml = records.map(r => {
-      const label = [r.patient_name || "Unnamed Patient", r.ip_no ? `IP ${r.ip_no}` : "", r.unit || ""].filter(Boolean).join(" · ");
-                                    return `<option value="${esc(r.id)}" ${selectedRec && r.id === selectedRec.id ? "selected" : ""}>${esc(label)}</option>`;
-    }).join("");
       const optionsHtml = records.map(r => {
         const label = [r.patient_name || "Unnamed Patient", r.ip_no ? `IP ${r.ip_no}` : "", r.unit || ""].filter(Boolean).join(" · ");
-                                    return `<option value="${esc(r.id)}" ${selectedRec && r.id === selectedRec.id ? "selected" : ""}>${esc(label)}</option>`;
+        return `<option value="${esc(r.id)}" ${selectedRec && r.id === selectedRec.id ? "selected" : ""}>${esc(label)}</option>`;
       }).join("");
 
-                                    const dates = selectedRec
-                                    ? [selectedRec.doa ? `DOA ${fmtDate(selectedRec.doa)}` : "", selectedRec.dod ? `DOD ${fmtDate(selectedRec.dod)}` : ""].filter(Boolean).join(" · ")
-                                    : "";
-                                    const dates = selectedRec
-                                    ? [selectedRec.doa ? `DOA ${fmtDate(selectedRec.doa)}` : "", selectedRec.dod ? `DOD ${fmtDate(selectedRec.dod)}` : ""].filter(Boolean).join(" · ")
-                                    : "";
+      const dates = selectedRec
+        ? [selectedRec.doa ? `DOA ${fmtDate(selectedRec.doa)}` : "", selectedRec.dod ? `DOD ${fmtDate(selectedRec.dod)}` : ""].filter(Boolean).join(" · ")
+        : "";
 
-                                    const quickContactsHtml = frequentContacts.length ? `
-                                    const quickContactsHtml = frequentContacts.length ? `
-                                    <div class="field">
-                                      <label>Frequently Shared Contacts</label>
-                                      <div class="share-quick-contacts">
-                                        ${frequentContacts.map(c => {
-                                          const label = c.full_name ? `${c.full_name} (${c.email})` : c.email;
-                                          const isSelected = normalizeEmail(shareRecipientVerifyState.email) === normalizeEmail(c.email);
-                                          return `<button type="button" class="chip${isSelected ? " active-contact" : ""}" onclick="selectShareRecipient('${esc(c.email)}')">✓ ${esc(label)}</button>`;
-                                        }).join("")}
-                                        const label = c.full_name ? `${c.full_name} (${c.email})` : c.email;
-                                        const isSelected = normalizeEmail(shareRecipientVerifyState.email) === normalizeEmail(c.email);
-                                        return `<button type="button" class="chip${isSelected ? " active-contact" : ""}" onclick="selectShareRecipient('${esc(c.email)}')">✓ ${esc(label)}</button>`;
+      const quickContactsHtml = frequentContacts.length ? `
+        <div class="field">
+          <label>Frequently Shared Contacts</label>
+          <div class="share-quick-contacts">
+            ${frequentContacts.map(c => {
+              const label = c.full_name ? `${c.full_name} (${c.email})` : c.email;
+              const isSelected = normalizeEmail(shareRecipientVerifyState.email) === normalizeEmail(c.email);
+              return `<button type="button" class="chip${isSelected ? " active-contact" : ""}" onclick="selectShareRecipient('${esc(c.email)}')">✓ ${esc(label)}</button>`;
             }).join("")}
-                                    </div>
-                                  </div>
-                                ` : "";
+          </div>
+        </div>
+      ` : "";
 
-    const curNoteEl = document.getElementById("sharePatientNote");
-    const curNote = curNoteEl ? curNoteEl.value : "";
       const curNoteEl = document.getElementById("sharePatientNote");
       const curNote = curNoteEl ? curNoteEl.value : "";
 
-    body.innerHTML = `
-                                body.innerHTML = `
+      body.innerHTML = `
         <form onsubmit="sharePatientWithDoctor(event)">
           <div class="field">
             <label for="shareRecordSelect">Patient Summary to Share</label>
@@ -10250,581 +5617,312 @@ async function enqueueLocalSharedInbox(recipientEmail, sharedRow) {
         </form>
       `;
 
-                                renderShareVerifyStatusBox();
-                              }
+      renderShareVerifyStatusBox();
+    }
 
-                              async function sharePatientWithDoctor(event) {
-                                if (event) event.preventDefault();
-                                if (!hasCloudAuthSession()) {
-                                  toast("Sign in with Google first");
-                                  return;
-                                  renderShareVerifyStatusBox();
-                                }
-                                const rec = records.find(r => r.id === shareModalRecordId);
-                                if (!rec) {
-                                  toast("Select a patient summary to share");
-                                  return;
-                                }
+    async function sharePatientWithDoctor(event) {
+      if (event) event.preventDefault();
+      if (!hasCloudAuthSession()) {
+        toast("Sign in with Google first");
+        return;
+      }
+      const rec = records.find(r => r.id === shareModalRecordId);
+      if (!rec) {
+        toast("Select a patient summary to share");
+        return;
+      }
 
-                                const submitBtn = document.getElementById("shareSubmitBtn");
-                                if (submitBtn) submitBtn.disabled = true;
+      const submitBtn = document.getElementById("shareSubmitBtn");
+      if (submitBtn) submitBtn.disabled = true;
 
-                                try {
-                                  const verification = await checkShareRecipientGoogle();
-                                  if (!verification.verified) {
-                                    toast("Recipient must be signed in using Google before sharing");
-                                    async function sharePatientWithDoctor(event) {
-                                      if (event) event.preventDefault();
-                                      if (!hasCloudAuthSession()) {
-                                        toast("Sign in with Google first");
-                                        return;
-                                      }
-                                      const rec = records.find(r => r.id === shareModalRecordId);
-                                      if (!rec) {
-                                        toast("Select a patient summary to share");
-                                        return;
-                                      }
+      try {
+        const verification = await checkShareRecipientGoogle();
+        if (!verification.verified) {
+          toast("Recipient must be signed in using Google before sharing");
+          return;
+        }
 
-                                      const noteEl = document.getElementById("sharePatientNote");
-                                      const note = (noteEl && noteEl.value || "").trim();
-                                      const submitBtn = document.getElementById("shareSubmitBtn");
-                                      if (submitBtn) submitBtn.disabled = true;
-
-                                      const { data, error } = await sbClient.rpc("share_patient_summary", {
-                                        target_email: verification.email,
-                                        summary_status: rec.status || "incomplete",
-                                        p_patient_name: rec.patient_name || "",
-                                        p_ip_no: rec.ip_no || "",
-                                        p_doa: rec.doa || "",
-                                        p_dod: rec.dod || "",
-                                        p_unit: rec.unit || "",
-                                        p_diagnosis_preview: rec.diagnosis_preview || "",
-                                        p_payload: cleanSharePayload(rec.payload),
-                                        p_note: note,
-                                        p_source_summary_id: rec.id
-                                      });
-                                      try {
-                                        const verification = await checkShareRecipientGoogle();
-                                        if (!verification.verified) {
-                                          toast("Recipient must be signed in using Google before sharing");
-                                          return;
-                                        }
-
-                                        if (error) {
-                                          if (isMissingRpcError(error) || isMissingTableError(error)) {
-                                            const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || (currentUser.email ? currentUser.email.split("@")[0] : "Colleague");
-                                            const shareId = generateUUID();
-                                            const nowIso = new Date().toISOString();
-                                            const cleanedPayload = cleanSharePayload(rec.payload);
-                                            cleanedPayload.__shared_from = {
-                                              share_id: shareId,
-                                              sender_id: currentUser.id,
-                                              sender_email: normalizeEmail(currentUser.email),
-                                              sender_name: docName,
-                                              note,
-                                              shared_at: nowIso,
-                                              source_summary_id: rec.id
-                                            };
-                                            const sharedRow = {
-                                              share_id: shareId,
-                                              id: generateUUID(),
-                                              sender_id: currentUser.id,
-                                              sender_email: normalizeEmail(currentUser.email),
-                                              sender_name: docName,
-                                              recipient_email: verification.email,
-                                              patient_name: rec.patient_name || "",
-                                              ip_no: rec.ip_no || "",
-                                              doa: rec.doa || "",
-                                              dod: rec.dod || "",
-                                              unit: rec.unit || "",
-                                              diagnosis_preview: rec.diagnosis_preview || "",
-                                              status: rec.status || "incomplete",
-                                              payload: cleanedPayload,
-                                              note,
-                                              source_summary_id: rec.id,
-                                              created_at: new Date().toISOString()
         const noteEl = document.getElementById("sharePatientNote");
-                                              const note = (noteEl && noteEl.value || "").trim();
+        const note = (noteEl && noteEl.value || "").trim();
 
-                                              const { data, error } = await sbClient.rpc("share_patient_summary", {
-                                                target_email: verification.email,
-                                                summary_status: rec.status || "incomplete",
-                                                p_patient_name: rec.patient_name || "",
-                                                p_ip_no: rec.ip_no || "",
-                                                p_doa: rec.doa || "",
-                                                p_dod: rec.dod || "",
-                                                p_unit: rec.unit || "",
-                                                p_diagnosis_preview: rec.diagnosis_preview || "",
-                                                p_payload: cleanSharePayload(rec.payload),
-                                                p_note: note,
-                                                p_source_summary_id: rec.id
-                                              });
+        const { data, error } = await sbClient.rpc("share_patient_summary", {
+          target_email: verification.email,
+          summary_status: rec.status || "incomplete",
+          p_patient_name: rec.patient_name || "",
+          p_ip_no: rec.ip_no || "",
+          p_doa: rec.doa || "",
+          p_dod: rec.dod || "",
+          p_unit: rec.unit || "",
+          p_diagnosis_preview: rec.diagnosis_preview || "",
+          p_payload: cleanSharePayload(rec.payload),
+          p_note: note,
+          p_source_summary_id: rec.id
+        });
 
-                                              if(error) {
-                                                if (isMissingRpcError(error) || isMissingTableError(error)) {
-                                                  const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || (currentUser.email ? currentUser.email.split("@")[0] : "Colleague");
-                                                  const shareId = generateUUID();
-                                                  const nowIso = new Date().toISOString();
-                                                  const cleanedPayload = cleanSharePayload(rec.payload);
-                                                  cleanedPayload.__shared_from = {
-                                                    share_id: shareId,
-                                                    sender_id: currentUser.id,
-                                                    sender_email: normalizeEmail(currentUser.email),
-                                                    sender_name: docName,
-                                                    note,
-                                                    shared_at: nowIso,
-                                                    source_summary_id: rec.id
-                                                  };
-                                                  const sharedRow = {
-                                                    share_id: shareId,
-                                                    id: generateUUID(),
-                                                    sender_id: currentUser.id,
-                                                    sender_email: normalizeEmail(currentUser.email),
-                                                    sender_name: docName,
-                                                    recipient_email: verification.email,
-                                                    patient_name: rec.patient_name || "",
-                                                    ip_no: rec.ip_no || "",
-                                                    doa: rec.doa || "",
-                                                    dod: rec.dod || "",
-                                                    unit: rec.unit || "",
-                                                    diagnosis_preview: rec.diagnosis_preview || "",
-                                                    status: rec.status || "incomplete",
-                                                    payload: cleanedPayload,
-                                                    note,
-                                                    source_summary_id: rec.id,
-                                                    created_at: nowIso,
-                                                    updated_at: nowIso
-                                                  };
-                                                  updated_at: nowIso
-                                                };
+        if (error) {
+          if (isMissingRpcError(error) || isMissingTableError(error)) {
+            const docName = (currentUser.user_metadata && (currentUser.user_metadata.full_name || currentUser.user_metadata.name)) || (currentUser.email ? currentUser.email.split("@")[0] : "Colleague");
+            const shareId = generateUUID();
+            const nowIso = new Date().toISOString();
+            const cleanedPayload = cleanSharePayload(rec.payload);
+            cleanedPayload.__shared_from = {
+              share_id: shareId,
+              sender_id: currentUser.id,
+              sender_email: normalizeEmail(currentUser.email),
+              sender_name: docName,
+              note,
+              shared_at: nowIso,
+              source_summary_id: rec.id
+            };
+            const sharedRow = {
+              share_id: shareId,
+              id: generateUUID(),
+              sender_id: currentUser.id,
+              sender_email: normalizeEmail(currentUser.email),
+              sender_name: docName,
+              recipient_email: verification.email,
+              patient_name: rec.patient_name || "",
+              ip_no: rec.ip_no || "",
+              doa: rec.doa || "",
+              dod: rec.dod || "",
+              unit: rec.unit || "",
+              diagnosis_preview: rec.diagnosis_preview || "",
+              status: rec.status || "incomplete",
+              payload: cleanedPayload,
+              note,
+              source_summary_id: rec.id,
+              created_at: nowIso,
+              updated_at: nowIso
+            };
 
-                                                await enqueueLocalSharedInbox(verification.email, sharedRow);
-                                                await enqueueLocalSharedInbox(verification.email, sharedRow);
+            await enqueueLocalSharedInbox(verification.email, sharedRow);
 
-                                                if (realtimeSharingChannel) {
-                                                  if (realtimeSharingChannel) {
-                                                    try {
-                                                      await realtimeSharingChannel.send({
-                                                        type: "broadcast",
-                                                        event: "patient_share",
-                                                        payload: sharedRow
-                                                      });
-                                                    } catch (broadcastErr) {
-                                                      console.warn("realtime share broadcast:", broadcastErr);
-                                                    }
-                                                  }
+            if (realtimeSharingChannel) {
+              try {
+                await realtimeSharingChannel.send({
+                  type: "broadcast",
+                  event: "patient_share",
+                  payload: sharedRow
+                });
+              } catch (broadcastErr) {
+                console.warn("realtime share broadcast:", broadcastErr);
+              }
+            }
 
-                                                  try {
-                                                    await realtimeSharingChannel.send({
-                                                      type: "broadcast",
-                                                      event: "patient_share",
-                                                      payload: sharedRow
-                                                    });
-                                                  } catch (broadcastErr) {
-                                                    console.warn("realtime share broadcast:", broadcastErr);
-                                                    const meta = (await readCloudAuthMeta(false)) || {};
-                                                    const existingOutbox = Array.isArray(meta.outbox_shares) ? meta.outbox_shares : [];
-                                                    const nextOutbox = [sharedRow, ...existingOutbox].slice(0, 15);
-                                                    await writeCloudAuthMeta({ outbox_shares: nextOutbox });
-                                                  } catch (metaErr) {
-                                                    console.warn("outbox_shares meta fallback:", metaErr);
-                                                  }
-                                                } else {
-                                                  throw error;
-                                                }
+            try {
+              const meta = (await readCloudAuthMeta(false)) || {};
+              const existingOutbox = Array.isArray(meta.outbox_shares) ? meta.outbox_shares : [];
+              const nextOutbox = [sharedRow, ...existingOutbox].slice(0, 15);
+              await writeCloudAuthMeta({ outbox_shares: nextOutbox });
+            } catch (metaErr) {
+              console.warn("outbox_shares meta fallback:", metaErr);
+            }
+          } else {
+            throw error;
+          }
+        }
 
-                                                try {
-                                                  const meta = readCloudAuthMeta() || {};
-                                                  const meta = (await readCloudAuthMeta(false)) || {};
-                                                  const existingOutbox = Array.isArray(meta.outbox_shares) ? meta.outbox_shares : [];
-                                                  const nextOutbox = [sharedRow, ...existingOutbox].slice(0, 15);
-                                                  await writeCloudAuthMeta({ outbox_shares: nextOutbox });
-                                                } catch (metaErr) {
-                                                  console.warn("outbox_shares meta fallback:", metaErr);
-                                                }
-                                              } else {
-                                                throw error;
-                                              }
-                                            }
+        const recName = (data && data.recipient_name) || verification.full_name || "";
+        await recordFrequentContact(
+          verification.email,
+          recName,
+          verification.avatar_url || "",
+          true,
+          true,
+          (data && data.recipient_id) || verification.user_id || null
+        );
 
-                                            const recName = (data && data.recipient_name) || verification.full_name || "";
-                                            await recordFrequentContact(
-                                              verification.email,
-                                              recName,
-                                              verification.avatar_url || "",
-                                              true,
-                                              true,
-                                              (data && data.recipient_id) || verification.user_id || null
-                                            );
-                                            const recName = (data && data.recipient_name) || verification.full_name || "";
-                                            await recordFrequentContact(
-                                              verification.email,
-                                              recName,
-                                              verification.avatar_url || "",
-                                              true,
-                                              true,
-                                              (data && data.recipient_id) || verification.user_id || null
-                                            );
+        closeSharePatientModal();
+        toast(`Shared "${rec.patient_name || "Patient"}" with ${recName || verification.email} ✓`);
+      } catch (e) {
+        shareRecipientVerifyState = {
+          ...shareRecipientVerifyState,
+          status: "error",
+          message: (e && e.message) ? e.message : "Could not share patient details."
+        };
+        renderShareVerifyStatusBox();
+        toast(shareRecipientVerifyState.message);
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
 
-                                            closeSharePatientModal();
-                                            toast(`Shared "${rec.patient_name || "Patient"}" with ${recName || verification.email} ✓`);
-                                          } catch (e) {
-                                            shareRecipientVerifyState = {
-                                              ...shareRecipientVerifyState,
-                                              status: "error",
-                                              message: (e && e.message) ? e.message : "Could not share patient details."
-                                            };
-                                            renderShareVerifyStatusBox();
-                                            toast(shareRecipientVerifyState.message);
-                                          } finally {
-                                            if (submitBtn) submitBtn.disabled = false;
-                                            closeSharePatientModal();
-                                            toast(`Shared "${rec.patient_name || "Patient"}" with ${recName || verification.email} ✓`);
-                                          } catch (e) {
-                                            shareRecipientVerifyState = {
-                                              ...shareRecipientVerifyState,
-                                              status: "error",
-                                              message: (e && e.message) ? e.message : "Could not share patient details."
-                                            };
-                                            renderShareVerifyStatusBox();
-                                            toast(shareRecipientVerifyState.message);
-                                          } finally {
-                                            if (submitBtn) submitBtn.disabled = false;
-                                          }
-                                        }
-                                      }
+    /* ---------- autofill sample data for testing ---------- */
+    async function autofillTest() {
+      if (hasPatientContent(collectDraft())) {
+        if (!confirm("Autofill sample test data? Current patient entries will be overwritten or saved as a sample patient.")) return;
+      }
+      if (!hasRecordPersisted) {
+        currentRecordId = generateUUID();
+        currentRecordStatus = "incomplete";
+        currentRecordCreatedAt = new Date().toISOString();
+      }
+      hasRecordPersisted = true;
 
-  /* ---------- autofill sample data for testing ---------- */
-  async function autofillTest() {
-                                        if (hasPatientContent(collectDraft())) {
-                                          if (!confirm("Autofill sample test data? Current patient entries will be overwritten or saved as a sample patient.")) return;
-                                        }
-                                        if (!hasRecordPersisted) {
-                                          currentRecordId = generateUUID();
-                                          currentRecordStatus = "incomplete";
-                                          currentRecordCreatedAt = new Date().toISOString();
-                                        }
-                                        hasRecordPersisted = true;
-                                        /* ---------- autofill sample data for testing ---------- */
-                                        async function autofillTest() {
-                                          if (hasPatientContent(collectDraft())) {
-                                            if (!confirm("Autofill sample test data? Current patient entries will be overwritten or saved as a sample patient.")) return;
-                                          }
-                                          if (!hasRecordPersisted) {
-                                            currentRecordId = generateUUID();
-                                            currentRecordStatus = "incomplete";
-                                            currentRecordCreatedAt = new Date().toISOString();
-                                          }
-                                          hasRecordPersisted = true;
+      suppressSave = true;
+      try {
+        setVal_("name", "Ramasamy M.");
+        setVal_("age", "52");
+        setVal_("sex", "M");
+        setVal_("ipno", "2026/04812");
+        setVal_("doa", "2026-10-15");
+        setVal_("dod", todayISO());
+        setVal_("unitPrefix", "M-");
+        setVal_("unitRoman", "IV");
+        setVal_("modeOfDischarge", "Discharge");
 
-                                          suppressSave = true;
-                                          try {
-                                            setVal_("name", "Ramasamy M.");
-                                            setVal_("age", "52");
-                                            setVal_("sex", "M");
-                                            setVal_("ipno", "2026/04812");
-                                            setVal_("doa", "2026-10-15");
-                                            setVal_("dod", todayISO());
-                                            setVal_("unitPrefix", "M-");
-                                            setVal_("unitRoman", "IV");
-                                            setVal_("modeOfDischarge", "Discharge");
-                                            suppressSave = true;
-                                            try {
-                                              setVal_("name", "Ramasamy M.");
-                                              setVal_("age", "52");
-                                              setVal_("sex", "M");
-                                              setVal_("ipno", "2026/04812");
-                                              setVal_("doa", "2026-10-15");
-                                              setVal_("dod", todayISO());
-                                              setVal_("unitPrefix", "M-");
-                                              setVal_("unitRoman", "IV");
-                                              setVal_("modeOfDischarge", "Discharge");
+        setVal_("diagnosis", "Type 2 Diabetes Mellitus with DKA (Resolved)\nCommunity Acquired Pneumonia (Right Lower Lobe)\nEssential Hypertension");
 
-                                              setVal_("diagnosis", "Type 2 Diabetes Mellitus with DKA (Resolved)\nCommunity Acquired Pneumonia (Right Lower Lobe)\nEssential Hypertension");
-                                              setVal_("diagnosis", "Type 2 Diabetes Mellitus with DKA (Resolved)\nCommunity Acquired Pneumonia (Right Lower Lobe)\nEssential Hypertension");
+        complaints = [
+          "H/o fever for 4 days",
+          "H/o cough with expectoration for 4 days",
+          "H/o breathlessness for 2 days"
+        ];
+        renderComplaints();
 
-                                              complaints = [
-                                                "H/o fever for 4 days",
-                                                "H/o cough with expectoration for 4 days",
-                                                "H/o breathlessness for 2 days"
-                                              ];
-                                              renderComplaints();
-                                              complaints = [
-                                                "H/o fever for 4 days",
-                                                "H/o cough with expectoration for 4 days",
-                                                "H/o breathlessness for 2 days"
-                                              ];
-                                              renderComplaints();
+        setVal_("hopi", "Patient was apparently normal 4 days ago, then developed high-grade fever with chills and cough with expectoration. Developed progressive breathlessness (MMRC Grade III) for 2 days. No history of chest pain or palpitations. Patient had nausea, vomiting and reduced oral intake for 1 day prior to admission.");
+        pastHistory = [
+          "K/C/O T2DM x 8 years on irregular medication",
+          "K/C/O Systemic Hypertension x 5 years"
+        ];
+        renderPast();
+        rxHistory = [
+          "Tab. Metformin 500 mg BD",
+          "Tab. Telmisartan 40 mg OD"
+        ];
+        renderRxHistory();
 
-                                              setVal_("hopi", "Patient was apparently normal 4 days ago, then developed high-grade fever with chills and cough with expectoration. Developed progressive breathlessness (MMRC Grade III) for 2 days. No history of chest pain or palpitations. Patient had nausea, vomiting and reduced oral intake for 1 day prior to admission.");
-                                              pastHistory = [
-                                                "K/C/O T2DM x 8 years on irregular medication",
-                                                "K/C/O Systemic Hypertension x 5 years"
-                                              ];
-                                              renderPast();
-                                              rxHistory = [
-                                                "Tab. Metformin 500 mg BD",
-                                                "Tab. Telmisartan 40 mg OD"
-                                              ];
-                                              renderRxHistory();
-                                              setVal_("hopi", "Patient was apparently normal 4 days ago, then developed high-grade fever with chills and cough with expectoration. Developed progressive breathlessness (MMRC Grade III) for 2 days. No history of chest pain or palpitations. Patient had nausea, vomiting and reduced oral intake for 1 day prior to admission.");
-                                              pastHistory = [
-                                                "K/C/O T2DM x 8 years on irregular medication",
-                                                "K/C/O Systemic Hypertension x 5 years"
-                                              ];
-                                              renderPast();
-                                              rxHistory = [
-                                                "Tab. Metformin 500 mg BD",
-                                                "Tab. Telmisartan 40 mg OD"
-                                              ];
-                                              renderRxHistory();
+        setVal_("generalExam", "Patient conscious, oriented, tachypneic, afebrile, not pale, no icterus, cyanosis, clubbing, lymphadenopathy. Mild bilateral pedal edema present.");
+        setVal_("vBP", "130/80");
+        setVal_("vPR", "88");
+        setVal_("vRR", "22");
+        setVal_("vSpO2", "96% RA");
+        setVal_("vTemp", "Afebrile");
+        setVal_("vGRBS", "164");
+        setVal_("seCVS", "S1, S2 heard, no murmurs");
+        setVal_("seRS", "Bilateral air entry present, crepitations in right infrascapular area");
+        setVal_("sePA", "Soft, non-tender, no organomegaly");
+        setVal_("seCNS", "Conscious, oriented, NFND, GCS 15/15");
 
-                                              setVal_("generalExam", "Patient conscious, oriented, tachypneic, afebrile, not pale, no icterus, cyanosis, clubbing, lymphadenopathy. Mild bilateral pedal edema present.");
-                                              setVal_("vBP", "130/80");
-                                              setVal_("vPR", "88");
-                                              setVal_("vRR", "22");
-                                              setVal_("vSpO2", "96% RA");
-                                              setVal_("vTemp", "Afebrile");
-                                              setVal_("vGRBS", "164");
-                                              setVal_("seCVS", "S1, S2 heard, no murmurs");
-                                              setVal_("seRS", "Bilateral air entry present, crepitations in right infrascapular area");
-                                              setVal_("sePA", "Soft, non-tender, no organomegaly");
-                                              setVal_("seCNS", "Conscious, oriented, NFND, GCS 15/15");
-                                              setVal_("generalExam", "Patient conscious, oriented, tachypneic, afebrile, not pale, no icterus, cyanosis, clubbing, lymphadenopathy. Mild bilateral pedal edema present.");
-                                              setVal_("vBP", "130/80");
-                                              setVal_("vPR", "88");
-                                              setVal_("vRR", "22");
-                                              setVal_("vSpO2", "96% RA");
-                                              setVal_("vTemp", "Afebrile");
-                                              setVal_("vGRBS", "164");
-                                              setVal_("seCVS", "S1, S2 heard, no murmurs");
-                                              setVal_("seRS", "Bilateral air entry present, crepitations in right infrascapular area");
-                                              setVal_("sePA", "Soft, non-tender, no organomegaly");
-                                              setVal_("seCNS", "Conscious, oriented, NFND, GCS 15/15");
+        invSeq = 0;
+        const d1Id = ++invSeq, d2Id = ++invSeq;
+        invDates = [
+          { id: d1Id, date: "2026-10-15" },
+          { id: d2Id, date: "2026-10-19" }
+        ];
+        invParams = [
+          { id: ++invSeq, name: "Hb", values: { [d1Id]: "11.8", [d2Id]: "12.2" } },
+          { id: ++invSeq, name: "TC", values: { [d1Id]: "14200", [d2Id]: "8600" } },
+          { id: ++invSeq, name: "Platelet", values: { [d1Id]: "2.1 L", [d2Id]: "2.4 L" } },
+          { id: ++invSeq, name: "Urea", values: { [d1Id]: "42", [d2Id]: "28" } },
+          { id: ++invSeq, name: "Creatinine", values: { [d1Id]: "1.4", [d2Id]: "0.9" } },
+          { id: ++invSeq, name: "RBS", values: { [d1Id]: "340", [d2Id]: "138" } },
+          { id: ++invSeq, name: "Na", values: { [d1Id]: "132", [d2Id]: "138" } },
+          { id: ++invSeq, name: "K", values: { [d1Id]: "4.8", [d2Id]: "4.2" } }
+        ];
+        renderInvEditor();
+        setVal_("invOther", "CXR (PA view): Right lower zone consolidation resolving.\nECG: Normal sinus rhythm, HR 86/min.\nUSG Abdomen: Grade 1 fatty liver, normal bilateral kidneys.");
 
-                                              invSeq = 0;
-                                              const d1Id = ++invSeq, d2Id = ++invSeq;
-                                              invDates = [
-                                                { id: d1Id, date: "2026-10-15" },
-                                                { id: d2Id, date: "2026-10-19" }
-                                              ];
-                                              invParams = [
-                                                { id: ++invSeq, name: "Hb", values: { [d1Id]: "11.8", [d2Id]: "12.2" } },
-                                                { id: ++invSeq, name: "TC", values: { [d1Id]: "14200", [d2Id]: "8600" } },
-                                                { id: ++invSeq, name: "Platelet", values: { [d1Id]: "2.1 L", [d2Id]: "2.4 L" } },
-                                                { id: ++invSeq, name: "Urea", values: { [d1Id]: "42", [d2Id]: "28" } },
-                                                { id: ++invSeq, name: "Creatinine", values: { [d1Id]: "1.4", [d2Id]: "0.9" } },
-                                                { id: ++invSeq, name: "RBS", values: { [d1Id]: "340", [d2Id]: "138" } },
-                                                { id: ++invSeq, name: "Na", values: { [d1Id]: "132", [d2Id]: "138" } },
-                                                { id: ++invSeq, name: "K", values: { [d1Id]: "4.8", [d2Id]: "4.2" } }
-                                              ];
-                                              renderInvEditor();
-                                              setVal_("invOther", "CXR (PA view): Right lower zone consolidation resolving.\nECG: Normal sinus rhythm, HR 86/min.\nUSG Abdomen: Grade 1 fatty liver, normal bilateral kidneys.");
-                                              invSeq = 0;
-                                              const d1Id = ++invSeq, d2Id = ++invSeq;
-                                              invDates = [
-                                                { id: d1Id, date: "2026-10-15" },
-                                                { id: d2Id, date: "2026-10-19" }
-                                              ];
-                                              invParams = [
-                                                { id: ++invSeq, name: "Hb", values: { [d1Id]: "11.8", [d2Id]: "12.2" } },
-                                                { id: ++invSeq, name: "TC", values: { [d1Id]: "14200", [d2Id]: "8600" } },
-                                                { id: ++invSeq, name: "Platelet", values: { [d1Id]: "2.1 L", [d2Id]: "2.4 L" } },
-                                                { id: ++invSeq, name: "Urea", values: { [d1Id]: "42", [d2Id]: "28" } },
-                                                { id: ++invSeq, name: "Creatinine", values: { [d1Id]: "1.4", [d2Id]: "0.9" } },
-                                                { id: ++invSeq, name: "RBS", values: { [d1Id]: "340", [d2Id]: "138" } },
-                                                { id: ++invSeq, name: "Na", values: { [d1Id]: "132", [d2Id]: "138" } },
-                                                { id: ++invSeq, name: "K", values: { [d1Id]: "4.8", [d2Id]: "4.2" } }
-                                              ];
-                                              renderInvEditor();
-                                              setVal_("invOther", "CXR (PA view): Right lower zone consolidation resolving.\nECG: Normal sinus rhythm, HR 86/min.\nUSG Abdomen: Grade 1 fatty liver, normal bilateral kidneys.");
+        setVal_("opinions", "Pulmonology opinion obtained on 16.10.2026 — advised IV antibiotics and nebulisation.\nEndocrinology opinion obtained — advised sliding scale insulin, transitioned to basal-bolus regimen.");
+        setVal_("course", "Patient admitted with diabetic ketoacidosis precipitated by community-acquired pneumonia. Evaluated with blood sugars, arterial blood gases, septic screen, and chest radiography. Initially managed in HDU with IV fluids, insulin infusion, and broad-spectrum IV antibiotics (Inj. Ceftriaxone) along with nebulisation. Acidosis resolved and blood glucose levels normalised. Transitioned to subcutaneous insulin. Cough and breathlessness settled; patient maintained adequate saturation on room air. Vitals remained stable, tolerating normal diabetic diet. Patient is being discharged in a stable condition with oral medications and glycemic control advice.");
 
-                                              setVal_("opinions", "Pulmonology opinion obtained on 16.10.2026 — advised IV antibiotics and nebulisation.\nEndocrinology opinion obtained — advised sliding scale insulin, transitioned to basal-bolus regimen.");
-                                              setVal_("course", "Patient admitted with diabetic ketoacidosis precipitated by community-acquired pneumonia. Evaluated with blood sugars, arterial blood gases, septic screen, and chest radiography. Initially managed in HDU with IV fluids, insulin infusion, and broad-spectrum IV antibiotics (Inj. Ceftriaxone) along with nebulisation. Acidosis resolved and blood glucose levels normalised. Transitioned to subcutaneous insulin. Cough and breathlessness settled; patient maintained adequate saturation on room air. Vitals remained stable, tolerating normal diabetic diet. Patient is being discharged in a stable condition with oral medications and glycemic control advice.");
-                                              setVal_("opinions", "Pulmonology opinion obtained on 16.10.2026 — advised IV antibiotics and nebulisation.\nEndocrinology opinion obtained — advised sliding scale insulin, transitioned to basal-bolus regimen.");
-                                              setVal_("course", "Patient admitted with diabetic ketoacidosis precipitated by community-acquired pneumonia. Evaluated with blood sugars, arterial blood gases, septic screen, and chest radiography. Initially managed in HDU with IV fluids, insulin infusion, and broad-spectrum IV antibiotics (Inj. Ceftriaxone) along with nebulisation. Acidosis resolved and blood glucose levels normalised. Transitioned to subcutaneous insulin. Cough and breathlessness settled; patient maintained adequate saturation on room air. Vitals remained stable, tolerating normal diabetic diet. Patient is being discharged in a stable condition with oral medications and glycemic control advice.");
+        treatment = [
+          "Inj. Ceftriaxone 1 g IV BD",
+          "Inj. Insulin (Regular) IV infusion as per protocol, transitioned to SC",
+          "Inj. Pantoprazole 40 mg IV OD",
+          "Inj. Paracetamol 1 g IV SOS",
+          "Neb. Ipratropium-Salbutamol Q8H",
+          "IV Fluids 0.9% Normal Saline"
+        ];
+        renderTx();
 
-                                              treatment = [
-                                                "Inj. Ceftriaxone 1 g IV BD",
-                                                "Inj. Insulin (Regular) IV infusion as per protocol, transitioned to SC",
-                                                "Inj. Pantoprazole 40 mg IV OD",
-                                                "Inj. Paracetamol 1 g IV SOS",
-                                                "Neb. Ipratropium-Salbutamol Q8H",
-                                                "IV Fluids 0.9% Normal Saline"
-                                              ];
-                                              renderTx();
-                                              treatment = [
-                                                "Inj. Ceftriaxone 1 g IV BD",
-                                                "Inj. Insulin (Regular) IV infusion as per protocol, transitioned to SC",
-                                                "Inj. Pantoprazole 40 mg IV OD",
-                                                "Inj. Paracetamol 1 g IV SOS",
-                                                "Neb. Ipratropium-Salbutamol Q8H",
-                                                "IV Fluids 0.9% Normal Saline"
-                                              ];
-                                              renderTx();
+        setVal_("condition", "Clinically stable and symptomatically improved");
+        setVal_("condExtra", "Afebrile, eupneic, hemodynamically stable, tolerating diabetic diet");
 
-                                              setVal_("condition", "Clinically stable and symptomatically improved");
-                                              setVal_("condExtra", "Afebrile, eupneic, hemodynamically stable, tolerating diabetic diet");
-                                              setVal_("condition", "Clinically stable and symptomatically improved");
-                                              setVal_("condExtra", "Afebrile, eupneic, hemodynamically stable, tolerating diabetic diet");
+        setVal_("diet", "Diabetic and salt-restricted diet");
+        setVal_("physicalActivity", "Ambulant, adequate rest");
+        ynState = { physio: "No", equip: "No", dress: "No" };
+        ["physio", "equip", "dress"].forEach(k => setYNui(k, ynState[k]));
+        setVal_("otherNeeds", "Daily foot care and regular blood glucose monitoring");
+        rxMeds = [
+          "Tab. Cefpodoxime 200 mg BD × 5 days",
+          "Tab. Metformin 500 mg BD",
+          "Tab. Glimepiride 1 mg OD before breakfast",
+          "Tab. Telmisartan 40 mg OD",
+          "Tab. Pantoprazole 40 mg OD before food × 5 days",
+          "Tab. Paracetamol 650 mg SOS for fever/bodyache"
+        ];
+        renderRx();
+        setVal_("advice", "Take medications strictly as advised.\nAdequate hydration and diabetic diet.\nMonitor fasting and post-prandial blood sugar regularly.\nAvoid skipping meals.");
+        setVal_("emergencyContact", "Casualty / Emergency Dept: 044-25305000");
+        setVal_("review", "Review in Medicine OPD after 1 week with fasting and PP blood sugar reports (or earlier if needed).");
+        setVal_("warning", "Fever, increasing breathlessness, chest pain, persistent vomiting, reduced urine output, or severe giddiness — report to Casualty immediately.");
 
-                                              setVal_("diet", "Diabetic and salt-restricted diet");
-                                              setVal_("physicalActivity", "Ambulant, adequate rest");
-                                              ynState = { physio: "No", equip: "No", dress: "No" };
-                                              ["physio", "equip", "dress"].forEach(k => setYNui(k, ynState[k]));
-                                              setVal_("otherNeeds", "Daily foot care and regular blood glucose monitoring");
-                                              rxMeds = [
-                                                "Tab. Cefpodoxime 200 mg BD × 5 days",
-                                                "Tab. Metformin 500 mg BD",
-                                                "Tab. Glimepiride 1 mg OD before breakfast",
-                                                "Tab. Telmisartan 40 mg OD",
-                                                "Tab. Pantoprazole 40 mg OD before food × 5 days",
-                                                "Tab. Paracetamol 650 mg SOS for fever/bodyache"
-                                              ];
-                                              renderRx();
-                                              setVal_("advice", "Take medications strictly as advised.\nAdequate hydration and diabetic diet.\nMonitor fasting and post-prandial blood sugar regularly.\nAvoid skipping meals.");
-                                              setVal_("emergencyContact", "Casualty / Emergency Dept: 044-25305000");
-                                              setVal_("review", "Review in Medicine OPD after 1 week with fasting and PP blood sugar reports (or earlier if needed).");
-                                              setVal_("warning", "Fever, increasing breathlessness, chest pain, persistent vomiting, reduced urine output, or severe giddiness — report to Casualty immediately.");
-                                              setVal_("diet", "Diabetic and salt-restricted diet");
-                                              setVal_("physicalActivity", "Ambulant, adequate rest");
-                                              ynState = { physio: "No", equip: "No", dress: "No" };
-                                              ["physio", "equip", "dress"].forEach(k => setYNui(k, ynState[k]));
-                                              setVal_("otherNeeds", "Daily foot care and regular blood glucose monitoring");
-                                              rxMeds = [
-                                                "Tab. Cefpodoxime 200 mg BD × 5 days",
-                                                "Tab. Metformin 500 mg BD",
-                                                "Tab. Glimepiride 1 mg OD before breakfast",
-                                                "Tab. Telmisartan 40 mg OD",
-                                                "Tab. Pantoprazole 40 mg OD before food × 5 days",
-                                                "Tab. Paracetamol 650 mg SOS for fever/bodyache"
-                                              ];
-                                              renderRx();
-                                              setVal_("advice", "Take medications strictly as advised.\nAdequate hydration and diabetic diet.\nMonitor fasting and post-prandial blood sugar regularly.\nAvoid skipping meals.");
-                                              setVal_("emergencyContact", "Casualty / Emergency Dept: 044-25305000");
-                                              setVal_("review", "Review in Medicine OPD after 1 week with fasting and PP blood sugar reports (or earlier if needed).");
-                                              setVal_("warning", "Fever, increasing breathlessness, chest pain, persistent vomiting, reduced urine output, or severe giddiness — report to Casualty immediately.");
+        setVal_("preparedBy", "Dr. K. Vignesh (JR)");
+        setVal_("chief", "Dr. S. Sundararajan (Unit Chief)");
+        setVal_("signDateTime", "20.10.2026, 11:30 AM");
 
-                                              setVal_("preparedBy", "Dr. K. Vignesh (JR)");
-                                              setVal_("chief", "Dr. S. Sundararajan (Unit Chief)");
-                                              setVal_("signDateTime", "20.10.2026, 11:30 AM");
-                                              setVal_("preparedBy", "Dr. K. Vignesh (JR)");
-                                              setVal_("chief", "Dr. S. Sundararajan (Unit Chief)");
-                                              setVal_("signDateTime", "20.10.2026, 11:30 AM");
+        render(false);
+      } finally {
+        suppressSave = false;
+      }
 
-                                              render(false);
-                                            } finally {
-                                              suppressSave = false;
-                                              render(false);
-                                            } finally {
-                                              suppressSave = false;
-                                            }
+      await saveCurrentRecordNow(true);
+      showTab("form");
+      toast("Sample patient added & opened ✓");
+    }
 
-                                            await saveCurrentRecordNow(true);
-                                            showTab("form");
-                                            toast("Sample patient added & opened ✓");
-                                          }
+    /* ---------- Initial Boot ---------- */
+    async function loadAll() {
+      const lg = await store.get("ds-v2:logo");
+      if (lg) logoData = lg;
 
-    await saveCurrentRecordNow(true);
-                                          showTab("form");
-                                          toast("Sample patient added & opened ✓");
-                                        }
-                                        /* ---------- Initial Boot ---------- */
-                                        async function loadAll() {
-                                          const lg = await store.get("ds-v2:logo");
-                                          if (lg) logoData = lg;
+      await initSupabase();
+      await loadScopedRecords();
+      await loadSavedTemplates();
+      await loadFrequentContacts();
+      await checkGuestDraftsForMigration();
 
-                                          /* ---------- Initial Boot ---------- */
-                                          async function loadAll() {
-                                            const lg = await store.get("ds-v2:logo");
-                                            if (lg) logoData = lg;
-                                            await initSupabase();
-                                            await loadScopedRecords();
-                                            await loadSavedTemplates();
-                                            await loadFrequentContacts();
-                                            await checkGuestDraftsForMigration();
+      suppressSave = true;
+      try {
+        resetEditorFieldsOnly();
+        const def = await getActiveDefaults();
+        if (def) applyDefaults(def);
 
-                                            await initSupabase();
-                                            await loadScopedRecords();
-                                            await loadSavedTemplates();
-                                            await loadFrequentContacts();
-                                            await checkGuestDraftsForMigration();
-                                            suppressSave = true;
-                                            try {
-                                              resetEditorFieldsOnly();
-                                              const def = await getActiveDefaults();
-                                              if (def) applyDefaults(def);
+        const activeId = await store.get(getActiveIdKey());
+        const activeRec = activeId ? records.find(r => r.id === activeId) : null;
+        if (activeRec) {
+          currentRecordId = activeRec.id;
+          currentRecordStatus = activeRec.status || "incomplete";
+          currentRecordCreatedAt = activeRec.created_at;
+          hasRecordPersisted = true;
+          restoreDraft(activeRec.payload || {}, { preserveDod: true });
+        } else {
+          currentRecordId = generateUUID();
+          currentRecordStatus = "incomplete";
+          currentRecordCreatedAt = new Date().toISOString();
+          hasRecordPersisted = false;
+          setVal_("dod", todayISO());
+          renderInvEditor();
+          render(false);
+        }
+      } finally {
+        suppressSave = false;
+      }
 
-                                              suppressSave = true;
-                                              try {
-                                                resetEditorFieldsOnly();
-                                                const def = await getActiveDefaults();
-                                                if (def) applyDefaults(def);
-                                                const activeId = await store.get(getActiveIdKey());
-                                                const activeRec = activeId ? records.find(r => r.id === activeId) : null;
-                                                if (activeRec) {
-                                                  currentRecordId = activeRec.id;
-                                                  currentRecordStatus = activeRec.status || "incomplete";
-                                                  currentRecordCreatedAt = activeRec.created_at;
-                                                  hasRecordPersisted = true;
-                                                  restoreDraft(activeRec.payload || {}, { preserveDod: true });
-                                                } else {
-                                                  currentRecordId = generateUUID();
-                                                  currentRecordStatus = "incomplete";
-                                                  currentRecordCreatedAt = new Date().toISOString();
-                                                  hasRecordPersisted = false;
-                                                  setVal_("dod", todayISO());
-                                                  renderInvEditor();
-                                                  render(false);
-                                                }
-                                              } finally {
-                                                suppressSave = false;
-                                              }
+      if (hasCloudAuthSession()) {
+        saveCurrentUserToLocalGoogleRegistry();
+        await deliverPendingSharedInboxForCurrentUser();
+      }
 
-                                              const activeId = await store.get(getActiveIdKey());
-                                              const activeRec = activeId ? records.find(r => r.id === activeId) : null;
-                                              if (activeRec) {
-                                                currentRecordId = activeRec.id;
-                                                currentRecordStatus = activeRec.status || "incomplete";
-                                                currentRecordCreatedAt = activeRec.created_at;
-                                                hasRecordPersisted = true;
-                                                restoreDraft(activeRec.payload || {}, { preserveDod: true });
-                                              } else {
-                                                currentRecordId = generateUUID();
-                                                currentRecordStatus = "incomplete";
-                                                currentRecordCreatedAt = new Date().toISOString();
-                                                hasRecordPersisted = false;
-                                                setVal_("dod", todayISO());
-                                                renderInvEditor();
-                                                render(false);
-                                                if (hasCloudAuthSession()) {
-                                                  saveCurrentUserToLocalGoogleRegistry();
-                                                  await deliverPendingSharedInboxForCurrentUser();
-                                                }
-                                              } finally {
-                                                suppressSave = false;
-                                              }
+      showTab("dashboard");
 
-                                              if (hasCloudAuthSession()) {
-                                                saveCurrentUserToLocalGoogleRegistry();
-                                                await deliverPendingSharedInboxForCurrentUser();
-                                              }
-                                              showTab("dashboard");
+      if (hasCloudAuthSession() && navigator.onLine) {
+        initRealtimeSharingChannel();
+        await syncNow(false);
+      }
+    }
 
-                                              showTab("dashboard");
-
-                                              if (hasCloudAuthSession() && navigator.onLine) {
-                                                initRealtimeSharingChannel();
-                                                await syncNow(false);
-                                                if (hasCloudAuthSession() && navigator.onLine) {
-                                                  initRealtimeSharingChannel();
-                                                  await syncNow(false);
-                                                }
-                                              }
-                                            }
-
-  initEditableSelects();
-                                            window.__DS_V2_BOOT_PROMISE__ = loadAll();
-                                            initEditableSelects();
-                                            window.__DS_V2_BOOT_PROMISE__ = loadAll();
+    initEditableSelects();
+    window.__DS_V2_BOOT_PROMISE__ = loadAll();
 
