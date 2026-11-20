@@ -1,11 +1,11 @@
-const CACHE = "ds-v2-cache-v19";
+const CACHE = "ds-v2-cache-v20";
 const ASSETS = [
   "./",
   "./index.html",
-  "./css/styles.css?v=19",
-  "./js/app.js?v=19",
-  "./js/supabase.min.js?v=19",
-  "./js/supabase-config.js?v=19",
+  "./css/styles.css?v=20",
+  "./js/app.js?v=20",
+  "./js/supabase.min.js?v=20",
+  "./js/supabase-config.js?v=20",
   "./js/html2pdf.bundle.min.js",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
@@ -14,7 +14,7 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).catch(() => {}));
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)).catch(() => { }));
   self.skipWaiting();
 });
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-GB">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -9,18 +10,22 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Discharge Summary">
   <meta name="format-detection" content="telephone=no">
-  <meta name="description" content="Discharge Summary (dsum.shop) — Offline-first clinical workspace for creating A4 medical discharge summaries, syncing across devices with Google Sign-In, and securely sharing patient details with verified doctors.">
-  <meta name="keywords" content="discharge summary, medical discharge summary, clinical documentation, patient handover, hospital discharge PDF, A4 discharge summary, dsum">
+  <meta name="description"
+    content="Discharge Summary (dsum.shop) — Offline-first clinical workspace for creating A4 medical discharge summaries, syncing across devices with Google Sign-In, and securely sharing patient details with verified doctors.">
+  <meta name="keywords"
+    content="discharge summary, medical discharge summary, clinical documentation, patient handover, hospital discharge PDF, A4 discharge summary, dsum">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://dsum.shop/">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Discharge Summary — Clinical Workspace &amp; Patient Handover">
-  <meta property="og:description" content="Offline-first clinical discharge summary workspace with multi-algorithm A4 PDF fitting, Google Sign-In cloud sync, and doctor-to-doctor handover.">
+  <meta property="og:description"
+    content="Offline-first clinical discharge summary workspace with multi-algorithm A4 PDF fitting, Google Sign-In cloud sync, and doctor-to-doctor handover.">
   <meta property="og:url" content="https://dsum.shop/">
   <meta property="og:image" content="https://dsum.shop/assets/icon-512.png">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="Discharge Summary">
-  <meta name="twitter:description" content="Offline-first clinical workspace for creating A4 medical discharge summaries and verified doctor-to-doctor patient handover.">
+  <meta name="twitter:description"
+    content="Offline-first clinical workspace for creating A4 medical discharge summaries and verified doctor-to-doctor patient handover.">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -38,10 +43,10 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/icon-192.png">
   <link rel="icon" href="assets/icon-192.png">
   <title>Discharge Summary — Clinical Workspace &amp; Patient Handover</title>
-  <link rel="stylesheet" href="css/styles.css?v=19">
+  <link rel="stylesheet" href="css/styles.css?v=20">
   <script src="js/html2pdf.bundle.min.js"></script>
-  <script src="js/supabase.min.js?v=19"></script>
-  <script src="js/supabase-config.js?v=19"></script>
+  <script src="js/supabase.min.js?v=20"></script>
+  <script src="js/supabase-config.js?v=20"></script>
 </head>
 
 <body>
@@ -49,29 +54,38 @@
   <div class="topbar">
     <div class="topbar-left">
       <h1 class="brand-title">Discharge Summary</h1>
-      <button type="button" id="topbarAuthBtn" class="topbar-auth-btn" onclick="openAuthOrAccount()" title="Account &amp; Cloud Sync">
+      <button type="button" id="topbarAuthBtn" class="topbar-auth-btn" onclick="openAuthOrAccount()"
+        title="Account &amp; Cloud Sync">
         <span id="topbarAuthDot" class="sync-dot offline"></span>
         <span id="topbarAuthText">Local mode</span>
       </button>
     </div>
     <div class="topbar-right">
       <div class="tabs">
-        <button id="tabDashboard" class="active" onclick="showTab('dashboard')"><span class="btn-text-full">Dashboard</span><span class="btn-text-short">Dash</span></button>
-        <button id="tabForm" onclick="showTab('form')"><span class="btn-text-full">Fill form</span><span class="btn-text-short">Form</span></button>
-        <button id="tabSummary" onclick="showTab('summary')"><span class="btn-text-full">View summary</span><span class="btn-text-short">Summary</span></button>
+        <button id="tabDashboard" class="active" onclick="showTab('dashboard')"><span
+            class="btn-text-full">Dashboard</span><span class="btn-text-short">Dash</span></button>
+        <button id="tabForm" onclick="showTab('form')"><span class="btn-text-full">Fill form</span><span
+            class="btn-text-short">Form</span></button>
+        <button id="tabSummary" onclick="showTab('summary')"><span class="btn-text-full">View summary</span><span
+            class="btn-text-short">Summary</span></button>
       </div>
       <div class="actions">
-        <button class="ghost" onclick="newSummary()"><span class="btn-text-full">New patient</span><span class="btn-text-short">New</span></button>
-        <button class="ghost" onclick="copyText()"><span class="btn-text-full">Copy text</span><span class="btn-text-short">Copy</span></button>
-        <button onclick="checkAndPrint()"><span class="btn-text-full">Print / PDF</span><span class="btn-text-short">Print</span></button>
-        <button class="share-btn" id="shareBtn" onclick="shareDoc()" title="Share PDF via WhatsApp, Email, etc."><span class="btn-text-full">Share PDF</span><span class="btn-text-short">Share</span></button>
+        <button class="ghost" onclick="newSummary()"><span class="btn-text-full">New patient</span><span
+            class="btn-text-short">New</span></button>
+        <button class="ghost" onclick="copyText()"><span class="btn-text-full">Copy text</span><span
+            class="btn-text-short">Copy</span></button>
+        <button onclick="checkAndPrint()"><span class="btn-text-full">Print / PDF</span><span
+            class="btn-text-short">Print</span></button>
+        <button class="share-btn" id="shareBtn" onclick="shareDoc()" title="Share PDF via WhatsApp, Email, etc."><span
+            class="btn-text-full">Share PDF</span><span class="btn-text-short">Share</span></button>
         <div class="menu-wrap">
           <button class="menu-btn" id="menuBtn" onclick="toggleMenu()" title="More options">⋮</button>
           <div class="menu-dropdown" id="menuDropdown">
 
             <div class="menu-label">Cloud &amp; Sync</div>
             <div class="menu-tile-grid cols-2">
-              <button type="button" class="menu-tile" onclick="saveCurrentRecordNow(true);closeMenu()" title="Save current patient draft">
+              <button type="button" class="menu-tile" onclick="saveCurrentRecordNow(true);closeMenu()"
+                title="Save current patient draft">
                 <span class="tile-icon">💾</span><span class="tile-label">Save</span>
               </button>
               <button type="button" class="menu-tile" onclick="syncNow(true);closeMenu()" title="Sync with Supabase">
@@ -81,31 +95,38 @@
 
             <div class="menu-label">Template <span class="beta-tag">BETA</span></div>
             <div class="menu-tile-grid cols-3">
-              <button type="button" class="menu-tile" onclick="importTemplate();closeMenu()" title="Import template (.json)">
+              <button type="button" class="menu-tile" onclick="importTemplate();closeMenu()"
+                title="Import template (.json)">
                 <span class="tile-icon">⬆</span><span class="tile-label">Import</span>
               </button>
-              <button type="button" class="menu-tile" onclick="exportTemplate();closeMenu()" title="Export defaults (.json)">
+              <button type="button" class="menu-tile" onclick="exportTemplate();closeMenu()"
+                title="Export defaults (.json)">
                 <span class="tile-icon">⬇</span><span class="tile-label">Export</span>
               </button>
-              <button type="button" class="menu-tile" onclick="doLocalTemplate();closeMenu()" title="Load built-in template">
+              <button type="button" class="menu-tile" onclick="doLocalTemplate();closeMenu()"
+                title="Load built-in template">
                 <span class="tile-icon">📁</span><span class="tile-label">Load</span>
               </button>
             </div>
             <div class="menu-tile-grid cols-2" style="padding-top:0">
-              <button type="button" class="menu-tile" onclick="openTemplatesModal();closeMenu()" title="Open saved templates library">
+              <button type="button" class="menu-tile" onclick="openTemplatesModal();closeMenu()"
+                title="Open saved templates library">
                 <span class="tile-icon">🗂</span><span class="tile-label">Templates Library</span>
               </button>
-              <button type="button" class="menu-tile" onclick="openTemplatesModal(true);closeMenu()" title="Save current form as template">
+              <button type="button" class="menu-tile" onclick="openTemplatesModal(true);closeMenu()"
+                title="Save current form as template">
                 <span class="tile-icon">➕</span><span class="tile-label">Save Template</span>
               </button>
             </div>
 
             <div class="menu-label">Patient Draft</div>
             <div class="menu-tile-grid cols-2">
-              <button type="button" class="menu-tile" onclick="importDraft();closeMenu()" title="Import patient draft (.json)">
+              <button type="button" class="menu-tile" onclick="importDraft();closeMenu()"
+                title="Import patient draft (.json)">
                 <span class="tile-icon">📂</span><span class="tile-label">Import Draft</span>
               </button>
-              <button type="button" class="menu-tile" onclick="exportDraft();closeMenu()" title="Export patient draft (.json)">
+              <button type="button" class="menu-tile" onclick="exportDraft();closeMenu()"
+                title="Export patient draft (.json)">
                 <span class="tile-icon">📤</span><span class="tile-label">Export Draft</span>
               </button>
             </div>
@@ -115,42 +136,64 @@
             <div class="theme-panel" onclick="event.stopPropagation()">
               <div class="theme-mode-row">
                 <span>🎨 Theme</span>
-                <button type="button" id="gradToggleBtn" class="grad-toggle-pill" onclick="toggleGradientTheme()">🌈 Gradient</button>
+                <button type="button" id="gradToggleBtn" class="grad-toggle-pill" onclick="toggleGradientTheme()">🌈
+                  Gradient</button>
               </div>
               <div class="theme-swatches" aria-label="Theme presets">
-                <button type="button" class="theme-swatch" title="Classic Navy (Solid)" style="background:#14425f" onclick="selectThemePreset('solid','#14425f','#0284c7')"></button>
-                <button type="button" class="theme-swatch" title="Ocean Breeze (Gradient)" style="background:linear-gradient(135deg,#14425f,#0284c7)" onclick="selectThemePreset('gradient','#14425f','#0284c7')"></button>
-                <button type="button" class="theme-swatch" title="Royal Indigo (Gradient)" style="background:linear-gradient(135deg,#1e3a8a,#7c3aed)" onclick="selectThemePreset('gradient','#1e3a8a','#7c3aed')"></button>
-                <button type="button" class="theme-swatch" title="Emerald Teal (Gradient)" style="background:linear-gradient(135deg,#065f46,#0d9488)" onclick="selectThemePreset('gradient','#065f46','#0d9488')"></button>
-                <button type="button" class="theme-swatch" title="Sunset Rose (Gradient)" style="background:linear-gradient(135deg,#881337,#e11d48)" onclick="selectThemePreset('gradient','#881337','#e11d48')"></button>
-                <button type="button" class="theme-swatch" title="Midnight Plum (Gradient)" style="background:linear-gradient(135deg,#1e1b4b,#be185d)" onclick="selectThemePreset('gradient','#1e1b4b','#be185d')"></button>
-                <button type="button" class="theme-swatch" title="Slate Steel (Gradient)" style="background:linear-gradient(135deg,#1e293b,#475569)" onclick="selectThemePreset('gradient','#1e293b','#475569')"></button>
+                <button type="button" class="theme-swatch" title="Classic Navy (Solid)" style="background:#14425f"
+                  onclick="selectThemePreset('solid','#14425f','#0284c7')"></button>
+                <button type="button" class="theme-swatch" title="Ocean Breeze (Gradient)"
+                  style="background:linear-gradient(135deg,#14425f,#0284c7)"
+                  onclick="selectThemePreset('gradient','#14425f','#0284c7')"></button>
+                <button type="button" class="theme-swatch" title="Royal Indigo (Gradient)"
+                  style="background:linear-gradient(135deg,#1e3a8a,#7c3aed)"
+                  onclick="selectThemePreset('gradient','#1e3a8a','#7c3aed')"></button>
+                <button type="button" class="theme-swatch" title="Emerald Teal (Gradient)"
+                  style="background:linear-gradient(135deg,#065f46,#0d9488)"
+                  onclick="selectThemePreset('gradient','#065f46','#0d9488')"></button>
+                <button type="button" class="theme-swatch" title="Sunset Rose (Gradient)"
+                  style="background:linear-gradient(135deg,#881337,#e11d48)"
+                  onclick="selectThemePreset('gradient','#881337','#e11d48')"></button>
+                <button type="button" class="theme-swatch" title="Midnight Plum (Gradient)"
+                  style="background:linear-gradient(135deg,#1e1b4b,#be185d)"
+                  onclick="selectThemePreset('gradient','#1e1b4b','#be185d')"></button>
+                <button type="button" class="theme-swatch" title="Slate Steel (Gradient)"
+                  style="background:linear-gradient(135deg,#1e293b,#475569)"
+                  onclick="selectThemePreset('gradient','#1e293b','#475569')"></button>
               </div>
               <div class="custom-color-maker">
                 <div class="custom-maker-head">
                   <span>Custom Color Maker</span>
                   <div class="custom-stop-switch" role="group" aria-label="Active custom color stop">
-                    <button type="button" id="stopBtn1" class="custom-stop-btn active" onclick="setCustomStopTarget(1)">1st</button>
-                    <button type="button" id="stopBtn2" class="custom-stop-btn" onclick="setCustomStopTarget(2)">2nd</button>
+                    <button type="button" id="stopBtn1" class="custom-stop-btn active"
+                      onclick="setCustomStopTarget(1)">1st</button>
+                    <button type="button" id="stopBtn2" class="custom-stop-btn"
+                      onclick="setCustomStopTarget(2)">2nd</button>
                   </div>
                 </div>
                 <div class="custom-color-row">
                   <div class="custom-color-well">
-                    <input id="themeColor" type="color" value="#14425f" title="Primary color" aria-label="Choose primary theme color" oninput="onThemeColorPickerChange()">
-                    <input id="themeHex1" type="text" class="theme-hex-input" maxlength="7" value="#14425f" aria-label="Primary hex color" oninput="onThemeHexInput(1, this.value)">
+                    <input id="themeColor" type="color" value="#14425f" title="Primary color"
+                      aria-label="Choose primary theme color" oninput="onThemeColorPickerChange()">
+                    <input id="themeHex1" type="text" class="theme-hex-input" maxlength="7" value="#14425f"
+                      aria-label="Primary hex color" oninput="onThemeHexInput(1, this.value)">
                   </div>
                   <div class="custom-color-well">
-                    <input id="themeColor2" type="color" value="#0284c7" title="Gradient second color" aria-label="Choose gradient second color" oninput="onThemeColor2PickerChange()">
-                    <input id="themeHex2" type="text" class="theme-hex-input" maxlength="7" value="#0284c7" aria-label="Gradient second hex color" oninput="onThemeHexInput(2, this.value)">
+                    <input id="themeColor2" type="color" value="#0284c7" title="Gradient second color"
+                      aria-label="Choose gradient second color" oninput="onThemeColor2PickerChange()">
+                    <input id="themeHex2" type="text" class="theme-hex-input" maxlength="7" value="#0284c7"
+                      aria-label="Gradient second hex color" oninput="onThemeHexInput(2, this.value)">
                   </div>
                 </div>
                 <div class="custom-slider-row">
                   <label for="themeHueSlider">Hue</label>
-                  <input id="themeHueSlider" type="range" class="theme-hue-slider" min="0" max="360" value="203" aria-label="Custom theme hue" oninput="onThemeSliderChange()">
+                  <input id="themeHueSlider" type="range" class="theme-hue-slider" min="0" max="360" value="203"
+                    aria-label="Custom theme hue" oninput="onThemeSliderChange()">
                 </div>
                 <div class="custom-slider-row">
                   <label for="themeLightSlider">Shade</label>
-                  <input id="themeLightSlider" type="range" class="theme-light-slider" min="15" max="65" value="23" aria-label="Custom theme shade" oninput="onThemeSliderChange()">
+                  <input id="themeLightSlider" type="range" class="theme-light-slider" min="15" max="65" value="23"
+                    aria-label="Custom theme shade" oninput="onThemeSliderChange()">
                 </div>
               </div>
             </div>
@@ -158,26 +201,34 @@
             <hr>
             <div class="menu-label">Tools</div>
             <div class="menu-tile-grid cols-2">
-              <button type="button" class="menu-tile" onclick="autofillTest();closeMenu()" title="Autofill sample test patient">
+              <button type="button" class="menu-tile" onclick="autofillTest();closeMenu()"
+                title="Autofill sample test patient">
                 <span class="tile-icon">⚡</span><span class="tile-label">Test Data</span>
               </button>
-              <button type="button" class="menu-tile" onclick="requestPersistentStorage();closeMenu()" title="Enable persistent browser storage">
+              <button type="button" class="menu-tile" onclick="requestPersistentStorage();closeMenu()"
+                title="Enable persistent browser storage">
                 <span class="tile-icon">🔒</span><span class="tile-label">Keep Data</span>
               </button>
             </div>
             <div class="menu-tile-grid cols-2" style="padding-top:0">
-              <button type="button" class="menu-tile install-btn" id="installBtn" onclick="doInstall();closeMenu()" style="grid-column:span 2">
+              <button type="button" class="menu-tile install-btn" id="installBtn" onclick="doInstall();closeMenu()"
+                style="grid-column:span 2">
                 <span class="tile-icon">📲</span><span class="tile-label">Install App</span>
               </button>
             </div>
 
             <div class="menu-footer">
-              <a href="templates/" target="_blank" class="menu-footer-link">🗂 Templates <span class="beta-tag">BETA</span></a>
+              <a href="templates/" target="_blank" class="menu-footer-link">🗂 Templates <span
+                  class="beta-tag">BETA</span></a>
               <div style="display:inline-flex;align-items:center;gap:6px">
                 <a href="privacy.html" target="_blank" rel="noopener" class="menu-footer-link">Privacy</a>
                 <a href="terms.html" target="_blank" rel="noopener" class="menu-footer-link">Terms</a>
-                <a href="https://github.com/syed98hafiz/dsum" target="_blank" rel="noopener noreferrer" class="gh-subtle-link" title="GitHub Repository" aria-label="GitHub Repository">
-                  <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+                <a href="https://github.com/syed98hafiz/dsum" target="_blank" rel="noopener noreferrer"
+                  class="gh-subtle-link" title="GitHub Repository" aria-label="GitHub Repository">
+                  <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor" aria-hidden="true">
+                    <path
+                      d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+                  </svg>
                 </a>
               </div>
             </div>
@@ -230,14 +281,18 @@
     <section class="dash-toolbar">
       <div class="dash-search-box">
         <span class="dash-search-icon" aria-hidden="true">🔍</span>
-        <input type="text" id="dashSearch" placeholder="Search patient, IP No., diagnosis, unit..." oninput="setDashSearch(this.value)" autocomplete="off">
-        <button type="button" id="dashSearchClear" class="dash-search-clear" style="display:none" onclick="clearDashSearch()" title="Clear search">×</button>
+        <input type="text" id="dashSearch" placeholder="Search patient, IP No., diagnosis, unit..."
+          oninput="setDashSearch(this.value)" autocomplete="off">
+        <button type="button" id="dashSearchClear" class="dash-search-clear" style="display:none"
+          onclick="clearDashSearch()" title="Clear search">×</button>
       </div>
       <div class="dash-controls-row">
         <div class="dash-filter-pills" id="dashFilterPills">
           <button type="button" class="pill active" data-filter="all" onclick="setDashFilter('all')">All</button>
-          <button type="button" class="pill" data-filter="incomplete" onclick="setDashFilter('incomplete')">Incomplete</button>
-          <button type="button" class="pill" data-filter="completed" onclick="setDashFilter('completed')">Completed</button>
+          <button type="button" class="pill" data-filter="incomplete"
+            onclick="setDashFilter('incomplete')">Incomplete</button>
+          <button type="button" class="pill" data-filter="completed"
+            onclick="setDashFilter('completed')">Completed</button>
           <button type="button" class="pill" data-filter="shared" onclick="setDashFilter('shared')">Shared</button>
         </div>
         <div class="dash-right-controls">
@@ -249,8 +304,10 @@
             <option value="name_asc">Patient Name (A–Z)</option>
           </select>
           <div class="dash-view-toggle desktop-only" role="group" aria-label="Layout view">
-            <button type="button" id="viewBtnCards" class="active" onclick="setDashViewMode('cards')" title="Card view">▦ Cards</button>
-            <button type="button" id="viewBtnTable" onclick="setDashViewMode('table')" title="Table view">☰ Table</button>
+            <button type="button" id="viewBtnCards" class="active" onclick="setDashViewMode('cards')"
+              title="Card view">▦ Cards</button>
+            <button type="button" id="viewBtnTable" onclick="setDashViewMode('table')" title="Table view">☰
+              Table</button>
           </div>
         </div>
       </div>
@@ -261,21 +318,30 @@
 
   </div>
 
-  <!-- ================= FORM ================= -->
-  <div class="wrap" id="formTab" style="display:none">
+  <!-- ================= EDITOR WORKSPACE (FORM & SUMMARY) ================= -->
+  <div class="editor-workspace" id="editorWorkspace">
 
-    <!-- Active Patient Save Bar -->
-    <div class="active-patient-bar form-save-bar no-print" id="activePatientBar">
-      <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
-    </div>
+    <!-- ================= FORM ================= -->
+    <div class="wrap" id="formTab" style="display:none">
+
+      <!-- Active Patient Save Bar -->
+      <div class="active-patient-bar form-save-bar no-print" id="activePatientBar">
+        <button type="button" class="btn sm out desktop-only" id="formPreviewToggleBtn" onclick="toggleFormSplitPreview()"
+          aria-pressed="false" title="Toggle side-by-side summary preview">Preview</button>
+        <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
+      </div>
 
     <details class="card" data-clear="setup">
-      <summary><span class="section-number">1.</span> Setup, defaults &amp; saved templates <button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">1.</span> Setup, defaults &amp; saved templates <button
+          class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
-        <p class="hint" style="margin-top:0">Fill your <b>college, unit, chief</b> and standard <b>advice / warning / review</b> lines once, then tap <b>Save as my defaults</b> — or save <b>multiple named templates</b> below for different units, diseases, or doctors.</p>
+        <p class="hint" style="margin-top:0">Fill your <b>college, unit, chief</b> and standard <b>advice / warning /
+            review</b> lines once, then tap <b>Save as my defaults</b> — or save <b>multiple named templates</b> below
+          for different units, diseases, or doctors.</p>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn" onclick="saveDefaults()">Save as my defaults</button>
-          <button type="button" class="btn out" onclick="openTemplatesModal()">🗂 Manage Templates (<span id="savedTplCountBadge">0</span>)</button>
+          <button type="button" class="btn out" onclick="openTemplatesModal()">🗂 Manage Templates (<span
+              id="savedTplCountBadge">0</span>)</button>
         </div>
 
         <div class="tpl-save-bar">
@@ -284,14 +350,22 @@
             <option value="full">Full form template (Header + Clinical + Rx)</option>
             <option value="defaults">Header &amp; defaults only (Unit, Chief, Advice)</option>
           </select>
-          <button type="button" class="btn sm" onclick="saveNamedTemplateFromInput('inlineTplName','inlineTplScope')">+ Save Template</button>
+          <button type="button" class="btn sm" onclick="saveNamedTemplateFromInput('inlineTplName','inlineTplScope')">+
+            Save Template</button>
         </div>
         <div id="inlineTemplateList" class="tpl-list"></div>
       </div>
     </details>
 
     <details class="card" data-clear="institution">
-      <summary><span class="section-number">2.</span> Institution header <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include institution section without content" onchange="toggleIncludeEmpty('institution', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for institution" oninput="setEmptyLines('institution', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">2.</span> Institution header <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include institution section without content"
+            onchange="toggleIncludeEmpty('institution', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for institution" oninput="setEmptyLines('institution', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="field"><label>College / Hospital</label>
           <input type="text" id="college" value="Government Medical College Hospital">
@@ -319,7 +393,14 @@
     </details>
 
     <details class="card" open data-clear="patient">
-      <summary><span class="section-number">3.</span> Patient details <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include patient section without content" onchange="toggleIncludeEmpty('patient', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for patient" oninput="setEmptyLines('patient', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">3.</span> Patient details <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include patient section without content"
+            onchange="toggleIncludeEmpty('patient', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for patient" oninput="setEmptyLines('patient', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="field"><label>Name</label><input type="text" id="name"></div>
         <div class="row">
@@ -336,11 +417,13 @@
           <div><label>IP No.</label><input type="text" id="ipno"></div>
         </div>
         <div class="row">
-          <div><label>Date of Admission (DOA)</label><input type="text" id="doa" inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" autocomplete="off" onblur="formatDisplayDate(this)"></div>
+          <div><label>Date of Admission (DOA)</label><input type="text" id="doa" inputmode="numeric"
+              placeholder="DD.MM.YYYY" maxlength="10" autocomplete="off" onblur="formatDisplayDate(this)"></div>
           <div>
             <label>Date of Discharge (DOD)</label>
             <div class="inline-btn-field">
-              <input type="text" id="dod" inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" autocomplete="off" onblur="formatDisplayDate(this)">
+              <input type="text" id="dod" inputmode="numeric" placeholder="DD.MM.YYYY" maxlength="10" autocomplete="off"
+                onblur="formatDisplayDate(this)">
               <button class="btn sm out" onclick="clearDOD()" title="Clear DOD">Clear</button>
             </div>
             <p class="hint">Defaults to today — edit or clear as needed.</p>
@@ -382,7 +465,14 @@
     </details>
 
     <details class="card" open data-clear="diagnosis">
-      <summary><span class="section-number">4.</span> Diagnosis <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include diagnosis section without content" onchange="toggleIncludeEmpty('diagnosis', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for diagnosis" oninput="setEmptyLines('diagnosis', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">4.</span> Diagnosis <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include diagnosis section without content"
+            onchange="toggleIncludeEmpty('diagnosis', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for diagnosis" oninput="setEmptyLines('diagnosis', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <label>Diagnosis (one per line)</label>
         <textarea id="diagnosis" placeholder="e.g.&#10;Dengue fever with warning signs&#10;Thrombocytopenia"></textarea>
@@ -390,7 +480,14 @@
     </details>
 
     <details class="card" open data-clear="complaints">
-      <summary><span class="section-number">5.</span> Chief complaints (Presenting Complaints) <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include complaints section without content" onchange="toggleIncludeEmpty('complaints', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for complaints" oninput="setEmptyLines('complaints', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">5.</span> Chief complaints (Presenting Complaints) <label
+          class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input
+            type="checkbox" aria-label="Include complaints section without content"
+            onchange="toggleIncludeEmpty('complaints', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for complaints" oninput="setEmptyLines('complaints', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="chips" id="ccChips"></div>
         <div class="addrow">
@@ -418,7 +515,14 @@
     </details>
 
     <details class="card" data-clear="history">
-      <summary><span class="section-number">6.</span> History (HOPI, Past History, Rx Hx) <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include history section without content" onchange="toggleIncludeEmpty('history', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for history" oninput="setEmptyLines('history', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">6.</span> History (HOPI, Past History, Rx Hx) <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include history section without content"
+            onchange="toggleIncludeEmpty('history', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for history" oninput="setEmptyLines('history', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="subhead">History of Present Illness (HOPI)</div>
         <textarea id="hopi" placeholder="The patient was apparently normal [__] back, then developed..."></textarea>
@@ -455,7 +559,14 @@
     </details>
 
     <details class="card" data-clear="examination">
-      <summary><span class="section-number">7.</span> Examination <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include examination section without content" onchange="toggleIncludeEmpty('examination', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for examination" oninput="setEmptyLines('examination', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">7.</span> Examination <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include examination section without content"
+            onchange="toggleIncludeEmpty('examination', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for examination" oninput="setEmptyLines('examination', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="subhead">General Examination</div>
         <div class="chips"><span class="chip" onclick="insertGeneralExam()">+ Standard PICCLE findings</span></div>
@@ -496,7 +607,14 @@
     </details>
 
     <details class="card" data-clear="investigations">
-      <summary><span class="section-number">8.</span> Investigations <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include investigations section without content" onchange="toggleIncludeEmpty('investigations', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for investigations" oninput="setEmptyLines('investigations', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">8.</span> Investigations <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include investigations section without content"
+            onchange="toggleIncludeEmpty('investigations', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for investigations" oninput="setEmptyLines('investigations', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="inv-controls">
           <button class="btn sm" onclick="addInvDate()">+ Add date</button>
@@ -516,7 +634,14 @@
     </details>
 
     <details class="card" data-clear="opinions">
-      <summary><span class="section-number">9.</span> Opinions <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include opinions section without content" onchange="toggleIncludeEmpty('opinions', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for opinions" oninput="setEmptyLines('opinions', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">9.</span> Opinions <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include opinions section without content"
+            onchange="toggleIncludeEmpty('opinions', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for opinions" oninput="setEmptyLines('opinions', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <label>Consultations / opinions obtained</label>
         <textarea id="opinions"
@@ -525,7 +650,14 @@
     </details>
 
     <details class="card" data-clear="course">
-      <summary><span class="section-number">10.</span> Course in the hospital <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include course section without content" onchange="toggleIncludeEmpty('course', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for course" oninput="setEmptyLines('course', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">10.</span> Course in the hospital <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include course section without content"
+            onchange="toggleIncludeEmpty('course', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for course" oninput="setEmptyLines('course', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <label>Insert a template (tap to drop in, then edit the blanks)</label>
         <div class="chips" id="courseTpl"></div>
@@ -537,7 +669,14 @@
     </details>
 
     <details class="card" data-clear="treatment">
-      <summary><span class="section-number">11.</span> Treatment given (in hospital) <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include treatment section without content" onchange="toggleIncludeEmpty('treatment', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for treatment" oninput="setEmptyLines('treatment', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">11.</span> Treatment given (in hospital) <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include treatment section without content"
+            onchange="toggleIncludeEmpty('treatment', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for treatment" oninput="setEmptyLines('treatment', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <label>Quick bundles (tap to add the usual set, then edit)</label>
         <div class="chips" id="txBundles"></div>
@@ -583,7 +722,14 @@
     </details>
 
     <details class="card" open data-clear="condition">
-      <summary><span class="section-number">12.</span> Condition at discharge <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include condition section without content" onchange="toggleIncludeEmpty('condition', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for condition" oninput="setEmptyLines('condition', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">12.</span> Condition at discharge <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include condition section without content"
+            onchange="toggleIncludeEmpty('condition', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for condition" oninput="setEmptyLines('condition', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="chips" id="condChips"></div>
         <div class="field"><label>Condition</label><input type="text" id="condition" placeholder="Stable / Improved">
@@ -594,7 +740,14 @@
     </details>
 
     <details class="card" open data-clear="advice">
-      <summary><span class="section-number">13.</span> Discharge advice (Rx) <label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include advice section without content" onchange="toggleIncludeEmpty('advice', this.checked)"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for advice" oninput="setEmptyLines('advice', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">13.</span> Discharge advice (Rx) <label class="include-toggle"
+          title="Include without content" onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include advice section without content"
+            onchange="toggleIncludeEmpty('advice', this.checked)"></label><span class="empty-lines-wrap"
+          title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0"
+            aria-label="Empty lines for advice" oninput="setEmptyLines('advice', this.value)"
+            onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear"
+          type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="subhead">Advice on Discharge</div>
         <div class="row">
@@ -672,7 +825,19 @@ Take diet as advised.</textarea>
     </details>
 
     <details class="card" data-clear="signatures">
-      <summary><span class="section-number">14.</span> Signatures <label class="signature-pin" title="Pin signatures to bottom of page" onclick="event.stopPropagation()"><input type="checkbox" id="signaturePinCheckbox" aria-label="Pin signatures to page bottom" checked onchange="toggleSignaturePin(this.checked)" onclick="event.stopPropagation()"><span>📌 Pin to bottom</span></label><label class="include-toggle" title="Include without content" onclick="event.stopPropagation()"><input type="checkbox" aria-label="Include signatures section without content" onchange="toggleIncludeEmpty('signatures', this.checked)" onclick="event.stopPropagation()"></label><span class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0" max="40" placeholder="0" aria-label="Empty lines for signatures" oninput="setEmptyLines('signatures', this.value)" onclick="event.stopPropagation()"><span class="lines-unit">lines</span></span><button class="section-clear" type="button" onclick="clearFormSection(event, this)">Clear</button></summary>
+      <summary><span class="section-number">14.</span> Signatures <label class="signature-pin"
+          title="Pin signatures to bottom of page" onclick="event.stopPropagation()"><input type="checkbox"
+            id="signaturePinCheckbox" aria-label="Pin signatures to page bottom" checked
+            onchange="toggleSignaturePin(this.checked)" onclick="event.stopPropagation()"><span>📌 Pin to
+            bottom</span></label><label class="include-toggle" title="Include without content"
+          onclick="event.stopPropagation()"><input type="checkbox"
+            aria-label="Include signatures section without content"
+            onchange="toggleIncludeEmpty('signatures', this.checked)" onclick="event.stopPropagation()"></label><span
+          class="empty-lines-wrap" title="Lines of empty space"><input type="number" class="empty-lines-input" min="0"
+            max="40" placeholder="0" aria-label="Empty lines for signatures"
+            oninput="setEmptyLines('signatures', this.value)" onclick="event.stopPropagation()"><span
+            class="lines-unit">lines</span></span><button class="section-clear" type="button"
+          onclick="clearFormSection(event, this)">Clear</button></summary>
       <div class="body">
         <div class="row">
           <div><label>Prepared by</label><input type="text" id="preparedBy" placeholder="____ (JR)"></div>
@@ -684,11 +849,17 @@ Take diet as advised.</textarea>
       </div>
     </details>
 
-    <p class="hint no-print" style="text-align:center;padding-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
-      <span>Tip: switch to <b>View summary</b> to check spacing, then <b>Print / PDF</b>. Return to <b>Dashboard</b> anytime
-      to switch patients or resume incomplete summaries across devices.</span>
-      <a href="https://github.com/syed98hafiz/dsum" target="_blank" rel="noopener noreferrer" class="gh-subtle-link" title="GitHub Repository" aria-label="GitHub Repository">
-        <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+    <p class="hint no-print"
+      style="text-align:center;padding-bottom:20px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+      <span>Tip: switch to <b>View summary</b> to check spacing, then <b>Print / PDF</b>. Return to <b>Dashboard</b>
+        anytime
+        to switch patients or resume incomplete summaries across devices.</span>
+      <a href="https://github.com/syed98hafiz/dsum" target="_blank" rel="noopener noreferrer" class="gh-subtle-link"
+        title="GitHub Repository" aria-label="GitHub Repository">
+        <svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true">
+          <path
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+        </svg>
       </a>
     </p>
   </div>
@@ -696,15 +867,19 @@ Take diet as advised.</textarea>
   <!-- ================= SUMMARY ================= -->
   <div class="wrap" id="summaryTab">
     <div class="active-patient-bar summary-bar no-print" id="summaryActiveBar">
-      <button type="button" class="btn sm out" id="refitA4Btn" onclick="refitSummaryPages()" title="Cycle A4 fitting algorithm">⟳ Re-fit A4</button>
+      <button type="button" class="btn sm out" id="refitA4Btn" onclick="refitSummaryPages()"
+        title="Cycle A4 fitting algorithm">⟳ Re-fit A4</button>
       <button type="button" class="btn sm" onclick="saveCurrentRecordNow(true)">💾 Save</button>
     </div>
     <div class="pagebanner no-print" id="pageBanner" style="display:none"></div>
     <div class="paper" id="paper"></div>
   </div>
 
+  </div><!-- /#editorWorkspace -->
+
   <!-- ================= AUTH MODAL ================= -->
-  <div class="modal-backdrop no-print" id="authModal" style="display:none" onclick="if(event.target===this) closeAuthModal()">
+  <div class="modal-backdrop no-print" id="authModal" style="display:none"
+    onclick="if(event.target===this) closeAuthModal()">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="authModalTitle">
       <div class="modal-head">
         <h2 id="authModalTitle">Doctor Account &amp; Cloud Sync</h2>
@@ -715,7 +890,8 @@ Take diet as advised.</textarea>
   </div>
 
   <!-- ================= SAVED TEMPLATES MANAGER MODAL ================= -->
-  <div class="modal-backdrop no-print" id="templatesModal" style="display:none" onclick="if(event.target===this) closeTemplatesModal()">
+  <div class="modal-backdrop no-print" id="templatesModal" style="display:none"
+    onclick="if(event.target===this) closeTemplatesModal()">
     <div class="modal-card modal-wide" role="dialog" aria-modal="true" aria-labelledby="templatesModalTitle">
       <div class="modal-head">
         <h2 id="templatesModalTitle">🗂 Saved Templates Library</h2>
@@ -723,7 +899,8 @@ Take diet as advised.</textarea>
       </div>
       <div class="modal-body">
         <p class="hint" style="margin-top:0;font-size:13px">
-          Save multiple templates for different units, doctors, or standard disease protocols (e.g., Dengue, STEMI, COPD, Unit M-I). Templates save on this device and sync to your Supabase account.
+          Save multiple templates for different units, doctors, or standard disease protocols (e.g., Dengue, STEMI,
+          COPD, Unit M-I). Templates save on this device and sync to your Supabase account.
         </p>
         <div class="tpl-save-bar" style="margin-top:0">
           <input type="text" id="modalTplName" placeholder="Template name (e.g. Unit M-II Defaults, Acute STEMI)">
@@ -731,11 +908,14 @@ Take diet as advised.</textarea>
             <option value="full">Full form template (Header + Clinical + Rx)</option>
             <option value="defaults">Header &amp; defaults only (Unit, Chief, Advice)</option>
           </select>
-          <button type="button" class="btn sm" onclick="saveNamedTemplateFromInput('modalTplName','modalTplScope')">+ Save Current Form</button>
+          <button type="button" class="btn sm" onclick="saveNamedTemplateFromInput('modalTplName','modalTplScope')">+
+            Save Current Form</button>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-          <button type="button" class="btn sm out" onclick="importTemplateIntoLibrary()">⬆ Import .json into Library</button>
-          <button type="button" class="btn sm out" onclick="exportAllTemplates()">⬇ Export All Templates (.json)</button>
+          <button type="button" class="btn sm out" onclick="importTemplateIntoLibrary()">⬆ Import .json into
+            Library</button>
+          <button type="button" class="btn sm out" onclick="exportAllTemplates()">⬇ Export All Templates
+            (.json)</button>
         </div>
         <div id="modalTemplateList" class="tpl-list" style="margin-top:14px"></div>
       </div>
@@ -743,7 +923,8 @@ Take diet as advised.</textarea>
   </div>
 
   <!-- ================= SHARE PATIENT MODAL ================= -->
-  <div class="modal-backdrop no-print" id="sharePatientModal" style="display:none" onclick="if(event.target===this) closeSharePatientModal()">
+  <div class="modal-backdrop no-print" id="sharePatientModal" style="display:none"
+    onclick="if(event.target===this) closeSharePatientModal()">
     <div class="modal-card modal-wide" role="dialog" aria-modal="true" aria-labelledby="sharePatientModalTitle">
       <div class="modal-head">
         <h2 id="sharePatientModalTitle">📤 Share Patient Details</h2>
@@ -753,8 +934,7 @@ Take diet as advised.</textarea>
     </div>
   </div>
 
-  <script src="js/app.js?v=19"></script>
+  <script src="js/app.js?v=20"></script>
 </body>
 
 </html>
-
